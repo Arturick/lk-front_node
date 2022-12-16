@@ -15,6 +15,7 @@
     "apexcharts": "^3.35.4",
     "core-js": "^3.19.3",
     "element-ui": "^2.15.9",
+    "excel4node": "^1.8.0",
     "lodash": "^4.17.21",
     "normalize.css": "^8.0.1",
     "nuxt": "^2.15.8",

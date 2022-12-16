@@ -51,117 +51,126 @@
                     </div>
                 </div>
             </template>
-            <template v-if="step == 2" :loading="loadingResultsInSearch">
+            <template v-if="step == 2">
+
                 <div class="mt-12">
-                    <div class="content-title">Добавить выкуп Wildberries</div>
+                  <div class="content-title">Добавить выкуп Wildberries</div>
 
-                    <div class="mt-8 md:w-3/5">
-                        <div>Создайте новую группу выкупов. Введите артикулы товаров и заполните необходимые данные.</div>
-                    </div>
+                  <div class="mt-8 md:w-3/5">
+                    <div>Создайте новую группу выкупов. Введите артикулы товаров и заполните необходимые данные.</div>
+                  </div>
                 </div>
-
                 <div class="mt-14">
-                    <div class="flex gap-4 items-center flex-col md:flex-row">
-                        <div class="w-full md:w-auto">
-                            <div class="input-block">
-                                <input type="text" v-model="art" class="input-block__input input-block__input_w p-2.5" placeholder="Введите артикул" autocomplete="off">
-                                <Button class="rounded-lg py-2.5 px-4 but-1 input-block__but" @click="findByArt" v-if="art">✚</Button>
-                            </div>
-                        </div>
-
-                        <div class="w-full md:w-auto">
-                            <Button class="rounded-lg p-2.5 but-0 w-full" @click="modalByApiShow=true">По API</Button>
-                        </div>
-                        <div class="w-full md:w-auto">
-                            <Button class="rounded-lg p-2.5 but-0 w-full" @click="bulkAdd=true">Массовое добавление</Button>
-                        </div>
-                        <div class="w-full md:w-auto">
-                            <template v-if="tItems.length > 0">
-                                <Button class="rounded-lg p-2.5 but-1 w-full" @click="checkQueries">Далее</Button>
-                            </template>
-                        </div>
+                  <div class="flex gap-4 items-center flex-col md:flex-row">
+                    <div class="w-full md:w-auto">
+                      <div class="input-block">
+                        <input type="text" v-model="art" class="input-block__input input-block__input_w p-2.5" placeholder="Введите артикул" autocomplete="off">
+                        <Button class="rounded-lg py-2.5 px-4 but-1 input-block__but" @click="findByArt" v-if="art">✚</Button>
+                      </div>
                     </div>
-                </div>
 
+                    <div class="w-full md:w-auto">
+                      <Button class="rounded-lg p-2.5 but-0 w-full" @click="() => {
+                              this.modalByApiShow = true;
+                              this.apiItemsLoading = true;
+                            }">По API</Button>
+                    </div>
+                    <div class="w-full md:w-auto">
+                      <Button class="rounded-lg p-2.5 but-0 w-full" @click="bulkAdd=true">Массовое добавление</Button>
+                    </div>
+                    <div class="w-full md:w-auto">
+                      <template v-if="tItems.length > 0">
+                        <Button class="rounded-lg p-2.5 but-1 w-full" @click="checkQueries">Далее</Button>
+                      </template>
+                    </div>
+                  </div>
+                </div>
                 <div class="mt-12">
-                    <template v-if="tItems.length == 0">
-                        <div class="result-empty">ЗДЕСЬ ПОКА НИЧЕГО</div>
-                    </template>
-                    <template v-else>
+                  <template v-if="tItems.length == 0">
+                    <div class="result-empty">ЗДЕСЬ ПОКА НИЧЕГО</div>
+                  </template>
+                  <template v-else>
 
-                      <v-data-table
-                        :headers="tHeaders"
-                          :items="tItems"
-                        class="postable"
-                        :item-class= "rowClasses"
-                      >
-                        <template v-slot:item.image="{ item }">
-                            <img :src="item.image"  alt="" class="img-table">
+                    <v-data-table
+                      :headers="tHeaders"
+                      :items="tItems"
+                      class="postable"
+                      :item-class= "rowClasses"
+                      :loading="!loadingResultsInSearch"
+                    >
+                      <template v-slot:item.image="{ item }">
+                        <img :src="item.image"  alt="" class="img-table">
+                      </template>
+                      <template v-slot:item.status="{ item }">
+                        <span :class="'status-' + item.status.split('|')[1]">{{item.status.split('|')[0]}}</span>
+                      </template>
+                      <template v-slot:item.price="{ item }">
+                        {{item.price}} ₽
+                      </template>
+                      <template v-slot:item.size="{ item }">
+                        <template v-if="item.sizes.length > 0">
+                          <v-select :items="item.sizes" label="" v-model="item.size" dense outlined hide-details="auto" class="rounded-lg bg-white"/></v-select>
                         </template>
-                        <template v-slot:item.status="{ item }">
-                            <span :class="'status-' + item.status.split('|')[1]">{{item.status.split('|')[0]}}</span>
+                        <template v-else>
+                          {{item.size}}
                         </template>
-                        <template v-slot:item.price="{ item }">
-                            {{item.price}} ₽
+                      </template>
+                      <template v-slot:item.gender="{ item }">
+                        <v-select :items="genderOptions" v-model="item.gender" dense outlined hide-details="auto" class="rounded-lg bg-white"></v-select>
+                      </template>
+                      <template v-slot:item.count="{ item }">
+                        <Switcher v-model="item.count" :min="1"/>
+                      </template>
+                      <template v-slot:item.rcount="{ item }">
+                        <Switcher v-model="item.rcount" :min="0" :max="item.count" maxMsg="Кол-во отзывов не должно превышть кол-во выкупов"/>
+                      </template>
+                      <template v-slot:item.query="{ item }">
+                        <div class="input-block" style="width: 150px;" v-if="loadingResultsInSearch">
+                          <input type="text" class="input-block__input input-block__input_w_1 py-2 px-4" v-model="item.query">
+                        </div>
+                        <div v-else>
+                          <input type="text" disabled class="input-block__input input-block__input_w_1 py-2 px-4" v-model="item.query">
+
+                        </div>
+                      </template>
+                      <template v-slot:item.barcode="{ item }">
+                        <div class="input-block" style="width: 150px;">
+                          <input type="text" class="input-block__input input-block__input_w_1 py-2 px-4" v-model="item.barcode">
+                        </div>
+                      </template>
+                      <template v-slot:item.copy="{ item, index }">
+                        <a href="#" @click.prevent="copy(index)"><i class="icon icon_copy"></i></a>
+                      </template>
+                      <template v-slot:item.del="{ item, index }">
+                        <a href="#" @click.prevent="del(index)"><i class="icon icon_close_g"></i></a>
+                      </template>
+                      <template v-slot:item.link="{ item }">
+                        <a :href="item.link"><i class="icon icon_arrow_r"></i></a>
+                      </template>
+                      <template v-slot:item.position="{ item }">
+                        <template v-if="item.position >= 0">
+                          <template v-if="item.position == 0">
+                            <span class="status-dunger">{{item.position}}</span>
+                          </template>
+                          <template v-else>{{item.position}}</template>
                         </template>
-                        <template v-slot:item.size="{ item }">
-                            <template v-if="item.sizes.length > 0">
-                                <v-select :items="item.sizes" label="" v-model="item.size" dense outlined hide-details="auto" class="rounded-lg bg-white"/></v-select>
-                            </template>
-                            <template v-else>
-                                {{item.size}}
-                            </template>
-                        </template>
-                        <template v-slot:item.gender="{ item }">
-                            <v-select :items="genderOptions" v-model="item.gender" dense outlined hide-details="auto" class="rounded-lg bg-white"></v-select>
-                        </template>
-                        <template v-slot:item.count="{ item }">
-                            <Switcher v-model="item.count" :min="1"/>
-                        </template>
-                        <template v-slot:item.rcount="{ item }">
-                            <Switcher v-model="item.rcount" :min="0" :max="item.count" maxMsg="Кол-во отзывов не должно превышть кол-во выкупов"/>
-                        </template>
-                        <template v-slot:item.query="{ item }">
-                           <div class="input-block" style="width: 150px;">
-                              <input type="text" class="input-block__input input-block__input_w_1 py-2 px-4" v-model="item.query">
-                           </div>
-                        </template>
-                        <template v-slot:item.barcode="{ item }">
-                           <div class="input-block" style="width: 150px;">
-                              <input type="text" class="input-block__input input-block__input_w_1 py-2 px-4" v-model="item.barcode">
-                           </div>
-                        </template>
-                        <template v-slot:item.copy="{ item, index }">
-                            <a href="#" @click.prevent="copy(index)"><i class="icon icon_copy"></i></a>
-                        </template>
-                        <template v-slot:item.del="{ item, index }">
-                            <a href="#" @click.prevent="del(index)"><i class="icon icon_close_g"></i></a>
-                        </template>
-                        <template v-slot:item.link="{ item }">
-                            <a :href="item.link"><i class="icon icon_arrow_r"></i></a>
-                        </template>
-                        <template v-slot:item.position="{ item }">
-                            <template v-if="item.position >= 0">
-                                <template v-if="item.position == 0">
-                                    <span class="status-dunger">{{item.position}}</span>
-                                </template>
-                                <template v-else>{{item.position}}</template>
-                            </template>
-                            <template v-else><span></span></template>
-                        </template>
-                      </v-data-table>
-                    </template>
+                        <template v-else><span></span></template>
+                      </template>
+                    </v-data-table>
+                  </template>
                 </div>
-
                 <div class="mt-12">
-                    <div>Общее количество:  <strong>артикулы - {{artCount}} шт, выкупов - {{posCount}} шт, отзывов - {{posRCount}} шт</strong> </div>
-                    <div>Сумма выкупа: <strong>{{buyOutSum}}₽</strong></div>
-                    <div>Услуги: <strong>{{servicesSum}}₽</strong></div>
+                  <div>Общее количество:  <strong>артикулы - {{artCount}} шт, выкупов - {{posCount}} шт, отзывов - {{posRCount}} шт</strong> </div>
+                  <div>Сумма выкупа: <strong>{{buyOutSum}}₽</strong></div>
+                  <div>Услуги: <strong>{{servicesSum}}₽</strong></div>
                 </div>
+
+
 
             </template>
             <template v-if="step==3">
-                <div class="mt-12">
+
+              <div class="mt-12">
                     <div class="content-title">Период реализации</div>
                 </div>
 
@@ -240,6 +249,9 @@
                                 <Button class="rounded-lg p-2.5 but-1" @click="orderSave('bid')">Заказать</Button>
                             </template>
                         </div>
+                      <div class="w-full md:w-auto">
+                        <Button class="rounded-lg p-2.5 but-0" @click="draftSave('draft')">В черновики</Button>
+                      </div>
                     </div>
                 </div>
 
@@ -326,11 +338,8 @@
                         </div>
                         <Button class="rounded-lg p-2.5 but-1" @click="addToTItems">Добавить</Button>
                     </div>
-                    <div class="grow">
-                        <template v-if="apiItems.length == 0">
-                            <div class="result-empty">ЗДЕСЬ ПОКА НИЧЕГО</div>
-                        </template>
-                        <template v-else>
+                    <div class="grow" :loading="apiItemsLoading">
+                        <template>
                             <CommonTable :headers="apiHeaders" :items="apiItems" :loading="apiItemsLoading" class="h-96">
                                 <template v-slot:item.image="{ item }">
                                     <img :src="item.image" alt="" class="img-table">
@@ -358,7 +367,7 @@
                 <div class="flex gap-4 mt-8">
                     <Button class="rounded-lg p-2.5 w-1/2" :class="{'but-1': bulk.type == 1}" @click="bulk.type = 1">Буфер обмена</Button>
                     <Button class="rounded-lg p-2.5 w-1/2" :class="{'but-1': bulk.type == 2}" @click="bulk.type = 2">Импорт из Excel</Button>
-                </div>
+                    </div>
                 <div class="mt-5">
                     <template v-if="bulk.type == 1">
                         <v-textarea
@@ -377,24 +386,36 @@
                         </div>
                     </template>
                     <template v-if="bulk.type == 2">
+                      <div v-if="!loadingExcel" style="    width: 100%;height: 120px;position: relative;overflow: hidden;">
+                        <v-progress-circular
+                          :size="70"
+                          :width="7"
+                          color="#92E6D6"
+                          indeterminate
+                          style="position: initial;"
+                        ></v-progress-circular>
+                      </div>
+                      <div v-else>
                         <div class="flex flex-col gap-4">
-                            <a href="/Массовое добавление(под ключ).xlsx" download="" class="rounded-lg p-2.5 but-0">
-                                <v-icon dense>mdi-tray-arrow-down</v-icon>
-                                Скачать шаблон XLS
-                            </a>
+                          <a href="/Массовое добавление(под ключ).xlsx" download="" class="rounded-lg p-2.5 but-0">
+                            <v-icon dense>mdi-tray-arrow-down</v-icon>
+                            Скачать шаблон XLS
+                          </a>
 
-                            <Button class="rounded-lg p-2.5 but-1 overflow-hidden relative">
-                                <v-icon dense>mdi-tray-arrow-up</v-icon>
-                                <template v-if="!bulk.files">Загрузить XLS</template>
-                                <template v-else>
-                                    <template v-if="bulk.files[0]['name']">
-                                        {{bulk.files[0]['name']}}
-                                    </template>
-                                </template>
+                          <Button class="rounded-lg p-2.5 but-1 overflow-hidden relative" :loading="loadingExcel">
+                            <v-icon dense>mdi-tray-arrow-up</v-icon>
+                            <template v-if="!bulk.files">Загрузить XLS</template>
+                            <template v-else>
+                              <template v-if="bulk.files[0]['name']">
+                                {{bulk.files[0]['name']}}
+                              </template>
+                            </template>
 
-                                <input type="file" @change="bulkFile" class="file-up" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
-                            </Button>
+                            <input type="file" @change="bulkFile" class="file-up" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
+                          </Button>
                         </div>
+                      </div>
+
                     </template>
                 </div>
             </div>
@@ -413,9 +434,10 @@ export default {
             arts: '',
             files: null
         },
-        loadingResultsInSearch: false,
+        loadingResultsInSearch:true,
         bulkAdd: false,
         dialogDate: false,
+        loadingExcel: true,
 
         localeData: {
             firstDay: 1, format: 'dd-mm-yyyy',
@@ -480,7 +502,7 @@ export default {
             'take': 11,
         },
         timeoutfindWb: null,
-        apiItemsLoading: false
+        apiItemsLoading: true
     }
   },
   watch: {
@@ -495,13 +517,13 @@ export default {
         handler(val) {
             clearTimeout( this.timeoutFindWb )
             this.timeoutFindWb = setTimeout(() => {
-                this.findWb()
+                this.getByApi();
             }, 200);
         },
     },
     modalByApiShow: function(val) {
         if ( val ) {
-            this.findWb()
+            this.getByApi();
         }
     }
   },
@@ -516,44 +538,98 @@ export default {
 
     artCount : function() {
         let arts = []
-        for (var i = 0; i < this.tItems.length; i++) {
-            let art = this.tItems[i]['art']
-            if ( art ) {
-                arts.push( art )
+        switch(this.step){
+          case 2:
+            for (var i = 0; i < this.tItems.length; i++) {
+              console.log(1221131);
+              let art = this.tItems[i]['article']
+              if ( arts.indexOf(art) < 0) {
+                arts.push( art );
+              }
             }
+            break;
+          case 3:
+            for (var i = 0; i < this.orderItems.length; i++) {
+              let art = this.tItems[i]['article']
+              if ( arts.indexOf(art) < 0) {
+                arts.push( art );
+              }
+            }
+            break;
         }
-        arts = _.uniq(arts)
+
+
         return arts.length
     },
     posCount : function() {
         let counts = []
-        for (var i = 0; i < this.tItems.length; i++) {
-            let count = parseInt(this.tItems[i]['count'], 10)
-            if ( count ) {
+        switch (this.step) {
+          case 2:
+            for (var i = 0; i < this.tItems.length; i++) {
+              let count = parseInt(this.tItems[i]['count'], 10)
+              if ( count ) {
                 counts.push( count )
+              }
             }
+            break;
+          case 3:
+            for (var i = 0; i < this.orderItems.length; i++) {
+              let count = parseInt(this.tItems[i]['count'], 10)
+              if ( count ) {
+                counts.push( count )
+              }
+            }
+            break;
         }
+
         return _.sum(counts)
     },
     posRCount : function() {
         let counts = []
-        for (var i = 0; i < this.tItems.length; i++) {
-            let rcount = parseInt(this.tItems[i]['rcount'], 10)
-            if ( rcount ) {
-                counts.push( rcount )
+      switch (this.step) {
+        case 2:
+          for (var i = 0; i < this.tItems.length; i++) {
+            let count = parseInt(this.tItems[i]['rcount'], 10)
+            if ( count ) {
+              counts.push( count )
             }
-        }
+          }
+          break;
+        case 3:
+          for (var i = 0; i < this.orderItems.length; i++) {
+            let count = parseInt(this.tItems[i]['rcount'], 10)
+            if ( count ) {
+              counts.push( count )
+            }
+          }
+          break;
+      }
         return _.sum(counts)
     },
     buyOutSum : function() {
         let sums = []
-        for (var i = 0; i < this.tItems.length; i++) {
-            let count = parseInt(this.tItems[i]['count'], 10)
-            let price = parseInt(this.tItems[i]['price'], 10)
-            if ( count && price ) {
+
+        switch (this.step) {
+          case 2:
+            for (var i = 0; i < this.tItems.length; i++) {
+              let count = parseInt(this.tItems[i]['count'], 10)
+              let price = parseInt(this.tItems[i]['price'], 10)
+              if ( count && price ) {
                 sums.push( count * price )
+              }
             }
+            break;
+          case 3:
+            for (var i = 0; i < this.orderItems.length; i++) {
+              let count = parseInt(this.orderItems[i]['count'], 10)
+              let price = parseInt(this.orderItems[i]['price'], 10)
+              if ( count && price ) {
+                sums.push( count * price )
+              }
+            }
+            break;
         }
+
         return _.sum(sums)
     },
     servicesSum : function() {
@@ -577,16 +653,20 @@ export default {
     },
 
     bulkFile: function( e ) {
-        let files = e.target.files || e.dataTransfer.files;
+        let files = e.target.files;
+        console.log(e.target.files);
+   //   console.log(e.dataTransfer.files);
         this.bulk.files = files
         this.bulkSend()
     },
 
     addToTItems: function() {
-        let items = this.apiItems.filter(item => (item.check) )
+        let items = this.apiItems.filter(item => (item.check) );
+        console.log(items);
         if ( items.length > 0 ) {
             for (var i = 0; i < items.length; i++) {
-              this.tItems.push( _.cloneDeep(items[i]) )
+              this.art = items[i]['art'];
+              this.findByArt(1,1,items[i]['barcode'], '');
             }
 
             this.modalByApiShow = false
@@ -616,18 +696,20 @@ export default {
         if ( this.step == 1 ) this.$router.push('/buyout')
         else this.step = this.step - 1
     },
-    findByArt: function() {
-        this.$store.dispatch('request/get_findbyart', {art: this.art}).then((x) => {
+    findByArt: function(count = false, rcount = false, barcode = false, query = false) {
+        this.$store.dispatch('request/get_findbyart', {article: this.art}).then((x) => {
 
-            if (this.tHeaders.length == 0 && x.data.headers.length > 0) {
-                this.tHeaders = x.data.headers
-            }
 
-            if (x.data.items.length > 0) {
-                for (var i = x.data.items.length - 1; i >= 0; i--) {
-                    this.tItems.push(x.data.items[i])
-                }
-            }
+              this.tHeaders = x.data.data.headers;
+          if(count){
+            x.data.data.products['count'] = count;
+            x.data.data.products['rcount'] = rcount;
+            x.data.data.products['barcode'] = barcode;
+            x.data.data.products['query'] = query;
+          }
+
+              this.tItems.push(x.data.data.products);
+          console.log(this.tItems);
 
             if ( x.data.error ) {
                 this.$toast.warning(x.data.msg);
@@ -649,68 +731,84 @@ export default {
         }
 
         if ( this.bulk.type == 1) {
-            this.$store.dispatch('request/bulk_buffer', this.bulk).then((x) => {
-                if (this.tHeaders.length == 0 && x.data.headers.length > 0) {
-                    this.tHeaders = x.data.headers
-                }
+            this.$store.dispatch('request/find_articles', {articles: this.bulk.arts}).then((x) => {
+                    this.tHeaders = x.data.data.headers
 
-                if (x.data.items.length > 0) {
-                    for (var i = x.data.items.length - 1; i >= 0; i--) {
-                        this.tItems.push(x.data.items[i])
+              console.log(x);
+                if (x.data.data.products.length > 0) {
+                    for (var i = x.data.data.products.length - 1; i >= 0; i--) {
+                        this.tItems.push(x.data.data.products[i])
                     }
                 } else {
                     this.$toast.warning('Ничего не добавлено');
                 }
 
-                if ( x.data.msgs.length > 0 ) {
-                    for (var i = x.data.msgs.length - 1; i >= 0; i--) {
-                        this.$toast.warning(x.data.msgs[i]);
-                    }
-                }
+
 
                 this.bulkAdd = false
             })
         }
         if ( this.bulk.type == 2) {
-
-            let formData = new FormData()
+            this.loadingExcel = false;
+            let formData = new FormData();
             this.bulk.files.forEach((item, i) => {
                 formData.append(i, item)
             })
             formData.append('type', this.bulk.type)
-
-            this.$store.dispatch('request/bulk_files', formData).then((x) => {
-                if (this.tHeaders.length == 0 && x.data.headers.length > 0) {
-                    this.tHeaders = x.data.headers
-                }
-
-                if (x.data.items.length > 0) {
-                    for (var i = x.data.items.length - 1; i >= 0; i--) {
-                        this.tItems.push(x.data.items[i])
-                    }
-                } else {
-                    this.$toast.warning('Ничего не добавлено');
-                }
-
-                if ( x.data.msgs.length > 0 ) {
-                    for (var i = x.data.msgs.length - 1; i >= 0; i--) {
-                        this.$toast.warning(x.data.msgs[i]);
+            console.log(formData);
+            this.$store.dispatch('request/parseExcel', formData).then((x) => {
+                this.bulkAdd = false;
+              this.loadingExcel = true;
+                if (x.data.data.length > 0) {
+                    for (let i = x.data.data.length - 1; i >= 0; i--) {
+                        this.art = x.data.data[i]['art'];
+                      this.findByArt(x.data.data[i]['count'], x.data.data[i]['rcount'], x.data.data[i]['barcode'], x.data.data[i]['query']);
                     }
                 }
 
-                this.bulkAdd = false
+
+
             }).catch((error) => {
+              console.log(error);
                 this.$toast.error('Что то пошло не так')
             })
         }
     },
 
+    getByApi(){
+      this.apiItemsLoading = true;
+      this.$store.dispatch('request/get_api', {task1: 1111}).then((x) => {
+        this.apiItemsLoading = false
+        if ( !x.data.error ) {
 
+          this.apiItems = []
+          for(let i = 0; i < x.data.data.products.length; i++){
+            //if(x.data.data.products[i]['count'] > 0){
+              this.apiItems.push(x.data.data.products[i])
+            //}
+
+          }
+          this.apiHeaders = x.data.data.headers
+        } else {
+          this.$toast.error(x.data.msg);
+        }
+      })
+    },
     checkQueries: function() {
       this.loadingResultsInSearch = false;
+      for(let i of this.tItems){
+        if(i['barcode'].length < 2){
+          this.$toast.error('Поле баркод пусто');
+          this.loadingResultsInSearch = true;
+          return;
+        }
+
+      }
       this.$store.dispatch('request/checkallquery', {items: this.tItems}).then((x) => {
         this.loadingResultsInSearch = true;
+
         for (var i = x.data.data.length - 1; i >= 0; i--) {
+                console.log(x.data.data);
                 this.tItems[ x.data.data[i].index ]['position'] = x.data.data[i].position
                 this.tItems[ x.data.data[i].index ]['class'] = x.data.data[i].class
             }
@@ -724,20 +822,24 @@ export default {
 
             }
         })
+      .catch(error => {
+        this.loadingResultsInSearch = true;
+        this.$toast.error('Не найден запрос');
+      })
     },
     splitByDate: function() {
         this.$store.dispatch('request/splitbydate', {items: this.tItems, date: this.selectedDate}).then((x) => {
-            this.orderItems = x.data.items
-            this.orderHeaders = x.data.headers
+            this.orderItems = x.data.data.items
+            this.orderHeaders = x.data.data.headers
             this.step = 4
         })
     },
     orderSave: function( type ) {
       console.log(this.orderItems)
-      this.$store.dispatch('request/order_save', {items: this.orderItems, type: type, 'model' : this.model }).then((x) => {
+      this.$store.dispatch('request/order_save', {items: this.orderItems, task1: 1111 }).then((x) => {
             if ( !x.data.error ) {
 
-                this.$toast.success(x.data.msg);
+                this.$toast.success('Заявка успешно оформлена');
                 this.orderItems = []
                 this.tItems = []
                 this.items = []
@@ -746,6 +848,21 @@ export default {
                 this.$toast.error(x.data.msg);
             }
         })
+    },
+    draftSave: function (type) {
+      console.log(this.orderItems)
+      this.$store.dispatch('request/draft_save', {items: this.orderItems, task1: 1111 }).then((x) => {
+        if ( !x.data.error ) {
+
+          this.$toast.success('Товар Успешно Сохранен');
+          this.orderItems = []
+          this.tItems = []
+          this.items = []
+          this.step = 1
+        } else {
+          this.$toast.error(x.data.msg);
+        }
+      })
     },
     findWb: function() {
         this.apiItemsLoading = true
@@ -768,7 +885,7 @@ export default {
     }
   },
   mounted() {
-    this.findByArt()
+    //this.findByArt()
   }
 }
 </script>

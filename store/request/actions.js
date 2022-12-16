@@ -46,21 +46,57 @@ export default {
         })
     })
   },
+
+
   get_statinfo({ commit }, state) {
     return new Promise((resolve, reject) => {
       this.$axios
-        .post('statnfo/', state)
+        .post('graphInfo/', state)
         .then((x) => {
           resolve(x)
+        })
+    })
+  },
+  find_articles({ commit }, state) {
+    return new Promise((resolve, reject) => {
+      this.$axios
+        .post('findByArticles', state)
+        .then((x) => {
+          resolve(x)
+        })
+    })
+  },
+  get_api({ commit }, state) {
+    return new Promise((resolve, reject) => {
+      this.$axios
+        .post('getByApi', state)
+        .then((x) => {
+          resolve(x)
+        })
+    })
+  },
+
+  getReportBuyout({ commit }, state) {
+    return new Promise((resolve, reject) => {
+      this.$axios
+        .post('reportBuyout', state)
+        .then((x) => {
+          resolve(x)
+        })
+        .catch(x => {
+          reject(x);
         })
     })
   },
   get_findbyart({ commit }, state) {
     return new Promise((resolve, reject) => {
       this.$axios
-        .post('find/byart/', state)
+        .post('findByArticle', state)
         .then((x) => {
           resolve(x)
+        })
+        .catch(x => {
+          reject(x);
         })
     })
   },
@@ -73,10 +109,10 @@ export default {
         })
     })
   },
-  bulk_files({ commit }, state) {
+  parseExcel({ commit }, state) {
     return new Promise((resolve, reject) => {
       this.$axios
-        .post('find/bulk/', state, {
+        .post('parseExcel', state, {
           headers: {
             'Content-Type': 'multipart/form-data'
           }
@@ -86,6 +122,7 @@ export default {
         })
     })
   },
+
   dbupdate({ commit }) {
     return new Promise((resolve, reject) => {
       this.$axios
@@ -107,7 +144,7 @@ export default {
   checkallquery({ commit }, state) {
     return new Promise((resolve, reject) => {
       this.$axios
-        .post('find/checkquery/all/', state)
+        .post('findPosition', state)
         .then((x) => {
           resolve(x)
         })
@@ -116,7 +153,7 @@ export default {
   splitbydate({ commit }, state) {
     return new Promise((resolve, reject) => {
       this.$axios
-        .post('find/splitbydate/', state)
+        .post('sortBuyByDate', state)
         .then((x) => {
           resolve(x)
         })
@@ -126,13 +163,21 @@ export default {
   order_save({ commit }, state) {
     return new Promise((resolve, reject) => {
       this.$axios
-        .post('order/save/', state)
+        .post('save', state)
         .then((x) => {
           resolve(x)
         })
     })
   },
-
+  draft_save({ commit }, state) {
+    return new Promise((resolve, reject) => {
+      this.$axios
+        .post('saveDraft', state)
+        .then((x) => {
+          resolve(x)
+        })
+    })
+  },
   find_wb({ commit }, state) {
     return new Promise((resolve, reject) => {
       this.$axios
@@ -145,7 +190,16 @@ export default {
   buyout_list({ commit }, state) {
     return new Promise((resolve, reject) => {
       this.$axios
-        .post('buyout/', state)
+        .post('buyout', state)
+        .then((x) => {
+          resolve(x)
+        })
+    })
+  },
+  draft_list({ commit }, state) {
+    return new Promise((resolve, reject) => {
+      this.$axios
+        .post('draft', state)
         .then((x) => {
           resolve(x)
         })
@@ -155,6 +209,24 @@ export default {
     return new Promise((resolve, reject) => {
       this.$axios
         .post('buyout/' + state.group, state)
+        .then((x) => {
+          resolve(x)
+        })
+    })
+  },
+  draft_update({ commit }, state) {
+    return new Promise((resolve, reject) => {
+      this.$axios
+        .post('update-draft/', state)
+        .then((x) => {
+          resolve(x)
+        })
+    })
+  },
+  delete({ commit }, state) {
+    return new Promise((resolve, reject) => {
+      this.$axios
+        .post('delete', state)
         .then((x) => {
           resolve(x)
         })
@@ -172,7 +244,7 @@ export default {
   delivery_list({ commit }, state) {
     return new Promise((resolve, reject) => {
       this.$axios
-        .post('delivery/', state)
+        .post('delivery', state)
         .then((x) => {
           resolve(x)
         })
@@ -181,7 +253,7 @@ export default {
   reviews_list({ commit }, state) {
     return new Promise((resolve, reject) => {
       this.$axios
-        .post('reviews/', state)
+        .post('reviews', state)
         .then((x) => {
           resolve(x)
         })
@@ -199,7 +271,7 @@ export default {
   reviews_save({ commit }, state) {
     return new Promise((resolve, reject) => {
       this.$axios
-        .post('reviews/' + state.group, state)
+        .post('updateReview', state)
         .then((x) => {
           resolve(x)
         })

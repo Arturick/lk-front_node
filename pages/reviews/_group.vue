@@ -105,6 +105,8 @@
                         size="25"
                         disabled="true"
                         type="disable"
+                        readonly
+                        :value="item.rating"
                       ></v-rating>
                     </template>
                   </template>
@@ -260,7 +262,7 @@ export default {
     save: function(index) {
 
 
-      this.$store.dispatch('request/reviews_save', {group: 'save', item: this.tItems[index]}).then((x) => {
+      this.$store.dispatch('request/reviews_save', {task1: 999, item: this.tItems[index]}).then((x) => {
           if ( !x.data.error ) {
               this.tItems[index]['need_save'] = false
               this.getByGroup()
@@ -300,13 +302,13 @@ export default {
 
     getByGroup: function() {
         this.tLoading = true
-        this.$store.dispatch('request/reviews_group', {group: this.$route.params.group}).then((x) => {
+        this.$store.dispatch('request/reviews_list', {article: this.$route.params.group, task1: 999}).then((x) => {
           console.log(x);
-          if ( !x.data.error ) {
-                this.tItems  = x.data.items
-                this.tItemsCache  = _.cloneDeep(x.data.items)
-                this.tHeaders = x.data.headers
-                this.art = x.data.art
+          if ( !x.data.data.error ) {
+                this.tItems  = x.data.data.products;
+                this.tItemsCache  = _.cloneDeep(x.data.data.products);
+                this.tHeaders = x.data.data.headers;
+                this.art = this.$route.params.group;
             } else {
                 this.$toast.error(x.data.msg);
             }

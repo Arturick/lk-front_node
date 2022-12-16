@@ -4,7 +4,7 @@
             <div class="md:px-2.5 md:py-7 px-2.5 py-4">
                 <div class="md:flex md:items-center md:justify-between">
                     <div class="relative z-10">
-                        <div class="header-title"><a href="/">RATE THIS PROMOTION</a></div>
+                        <div class="header-title"><a  style="font-size: inherit;" href="/">RATE THIS PROMOTION</a></div>
 
                         <div class="md:pt-7">
                             <input id="burger" type="checkbox" name="burger" v-model="burger"/>
@@ -26,16 +26,16 @@
                                       <NuxtLink to="/reviews" class="menu__link" exact-active-class="menu__link_active">Отзывы</NuxtLink>
                                     </li>
                                     <li class="menu__item">
-                                        <a href="#" class="menu__link ">Накрутки</a>
+                                      <NuxtLink to="/cheat" class="menu__link" exact-active-class="menu__link_active">Накрутки</NuxtLink>
                                     </li>
                                     <li class="menu__item">
-                                        <a href="#" class="menu__link ">Позиции товара</a>
+                                      <NuxtLink to="/positions" class="menu__link" exact-active-class="menu__link_active">Позиции товара</NuxtLink>
                                     </li>
+                                  <li class="menu__item">
+                                    <NuxtLink to="/reports" class="menu__link" exact-active-class="menu__link_active">Отчеты</NuxtLink>
+                                  </li>
                                     <li class="menu__item">
-                                        <a href="#" class="menu__link ">Отчеты</a>
-                                    </li>
-                                    <li class="menu__item">
-                                        <a href="#" class="menu__link">Услуги</a>
+                                      <NuxtLink to="/tariffs" class="menu__link" exact-active-class="menu__link_active">Отчеты</NuxtLink>
                                     </li>
 
                                 </ul>

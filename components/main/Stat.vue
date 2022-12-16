@@ -1,4 +1,4 @@
-,0,<template>
+<template>
 	<div>
       <div class="stat">
           <div class="stat__group stat__group_1 flex flex-col md:flex-row">
@@ -74,7 +74,7 @@
     },
     methods: {
       getStatInfo() {
-        this.$store.dispatch('request/get_statinfo', {type: this.sw}).then((x) => {
+        this.$store.dispatch('request/get_statinfo', {task1: 5122022}).then((x) => {
           console.log(x);
           this.weekData = x.data
           this.$nextTick(() => {

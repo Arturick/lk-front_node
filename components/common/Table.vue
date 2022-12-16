@@ -4,8 +4,8 @@
           <table>
               <thead v-if="headers && headers.length > 0">
                   <tr>
-                      <th v-for="(item, index) in headers">{{item.name}}</th>
-                 0 </tr>
+                      <th v-for="(item, index) in headers" @click=""  >{{item.name}}</th>
+                  </tr>
               </thead>
               <tbody v-if="items && items.length > 0 && headers && headers.length > 0">
                 <tr v-for="(item, index) in items" class="h-14" :class="item.class">

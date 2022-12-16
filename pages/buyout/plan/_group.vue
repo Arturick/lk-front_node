@@ -23,33 +23,103 @@
             </div>
 
             <template v-if="step == 1">
-                <div class="mt-14" v-if="showActions">
-                    <div class="flex gap-4 items-center flex-col md:flex-row">
-                        <div class="w-full md:w-auto">
-                            <div class="input-block">
-                                <input type="text" v-model="art" class="input-block__input input-block__input_w p-2.5" placeholder="Введите артикул" autocomplete="off">
-                                <Button class="rounded-lg py-2.5 px-4 but-1 input-block__but" @click="findByArt" v-if="art">✚</Button>
-                            </div>
-                        </div>
-
-                        <div class="w-full md:w-auto">
-                            <Button class="rounded-lg p-2.5 but-0" @click="modalByApiShow=true">По API</Button>
-                        </div>
-                        <div class="w-full md:w-auto">
-                            <Button class="rounded-lg p-2.5 but-0" @click="bulkAdd=true">Массовое добавление</Button>
-                        </div>
-                        <div class="w-full md:w-auto">
-                            <template v-if="tItems.length > 0">
-                                <Button class="rounded-lg p-2.5 but-1" @click="checkQueries">Далее</Button>
-                            </template>
-                        </div>
-                        <div class="w-full md:w-auto">
-                            <Button class="rounded-lg p-2.5 text-red-500 border border-solid border-red-500" @click="deleteDraft">Удалить черновик</Button>
-                        </div>
+              <div class="mt-14" v-if="isDraft == 'true'">
+                <div class="flex gap-4 items-center flex-col md:flex-row">
+                  <div class="w-full md:w-auto">
+                    <div class="input-block">
+                      <input type="text" v-model="art" class="input-block__input input-block__input_w p-2.5" placeholder="Введите артикул" autocomplete="off">
+                      <Button class="rounded-lg py-2.5 px-4 but-1 input-block__but" @click="findByArt" v-if="art">✚</Button>
                     </div>
-                </div>
+                  </div>
 
-                <div class="mt-12">
+                  <div class="w-full md:w-auto">
+                    <Button class="rounded-lg p-2.5 but-0 w-full" @click="modalByApiShow=true">По API</Button>
+                  </div>
+                  <div class="w-full md:w-auto">
+                    <Button class="rounded-lg p-2.5 but-0 w-full" @click="bulkAdd=true">Массовое добавление</Button>
+                  </div>
+                  <div class="w-full md:w-auto">
+                    <template v-if="tItems.length > 0">
+                      <Button class="rounded-lg p-2.5 but-1 w-full" @click="checkQueries">Далее</Button>
+                    </template>
+                  </div>
+                  <div class="w-full md:w-auto">
+                    <Button class="rounded-lg p-2.5 text-red-500 border border-solid border-red-500" @click="deleteDraft">Удалить черновик</Button>
+                  </div>
+                </div>
+              </div>
+
+
+              <div v-if="this.isDraft == 'true'" class="mt-12">
+                <template v-if="tItems.length == 0">
+                  <div class="result-empty">ЗДЕСЬ ПОКА НИЧЕГО</div>
+                </template>
+                <template v-else>
+
+                  <v-data-table
+                    :headers="tHeaders"
+                    :items="tItems"
+                    class="postable"
+                    :item-class= "rowClasses"
+                  >
+                    <template v-slot:item.image="{ item }">
+                      <img :src="item.image"  alt="" class="img-table">
+                    </template>
+                    <template v-slot:item.status="{ item }">
+                      <span :class="'status-' + item.status.split('|')[1]">{{item.status.split('|')[0]}}</span>
+                    </template>
+                    <template v-slot:item.price="{ item }">
+                      {{item.price}} ₽
+                    </template>
+                    <template v-slot:item.size="{ item }">
+                      <template v-if="item.sizes.length > 0">
+                        <v-select :items="item.sizes" label="" v-model="item.size" dense outlined hide-details="auto" class="rounded-lg bg-white"/></v-select>
+                      </template>
+                      <template v-else>
+                        {{item.size}}
+                      </template>
+                    </template>
+                    <template v-slot:item.gender="{ item }">
+                      <v-select :items="genderOptions" v-model="item.gender" dense outlined hide-details="auto" class="rounded-lg bg-white"></v-select>
+                    </template>
+                    <template v-slot:item.count="{ item }">
+                      <Switcher v-model="item.count" :min="1"/>
+                    </template>
+                    <template v-slot:item.rcount="{ item }">
+                      <Switcher v-model="item.rcount" :min="0" :max="item.count" maxMsg="Кол-во отзывов не должно превышть кол-во выкупов"/>
+                    </template>
+                    <template v-slot:item.query="{ item }">
+                      <div class="input-block" style="width: 150px;">
+                        <input type="text" class="input-block__input input-block__input_w_1 py-2 px-4" v-model="item.query">
+                      </div>
+                    </template>
+                    <template v-slot:item.barcode="{ item }">
+                      <div class="input-block" style="width: 150px;">
+                        <input type="text" class="input-block__input input-block__input_w_1 py-2 px-4" v-model="item.barcode">
+                      </div>
+                    </template>
+                    <template v-slot:item.copy="{ item, index }">
+                      <a href="#" @click.prevent="copy(index)"><i class="icon icon_copy"></i></a>
+                    </template>
+                    <template v-slot:item.del="{ item, index }">
+                      <a href="#" @click.prevent="del(index)"><i class="icon icon_close_g"></i></a>
+                    </template>
+                    <template v-slot:item.link="{ item }">
+                      <a :href="item.link"><i class="icon icon_arrow_r"></i></a>
+                    </template>
+                    <template v-slot:item.position="{ item }">
+                      <template v-if="item.position >= 0">
+                        <template v-if="item.position == 0">
+                          <span class="status-dunger">{{item.position}}</span>
+                        </template>
+                        <template v-else>{{item.position}}</template>
+                      </template>
+                      <template v-else><span></span></template>
+                    </template>
+                  </v-data-table>
+                </template>
+              </div>
+              <div v-else class="mt-12">
                     <template v-if="tItems.length == 0">
                         <div class="result-empty">ЗДЕСЬ ПОКА НИЧЕГО</div>
                     </template>
@@ -60,8 +130,6 @@
                         :items="tItems"
                         class="postable"
                         :item-class= "rowClasses"
-                        :loading="tLoading"
-                        loading-text="Loading... Please wait"
                       >
                         <template v-slot:item.image="{ item }">
                             <img :src="item.image" alt="" class="img-table">
@@ -69,22 +137,15 @@
                         <template v-slot:item.copy="{ item, index }">
                         </template>
                         <template v-slot:item.date_buy="{ item }">
-                          <template v-if="item.status == 'Запланировано|plan'">
-                            <Datepicker
-                              v-model="item.date_buy"
-                              lang="ru"
-                              input-class="datepicker-input"
-                              position="left"
-                            />
-                          </template>
-                          <template v-else>{{item.date_buy}}</template>
+
+                          <template>{{item.date_buy}}</template>
                         </template>
                         <template v-slot:item.status="{ item , index}" style="display: flex">
                             <template v-if="item.status">
                                 <span :class="'status-' + item.status.split('|')[1]">{{item.status.split('|')[0]}}</span>
                             </template>
                           <template v-if="item.status.split('|')[0] == 'Запланировано' ">
-                            <v-btn icon @click="del(index, item.art, item.date_buy)">
+                            <v-btn icon @click="del( item['id'], item ,index)">
                               <v-icon>mdi-close</v-icon>
                             </v-btn>
                           </template>
@@ -126,12 +187,8 @@
                             <template v-else>{{item.query}}</template>
                         </template>
                         <template v-slot:item.barcode="{ item }">
-                            <template v-if="item.status.split('|')[0] == 'Запланировано'">
-                               <div class="input-block" style="width: 150px;">
-                                  <input type="text" class="input-block__input input-block__input_w_1 py-2 px-4" v-model="item.barcode">
-                               </div>
-                            </template>
-                            <template v-else>{{item.barcode}}</template>
+
+                            <template>{{item.barcode}}</template>
                         </template>
                         <template v-slot:item.copy="{ item, index }">
                             <template v-if="item.can_be_edited">
@@ -159,6 +216,7 @@
                     </template>
                 </div>
 
+
                 <div class="mt-12">
                     <div>Общее количество:  <strong>артикулы - {{artCount}} шт, выкупов - {{posCount}} шт, отзывов - {{posRCount}} шт</strong> </div>
                     <div>Сумма выкупа: <strong>{{buyOutSum}}₽</strong></div>
@@ -167,119 +225,162 @@
 
             </template>
             <template v-if="step == 2">
-                <div class="mt-12">
-                    <div class="content-title">Период реализации</div>
-                </div>
+              <div class="mt-12">
+                <div class="content-title">Период реализации</div>
+              </div>
+              <div class="mt-12">
+                <div class="flex gap-4 items-center">
 
-                <div class="mt-12">
-                    <div class="flex gap-4 items-center">
-                          <DateRangePicker
-                            :locale-data="localeData"
-                            v-model="selectedDate"
-                            opens="top"
-                            singleDatePicker="range"
-                            :ranges="false"
-                            control-container-class="form-control reportrange-text rounded-lg datepicker-input"
-                          />
-                        <div>
-                            <Button class="rounded-lg p-2.5 but-1" @click="splitByDate">Далее</Button>
-                        </div>
-                    </div>
+                  <div class="w-96">
+                    <v-dialog
+                      ref="dialog"
+                      v-model="dialogDate"
+                      :return-value.sync="selectedDate"
+                      persistent
+                      width="290px"
+                    >
+                      <template v-slot:activator="{ on, attrs }">
+                        <v-text-field
+                          v-model="dateRangeText"
+                          prepend-icon="mdi-calendar"
+                          readonly
+                          v-bind="attrs"
+                          v-on="on"
+                        ></v-text-field>
+                      </template>
+                      <v-date-picker
+                        v-model="selectedDate"
+                        range
+                        show-adjacent-months
+                        locale="ru-RU"
+                      >
+                        <v-spacer></v-spacer>
+                        <v-btn
+                          text
+                          color="primary"
+                          @click="dialogDate = false"
+                        >
+                          Cancel
+                        </v-btn>
+                        <v-btn
+                          text
+                          color="primary"
+                          @click="$refs.dialog.save(selectedDate)"
+                        >
+                          OK
+                        </v-btn>
+                      </v-date-picker>
+                    </v-dialog>
+                  </div>
+
+
+
+
+                  <div>
+                    <Button class="rounded-lg p-2.5 but-1" @click="splitByDate">Далее</Button>
+                  </div>
                 </div>
+              </div>
             </template>
             <template v-if="step == 3">
-                <div class="mt-12">
-                    <div class="content-title">Согласование заявки</div>
-                </div>
+              <div class="mt-12">
+                <div class="content-title">Согласование заявки</div>
+              </div>
 
-                <div class="mt-12">
-                    <div class="mt-8 md:w-3/5">
-                        <div>Проверьте корректность заявки и отправить ее в работу, либо вы можете сохранить ее в черновики. Если заявка сохраняется в черновики, планируемая дата выкупа сохранена не будет.</div>
+              <div class="mt-12">
+                <div class="mt-8 md:w-3/5">
+                  <div>Проверьте корректность заявки и отправить ее в работу, либо вы можете сохранить ее в черновики. Если заявка сохраняется в черновики, планируемая дата выкупа сохранена не будет.</div>
+                </div>
+              </div>
+
+              <div class="mt-14">
+                <div class="flex gap-4 items-center flex-col md:flex-row">
+                  <div class="w-full md:w-auto">
+                    <Button class="rounded-lg p-2.5 but-0" @click="step = 1">Добавить товары</Button>
+                  </div>
+                  <div class="w-full md:w-auto">
+                    <template v-if="orderItems.length > 0">
+                      <Button class="rounded-lg p-2.5 but-1" @click="orderSave()">Заказать</Button>
+                    </template>
+                  </div>
+                  <div class="w-full md:w-auto">
+                    <Button class="rounded-lg p-2.5 but-0" @click="draftSave()">В черновики</Button>
+                  </div>
+                  <div class="w-full md:w-auto">
+                    <Button class="rounded-lg p-2.5 text-red-500 border border-solid border-red-500" @click="deleteDraft()">Удалить черновик</Button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="mt-12">
+
+                <v-data-table
+                  :headers="orderHeaders"
+                  :items="orderItems"
+                  class="postable"
+                  :item-class= "rowClasses"
+                >
+                  <template v-slot:item.image="{ item }">
+                    <img :src="item.image" alt="" v-model="item.image" class="img-table">
+                  </template>
+                  <template v-slot:item.status="{ item }">
+                    <span :class="'status-' + item.status.split('|')[1]">{{item.status.split('|')[0]}}</span>
+                  </template>
+                  <template v-slot:item.price="{ item }">
+                    {{item.price}} ₽
+                  </template>
+                  <template v-slot:item.size="{ item }">
+                    <template v-if="item.sizes.length > 0">
+                      <v-select :items="item.sizes" label="" v-model="item.size" dense outlined hide-details="auto" class="rounded-lg bg-white"/></v-select>
+                    </template>
+                    <template v-else>
+                      {{item.size}}
+                    </template>
+                  </template>
+                  <template v-slot:item.gender="{ item }">
+                    <v-select :items="genderOptions" v-model="item.gender" dense outlined hide-details="auto" class="rounded-lg bg-white"></v-select>
+                  </template>
+                  <template v-slot:item.count="{ item }">
+                    <Switcher v-model="item.count"/>
+                  </template>
+                  <template v-slot:item.rcount="{ item }">
+                    <Switcher v-model="item.rcount"/>
+                  </template>
+                  <template v-slot:item.barcode="{ item }">
+                    <div class="input-block" style="width: 150px;">
+                      <input type="text" class="input-block__input input-block__input_w_1 py-2 px-4" v-model="item.barcode">
                     </div>
-                </div>
+                  </template>
+                  <template v-slot:item.del="{ item, index }">
+                    <a href="#" @click.prevent="del(index)"><i class="icon icon_close_g"></i></a>
+                  </template>
 
-                <div class="mt-14">
-                    <div class="flex gap-4 items-center flex-col md:flex-row">
-                        <div class="w-full md:w-auto">
-                            <Button class="rounded-lg p-2.5 but-0" @click="step = 1">Добавить товары</Button>
-                        </div>
-                        <div class="w-full md:w-auto">
-                            <template v-if="tItems.length > 0">
-                                <Button class="rounded-lg p-2.5 but-1" @click="orderSave('bid')">Заказать</Button>
-                            </template>
-                        </div>
-                        <div class="w-full md:w-auto">
-                            <Button class="rounded-lg p-2.5 but-0" @click="orderSave('draft')">В черновики</Button>
-                        </div>
-                    </div>
-                </div>
+                  <template v-slot:item.position="{ item }">
+                    <template v-if="item.position >= 0">
+                      <template v-if="item.position == 0">
+                        <span class="status-dunger">{{item.position}}</span>
+                      </template>
+                      <template v-else>{{item.position}}</template>
+                    </template>
+                    <template v-else><span></span></template>
+                  </template>
+                  <template v-slot:item.date="{ item, index }">
+                    <Datepicker
+                      v-model="item.date"
+                      lang="ru"
+                      input-class="datepicker-input"
+                      position="left"
+                    />
+                  </template>
+                </v-data-table>
 
-                <div class="mt-12">
+              </div>
 
-                    <v-data-table
-                        :headers="orderHeaders"
-                        :items="orderItems"
-                        class="postable"
-                        :item-class= "rowClasses"
-                      >
-                        <template v-slot:item.image="{ item }">
-                            <img :src="item.image" alt="" class="img-table">
-                        </template>
-                        <template v-slot:item.status="{ item }">
-                            <template v-if="item.status">
-                                <span :class="'status-' + item.status.split('|')[1]">{{item.status.split('|')[0]}}</span>
-                            </template>
-                        </template>
-                        <template v-slot:item.price="{ item }">
-                            {{item.price}} ₽
-                        </template>
-                        <template v-slot:item.size="{ item }">
-                            <v-select :items="item.size_opt" label="" v-model="item.size" dense outlined hide-details="auto" class="rounded-lg bg-white"/></v-select>
-                        </template>
-                        <template v-slot:item.gender="{ item }">
-                            <v-select :items="item.gender_opt" v-model="item.gender" dense outlined hide-details="auto" class="rounded-lg bg-white"></v-select>
-                        </template>
-                        <template v-slot:item.count="{ item }">
-                            <Switcher v-model="item.count"/>
-                        </template>
-                        <template v-slot:item.rcount="{ item }">
-                            <Switcher v-model="item.rcount"/>
-                        </template>
-                        <template v-slot:item.barcode="{ item }">
-                           <div class="input-block" style="width: 150px;">
-                              <input type="text" class="input-block__input input-block__input_w_1 py-2 px-4" v-model="item.barcode">
-                           </div>
-                        </template>
-                        <template v-slot:item.del="{ item, index }">
-                            <a href="#" @click.prevent="del(index)"><i class="icon icon_close_g"></i></a>
-                        </template>
-
-                        <template v-slot:item.position="{ item }">
-                            <template v-if="item.position >= 0">
-                                <template v-if="item.position == 0">
-                                    <span class="status-dunger">{{item.position}}</span>
-                                </template>
-                                <template v-else>{{item.position}}</template>
-                            </template>
-                            <template v-else><span></span></template>
-                        </template>
-                        <template v-slot:item.date_buy="{ item, index }">
-                            <Datepicker
-                                v-model="item.date_buy"
-                                lang="ru"
-                                input-class="datepicker-input"
-                                position="left"
-                              />
-                        </template>
-                      </v-data-table>
-
-                </div>
-
-                <div class="mt-12">
-                    <div>Общее количество:  <strong>артикулы - {{artCount}} шт, выкупов - {{posCount}} шт, отзывов - {{posRCount}} шт</strong> </div>
-                    <div>Сумма выкупа: <strong>{{buyOutSum}}₽</strong></div>
-                    <div>Услуги: <strong>{{servicesSum}}₽</strong></div>
-                </div>
+              <div class="mt-12">
+                <div>Общее количество:  <strong>{{artCount}} артикула, {{posCount}} шт</strong> </div>
+                <div>Сумма выкупа: <strong>{{buyOutSum}}₽</strong></div>
+                <div>Услуги: <strong>{{servicesSum}}₽</strong></div>
+              </div>
 
             </template>
 
@@ -294,6 +395,7 @@
                         </div>
                         <Button class="rounded-lg p-2.5 but-1" @click="addToTItems">Добавить</Button>
                     </div>
+
                     <div class="grow">
                         <template v-if="apiItems.length == 0">
                             <div class="result-empty">ЗДЕСЬ ПОКА НИЧЕГО</div>
@@ -442,7 +544,7 @@
                     </template>
                     <template v-slot:item.del="{ item, index }">
                         <template v-if="item.can_be_edited">
-                            <a href="#" @click.prevent="del(index)"><i class="icon icon_close_g"></i></a>
+                            <a href="#" @click.prevent="del(item['id'], item, index )"><i class="icon icon_close_g"></i></a>
                         </template>
                     </template>
                     <template v-slot:item.position="{ item }">
@@ -484,17 +586,20 @@ export default {
         bulkAdd: false,
         groupDialog: false,
 
-        localeData: {
-            firstDay: 1, format: 'dd-mm-yyyy',
-            applyLabel: 'Принять',
-            cancelLabel: 'Закрыть',
-            daysOfWeek: ['вс', 'пн', 'вт', 'ср', 'чт', 'пт', 'сб'],
-            monthNames: ['янв.', 'февр.', 'март', 'апр.', 'май', 'июнь', 'июль', 'авг.', 'сент.', 'окт.', 'нояб.', 'дек.'],
-        },
+      dialogDate: false,
+
+      localeData: {
+        firstDay: 1, format: 'dd-mm-yyyy',
+        applyLabel: 'Принять',
+        cancelLabel: 'Закрыть',
+        daysOfWeek: ['вс', 'пн', 'вт', 'ср', 'чт', 'пт', 'сб'],
+        monthNames: ['янв.', 'февр.', 'март', 'апр.', 'май', 'июнь', 'июль', 'авг.', 'сент.', 'окт.', 'нояб.', 'дек.'],
+      },
 
         sort_opt: [
             {'value': 1, 'text': 'По артикулам'},
             {'value': 3, 'text': 'Все (базовая)'},
+            {'value': 2, 'text': 'По датам'},
         ],
         sort: 3,
         sizeOptions: [
@@ -527,15 +632,11 @@ export default {
       model: "m1",
       step: 1,
       modalByApiShow: false,
-      // selectedDate: [
-      //       new Date(),
-      //       new Date(new Date().getTime() + 9 * 24 * 60 * 60 * 1000)
-      //   ],
-
-      selectedDate: {
-            startDate: new Date(),
-            endDate: new Date(new Date().getTime() + 9 * 24 * 60 * 60 * 1000)
-        },
+      isDraft: this.$route.query.draft,
+      selectedDate: [
+        new Date().toISOString().split("T")[0],
+        new Date(new Date().getTime() + 9 * 24 * 60 * 60 * 1000).toISOString().split("T")[0],
+      ],
 
         art:'',
         tItems:[],
@@ -559,6 +660,7 @@ export default {
             'skip': 0,
             'take': 10,
         },
+        dialogDate: false,
         timeoutfindWb: null,
         apiItemsLoading: false,
         tDate: '',
@@ -592,7 +694,11 @@ export default {
     }
   },
   computed: {
-
+    dateRangeText: function() {
+      let text = ''
+      return this.selectedDate
+      // return text
+    },
     artCount : function() {
         let arts = []
         if ( this.tItems.length > 0 ) {
@@ -608,6 +714,21 @@ export default {
     },
     posCount : function() {
         let counts = []
+      let total = 0;
+      switch (this.sort) {
+          case 1:
+            this.tItems.map(i => {total+=i['plan']});
+            return total;
+            break;
+          case 2:
+            this.tItems.map(i => {total+=i['plan']});
+            return total;
+            break;
+          case 3:
+              return this.tItems.length
+            break;
+        }
+
         for (var i = 0; i < this.tItems.length; i++) {
             let count = parseInt(this.tItems[i]['count'], 10)
             if ( count ) {
@@ -617,26 +738,44 @@ export default {
         return _.sum(counts)
     },
     posRCount : function() {
-        let counts = []
-        for (var i = 0; i < this.tItems.length; i++) {
-            let rcount = parseInt(this.tItems[i]['rcount'], 10)
-            if ( rcount ) {
-                counts.push( rcount )
-            }
-        }
-        return _.sum(counts)
+      let total = 0;
+      switch (this.sort) {
+        case 1:
+          this.tItems.map(i => {total+= +i['comment']});
+          return total;
+          break;
+        case 2:
+          this.tItems.map(i => {total+= +i['comment']});
+          return total;
+          break;
+        case 3:
+          this.tItems.map(i => {
+
+            if(i['type'] == 'отзыв') {
+                total+=1;
+              }
+          });
+          return total;
+          break;
+      }
     },
     buyOutSum : function() {
-        let sums = []
-        for (var i = 0; i < this.tItems.length; i++) {
-            let count = parseInt(this.tItems[i]['count'], 10)
-            let rcount = parseInt(this.tItems[i]['rcount'], 10)
-            let price = parseInt(this.tItems[i]['price'], 10)
-            if ( count && price ) {
-                sums.push( (count - rcount) * price )
-            }
-        }
-        return _.sum(sums)
+      let total = 0;
+      switch (this.sort) {
+        case 1:
+          this.tItems.map(i => {total+= +i['plan'] * +i['price']});
+          return total;
+          break;
+        case 2:
+          this.tItems.map(i => {total+=i['plan']});
+          return total;
+          break;
+        case 3:
+          this.tItems.map(i => {total+=+i['price']});
+          return total;
+          break;
+      }
+
     },
     servicesSum : function() {
         let sums = []
@@ -660,7 +799,11 @@ export default {
     deleteDraft() {
 
     },
-
+    dateRangeText: function() {
+      let text = ''
+      return this.selectedDate
+      // return text
+    },
     rowClasses(item) {
         if (item.class) {
           return item.class;
@@ -693,14 +836,12 @@ export default {
     copy: function(index) {
         this.tItems.splice(index, 0, _.cloneDeep(this.tItems[index]) )
     },
-    del(index, date_buy, art) {
+    del(id, item, index ) {
 
 
 
 
-      this.$store.dispatch('request/get_findbyart', {art: art, date: date_buy}).then((x) => {
-        console.log(x)
-
+      this.$store.dispatch('request/delete', {task1: 1111, id: id}).then((x) => {
 
       })
 
@@ -727,6 +868,7 @@ export default {
 
 
     },
+
     back: function() {
         if ( this.step == 1 ) this.$router.push('/buyout')
         else this.step = this.step - 1
@@ -734,27 +876,26 @@ export default {
     handleInput: function({name, value}) {
        this.model = value
     },
-    findByArt: function() {
-        console.log(1);
-        this.$store.dispatch('request/buyout_list', {art: this.art}).then((x) => {
+    findByArt: function(cnt = false, rcnt = false, barcode = false) {
+      this.$store.dispatch('request/get_findbyart', {article: this.art}).then((x) => {
 
-            if (this.tHeaders.length == 0 && x.data.headers.length > 0) {
-                this.tHeaders = x.data.headers
-            }
 
-            if (x.data.items.length > 0) {
-                for (var i = x.data.items.length - 1; i >= 0; i--) {
-                    x.data.items[i]['can_be_edited'] = true
-                    this.tItems.push(x.data.items[i])
-                }
-            }
+        this.tHeaders = x.data.data.headers;
+        if(cnt){
+          x.data.data.products['count'] = cnt;
+          x.data.data.products['rcount'] = rcnt;
+          x.data.data.products['barcode'] = barcode;
+        }
+        this.tItems.push(x.data.data.products);
 
-            if ( x.data.error ) {
-                this.$toast.warning(x.data.msg);
-            }
+        console.log(x);
+        if ( x.data.error ) {
+          this.$toast.warning(x.data.msg);
+        }
 
-        })
-        this.art = ''
+      })
+      this.art = '';
+      this.step = 1;
     },
     bulkSend: function() {
 
@@ -769,7 +910,7 @@ export default {
         }
 
         if ( this.bulk.type == 1) {
-          console.log(1);
+
             this.$store.dispatch('request/bulk_buffer', this.bulk).then((x) => {
                 if (this.tHeaders.length == 0 && x.data.headers.length > 0) {
                     this.tHeaders = x.data.headers
@@ -800,7 +941,7 @@ export default {
                 formData.append(i, item)
             })
             formData.append('type', this.bulk.type)
-          console.log(2);
+
             this.$store.dispatch('request/bulk_files', formData).then((x) => {
                 if (this.tHeaders.length == 0 && x.data.headers.length > 0) {
                     this.tHeaders = x.data.headers
@@ -828,48 +969,69 @@ export default {
         }
     },
 
+    draftSave: function () {
+      console.log(this.orderItems)
+      this.$store.dispatch('request/draft_update', {items: this.orderItems, task1: 1111, group: this.$route.params.group}).then((x) => {
+        if ( !x.data.error ) {
 
+          this.$toast.success('Товар Успешно Сохранен');
+          this.orderItems = []
+          this.tItems = []
+          this.items = []
+          this.step = 1
+        } else {
+          this.$toast.error(x.data.msg);
+        }
+      })
+    },
     checkQueries: function() {
-      console.log(3);
-        this.$store.dispatch('request/checkallquery', {items: this.tItems}).then((x) => {
-            for (var i = x.data.data.length - 1; i >= 0; i--) {
-                this.tItems[ x.data.data[i].index ]['position'] = x.data.data[i].position
-                this.tItems[ x.data.data[i].index ]['class'] = x.data.data[i].class
-            }
+      this.loadingResultsInSearch = false;
+      this.$store.dispatch('request/checkallquery', {items: this.tItems}).then((x) => {
+        this.loadingResultsInSearch = true;
 
-            if ( !x.data.error ) {
-                ++this.step
-            } else {
-                for (var i = x.data.msgs.length - 1; i >= 0; i--) {
-                    this.$toast.error(x.data.msgs[i]);
-                }
+        for (var i = x.data.data.length - 1; i >= 0; i--) {
+          console.log(x.data.data);
+          this.tItems[ x.data.data[i].index ]['position'] = x.data.data[i].position;
+          this.tItems[ x.data.data[i].index ]['class'] = x.data.data[i].class;
+        }
 
-            }
-        })
+        if ( !x.data.error ) {
+          ++this.step
+        } else {
+          for (var i = x.data.msgs.length - 1; i >= 0; i--) {
+            this.$toast.error(x.data.msgs[i]);
+          }
+
+        }
+      })
     },
     splitByDate: function() {
-        this.$store.dispatch('request/splitbydate', {items: this.tItems, date: this.selectedDate}).then((x) => {
-            this.orderItems = x.data.items
-
-            this.orderHeaders = x.data.headers
-            this.step = 3
-        })
+      this.$store.dispatch('request/splitbydate', {items: this.tItems, date: this.selectedDate}).then((x) => {
+        this.orderItems = x.data.data.items
+        this.orderHeaders = x.data.data.headers
+        this.step = 3;
+      })
     },
     orderSave: function( type ) {
-        this.$store.dispatch('request/order_save', {items: this.orderItems, type: type, 'model' : this.model }).then((x) => {
-            if ( !x.data.error ) {
-                this.$toast.success(x.data.msg);
-                this.orderItems = []
-                this.tItems = []
-                this.items = []
-                this.step = 1
-            } else {
-                this.$toast.error(x.data.msg);
-            }
-        })
+      console.log(this.orderItems)
+      this.$store.dispatch('request/draft_update', {items: [], task1: 1111, group: this.$route.params.group}).then((x) => {
+      })
+      this.$store.dispatch('request/order_save', {items: this.orderItems, task1: 1111 }).then((x) => {
+        if ( !x.data.error ) {
+
+          this.$toast.success(x.data.msg);
+          this.orderItems = [];
+          this.tItems = [];
+          this.items = [];
+          this.step = 1;
+        } else {
+          this.$toast.error(x.data.msg);
+        }
+      })
+
     },
     findWb: function() {
-      console.log(4);
+
         this.apiItemsLoading = true
         this.$store.dispatch('request/find_wb', this.findWbParams).then((x) => {
             this.apiItemsLoading = false
@@ -881,38 +1043,69 @@ export default {
             }
         })
     },
+    deleteDraft(){
+      this.$store.dispatch('request/draft_update', {items: [], task1: 1111, group: this.$route.params.group}).then((x) => {
+        if ( !x.data.error ) {
 
+          this.$toast.success('Товар Успешно Удален');
+          this.orderItems = []
+          this.tItems = []
+          this.items = []
+          this.step = 1;
+          this.$router.push('/buyout')
+        } else {
+          this.$toast.error(x.data.msg);
+        }
+      })
+
+    },
     getByGroup: function() {
+      console.log(this.isDraft == 'true');
         this.tLoading = true
-      console.log(5);
-        this.$store.dispatch('request/buyout_group', {group: this.$route.params.group, sort: this.sort}).then((x) => {
-            if ( !x.data.error ) {
-                this.tItems  = x.data.items
-                this.tHeaders = x.data.headers
-                console.log(x)
-                if ( this.sort == 3 ) {
-                    if ( this.bufferTHeaders.length == 0 ) {
-                        this.bufferTHeaders = x.data.headers
-                    }
-                    if ( this.bufferTItems.length == 0 ) {
-                        this.bufferTItems = x.data.items
-                    }
-                }
+        if(this.isDraft == 'true'){
+          this.$store.dispatch('request/draft_list', {task1: 1111, group: this.$route.params.group}).then((x) => {
+            if ( !x.data.data.error ) {
+              //this.orderItems  = x.data.data.products
+              //this.orderHeaders = x.data.data.headers
+              for(let i of x.data.data.products){
+                this.art = +i['art'];
+                this.findByArt(i['count'], i['rcount'], i['barcode']);
 
-                this.tDate = x.data.date
-                this.showActions = x.data.show_actions
+              }
+              this.tDate = x.data.date
+              this.showActions = x.data.data.show_actions
             } else {
-                this.$toast.error(x.data.msg);
+              this.$toast.error(x.data.msg);
             }
             this.tLoading = false
-        })
-    },
-    sortByDate: function () {
-        
-    },
-    sortByPrice: function () {
+          })
 
-    }
+        } else {
+          this.$store.dispatch('request/buyout_list', {task1: 1111, sort: this.sort, group: this.$route.params.group}).then((x) => {
+            if ( !x.data.data.error ) {
+              this.tItems  = x.data.data.products
+              this.tHeaders = x.data.data.headers
+
+              if ( this.sort == 3 ) {
+                this.bufferTHeaders = x.data.data.headers
+                this.bufferTItems = x.data.data.products
+
+              }
+
+              this.tDate = x.data.date
+              this.showActions = x.data.data.show_actions
+            } else {
+              this.$toast.error(x.data.msg);
+            }
+            this.tLoading = false
+          })
+
+        }
+    },
+    sortBy(name){
+
+    },
+
 
   },
   mounted() {

@@ -68,16 +68,16 @@ export default {
 
     list: function( type ) {
         this.tItems = []
-        this.$store.dispatch('request/reviews_list', {}).then((x) => {
+        this.$store.dispatch('request/reviews_list', {task1: 999}).then((x) => {
           console.log(x)
             if ( !x.data.error ) {
-              if (this.tHeaders.length == 0 && x.data.headers.length > 0) {
-                  this.tHeaders = x.data.headers
+              if (this.tHeaders.length == 0 && x.data.data.headers.length > 0) {
+                  this.tHeaders = x.data.data.headers
               }
 
-              if (x.data.items.length > 0) {
-                  for (var i = x.data.items.length - 1; i >= 0; i--) {
-                      this.tItems.push(x.data.items[i])
+              if (x.data.data.products.length > 0) {
+                  for (var i = x.data.data.products.length - 1; i >= 0; i--) {
+                      this.tItems.push(x.data.data.products[i])
                   }
               }
 
@@ -100,7 +100,7 @@ export default {
             '8': 'Удалён|dunger',
         }
 
-        this.$store.dispatch('request/reviews_list', {type: 'other'}).then((x) => {
+        this.$store.dispatch('request/reviews_list', {type: 144}).then((x) => {
             if ( !x.data.error ) {
               if (this.tHeadersOther.length == 0 && x.data.headers.length > 0) {
                   this.tHeadersOther = x.data.headers
@@ -126,7 +126,7 @@ export default {
   },
   mounted() {
     this.list()
-    this.listOther()
+    //this.listOther()
   }
 }
 </script>

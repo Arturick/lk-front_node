@@ -29,7 +29,11 @@
               </div>
           </div>
         <div class="mt-2.5 md:w-3/5">
-          <v-data-table
+          <template v-if="tItems.length == 0" >
+            <div class="result-empty" style="margin-top: 24px">ЗДЕСЬ ПОКА НИЧЕГО</div>
+          </template>
+          <template v-else>
+            <v-data-table
             :headers="tHeaders"
             :items="tItems"
             class="postable"
@@ -39,10 +43,16 @@
               <span :class="'status-' + item.status.split('|')[1]">{{item.status.split('|')[0]}}</span>
             </template>
             <template v-slot:item.actions="{ item }">
-              <a :href="'/buyout/plan/' + item.group" @click.prevent="showGroup( item.group )"><i class="icon icon_arrow_r"></i></a>
+              <div v-if="item.status == 'Черновик|plan'">
+                <a :href="'/buyout/plan/' + item.group + '?draft=true'" @click.prevent="showGroup( item.group, true )"><i class="icon icon_arrow_r"></i></a>
+              </div>
+              <div v-else>
+                <a :href="'/buyout/plan/' + item.group" @click.prevent="showGroup( item.group )"><i class="icon icon_arrow_r"></i></a>
+              </div>
+
             </template>
           </v-data-table>
-
+          </template>
         </div>
       </div>
 
@@ -78,26 +88,26 @@ export default {
           return item.class;
         }
     },
-    showGroup: function( group ) {
-      this.$router.push('/buyout/plan/' + group)
+    showGroup: function( group, isDraft = false ) {
+      this.$router.push('/buyout/plan/' + group + '?draft=' + isDraft)
     },
 
     list: function( type ) {
 
         this.tItems = []
 
-        this.$store.dispatch('request/buyout_list', {model: this.model }).then((x) => {
-          console.log(x)
+        this.$store.dispatch('request/buyout_list', {task1: 1111, sort: 3, group: false}).then((x) => {
+          console.log(x.data.data);
           if ( !x.data.error ) {
-              if (this.tHeaders.length == 0 && x.data.headers.length > 0) {
-                  this.tHeaders = x.data.headers
-              }
 
-              if (x.data.items.length > 0) {
-                  for (var i = x.data.items.length - 1; i >= 0; i--) {
-                      this.tItems.push(x.data.items[i])
-                  }
-              }
+                  this.tHeaders = x.data.data.headers
+
+
+
+          for (let i of x.data.data.products) {
+              this.tItems.push(i);
+          }
+
 
               window.console.log(this.tHeaders)
 
@@ -109,8 +119,27 @@ export default {
                 this.$toast.error(x.data.error)
             }
         })
-    },
 
+        this.$store.dispatch('request/draft_list', {task1: 1111, group: false}).then((x) => {
+        console.log(x.data.data);
+        if ( !x.data.error ) {
+          for (let i of x.data.data.products) {
+            this.tItems.push(i);
+          }
+
+
+          window.console.log(this.tHeaders)
+
+          if ( x.data.error ) {
+            this.$toast.warning(x.data.msg);
+          }
+
+        } else {
+          this.$toast.error(x.data.error)
+        }
+      })
+
+    }
 
   },
   mounted() {

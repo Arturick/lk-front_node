@@ -19,7 +19,7 @@
             </div>
         </div>
           <div class="mt-12">
-              <template v-if="tItemsIm.length == 0">
+              <template v-if="tItemsImFiltered.length == 0">
                   <div class="result-empty">ЗДЕСЬ ПОКА НИЧЕГО</div>
               </template>
               <template v-else>
@@ -68,7 +68,7 @@
                     <span >{{ item.count  }}</span>
                   </template>
                 <template v-slot:item.action="{ item }">
-                    <a :href="'/delivery/' + item.group" @click.prevent="showGroup( item.group )"><i class="icon icon_arrow_r"></i></a>
+                    <a :href="'/delivery/' + item.date" @click.prevent="showGroup( item.date )"><i class="icon icon_arrow_r"></i></a>
                 </template>
                 </v-data-table>
               </template>
@@ -115,22 +115,19 @@ export default {
 
     listIm: function( type ) {
         this.tItemsIm = []
-        this.$store.dispatch('request/delivery_list', {type: 'im'}).then((x) => {
+        this.$store.dispatch('request/delivery_list', {task1: 999}).then((x) => {
             console.log(x);
-            if ( !x.data.error ) {
-              if (this.tHeadersIm.length == 0 && x.data.headers.length > 0) {
-                  this.tHeadersIm = x.data.headers
+            if ( !x.data.data.error ) {
+              if (this.tHeadersIm.length == 0 && x.data.data.headers.length > 0) {
+                  this.tHeadersIm = x.data.data.headers
               }
 
-              if (x.data.items.length > 0) {
-                  for (var i = x.data.items.length - 1; i >= 0; i--) {
-                      this.tItemsIm.push(x.data.items[i])
+              if (x.data.data.products.length > 0) {
+                  for (var i = x.data.data.products.length - 1; i >= 0; i--) {
+                      this.tItemsIm.push(x.data.data.products[i])
                   }
               }
 
-              if ( x.data.pvz_opt.length > 0 && this.pvz_opt.length == 0 ) {
-                this.pvz_opt = x.data.pvz_opt
-              }
 
               if ( x.data.error ) {
                   this.$toast.warning(x.data.msg);
@@ -143,29 +140,21 @@ export default {
     },
     listForMe: function( type ) {
         this.tItemsForMe = []
-        this.$store.dispatch('request/delivery_list', {type: 'forme'}).then((x) => {
+        this.$store.dispatch('request/delivery_list', {task1: 999}).then((x) => {
           console.log(x)
             if ( !x.data.error ) {
-              if (this.tHeadersForMe.length == 0 && x.data.headers.length > 0) {
-                  this.tHeadersForMe = x.data.headers
+              if (this.tHeadersForMe.length == 0 && x.data.data.headers.length > 0) {
+                  this.tHeadersForMe = x.data.data.headers
               }
 
-              if (x.data.items.length > 0) {
-                  for (var i = x.data.items.length - 1; i >= 0; i--) {
-                      this.tItemsForMe.push(x.data.items[i])
+              if (x.data.data.products.length > 0) {
+                  for (var i = x.data.data.products.length - 1; i >= 0; i--) {
+                      this.tItemsForMe.push(x.data.data.products[i])
                   }
               }
 
 
-              window.console.log(this.tItemsForMe)
 
-              if ( x.data.pvz_opt.length > 0 && this.pvz_opt.length == 0 ) {
-                this.pvz_opt = x.data.pvz_opt
-              }
-
-              if ( x.data.error ) {
-                  this.$toast.warning(x.data.msg);
-              }
 
             } else {
                 this.$toast.error(x.data.error)
@@ -175,8 +164,8 @@ export default {
 
   },
   mounted() {
-    this.listIm()
-    this.listForMe()
+    //this.listIm()
+   this.listForMe()
   }
 }
 </script>

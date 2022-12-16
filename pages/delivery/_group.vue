@@ -17,24 +17,36 @@
 
             <div class="mt-12">
                 <div class="content-title">Товары выкупленные {{tDate}}</div>
-                
+
             </div>
 
             <div class="mt-12">
+              <template v-if="tItems.length == 0">
+                <div class="result-empty">ЗДЕСЬ ПОКА НИЧЕГО</div>
+              </template>
+              <template v-else>
                 <v-data-table
-                    :headers="tHeaders"
-                    :items="tItems"
-                    class="postable"
-                  >
-                    <template v-slot:item.image="{ item }">
-                        <img :src="item.image" alt="" class="img-table">
+                  :headers="tHeaders"
+                  :items="tItems"
+                  class="postable"
+                >
+                  <template v-slot:item.image="{ item }">
+                    <img :src="item.image" alt="" class="img-table">
+                  </template>
+                  <template v-slot:item.status="{ item }">
+                    <template v-if="item.status">
+                      <span :class="'status-' + item.status.split('|')[1]">{{item.status.split('|')[0]}}</span>
                     </template>
-                    <template v-slot:item.status="{ item }">
-                        <template v-if="item.status">
-                            <span :class="'status-' + item.status.split('|')[1]">{{item.status.split('|')[0]}}</span>
-                        </template>
+                  </template>
+                  <template v-slot:item.cheque="{ item }">
+                    <template v-if="item.cheque">
+                      <span><a :href="item.cheque">ЧЕК</a></span>
                     </template>
-                  </v-data-table>
+                  </template>
+
+                </v-data-table>
+              </template>
+
             </div>
 
         </div>
@@ -46,7 +58,7 @@
 
 <script>
 import _ from 'lodash';
-    
+
 export default {
   components: { },
   data() {
@@ -72,11 +84,11 @@ export default {
     },
     getByGroup: function() {
         this.tLoading = true
-        this.$store.dispatch('request/delivery_group', {group: this.$route.params.group}).then((x) => {
+        this.$store.dispatch('request/delivery_list', {task1: 999, date_get: this.$route.params.group}).then((x) => {
             if ( !x.data.error ) {
-                this.tItems  = x.data.items
-                this.tHeaders = x.data.headers
-                this.tDate = x.data.date
+                this.tItems  = x.data.data.products;
+                this.tHeaders = x.data.data.headers
+
             } else {
                 this.$toast.error(x.data.msg);
             }

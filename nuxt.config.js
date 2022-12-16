@@ -68,7 +68,7 @@ export default {
    ** See https://axios.nuxtjs.org/options
    */
   axios: {
-    baseURL: process.env.API || "http://localhost:4000",
+    baseURL: process.env.API || "http://localhost:80",
     headers: {
       common: {
         Token: process.env.TOKEN || "c4e250aed1813a0b4bbe5a01532649"
@@ -106,6 +106,6 @@ export default {
     },
   },
   router: {
-    middleware: ['auth']
+    //middleware: ['auth']
   },
 }
