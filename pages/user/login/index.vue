@@ -1,6 +1,8 @@
 <template>
   <main class="main">
-    <div v-if="type==1" class="main_authorize">
+
+    <div v-if="loadAuth==false">
+      <div v-if="type==1" class="main_authorize">
       <div class="ma_title">Авторизоваться</div>
 
       <div  @click="type=2" class="ma_btns">
@@ -8,32 +10,49 @@
       </div>
       <div class="reg_title">Регистрация</div>
       <div class="reg_block">
-        <div class="reg_input">
-          <input  v-if="step!=2" type="text" v-model="phone" style="color:#000;"  placeholder="Введите ваш телефон">
-          <input  v-if="step==2" type="text" v-model="code" style="color:#000;"   placeholder="Введите код в СМС">
+        <div>
+          <template v-if="step == 2">
+            <div class="flex gap-4 mt-5 justify-center">
+              <div v-if="timer > 0">
+                Не приходит смс. Повторная отправка через {{timer}} сек
+              </div>
+              <div v-if="timer <= 0">
+                <button class="teal lighten-2 p-4 text-black rounded text-lg font-bold w-full" @click="sendCode">Отправить</button>
+              </div>
+            </div>
+          </template>
+          <input type="text" v-if="step!=2" class="bg-white p-4 text-black rounded text-lg w-full text-center md:text-left" placeholder="Введите телефон" v-mask="'+7 (###) ###-##-##'" v-model="phone"  inputmode="numeric">
+          <input type="text" v-if="step==2" class="bg-white p-4 text-black rounded text-lg w-full text-center md:text-left" placeholder="Введите код" v-mask="'####'" v-model="code"  inputmode="numeric">
         </div>
         <div v-if="step!=2" class="reg_btn" @click="sendCode">Далее</div>
         <div v-if="step==2" class="reg_btn" @click="checkCode">Далее</div>
       </div>
-      <div class="reg_count">Отправить ещё раз через: 01:59 </div>
     </div>
-    <div v-else class="main_authorize">
+      <div v-else class="main_authorize">
       <div class="ma_title">Авторизоваться</div>
       <div  @click="type=1" class="ma_btns">
         <NuxtLink   to="" class="login_pass_btn" style="font-size: 28px;">Войти по Телефону</NuxtLink>
       </div>
       <div class="reg_title">Регистрация</div>
       <div class="reg_block">
-        <div class="reg_input reg_input_a">
-          <input type="text" style="color:#000;" v-model="login" placeholder="Введите ваш логин">
+        <div class="slf">
+          <input type="text" class="bg-white p-4 text-black rounded text-lg w-full text-center md:text-left" placeholder="Введите Логин" v-model="login">
         </div>
-        <div class="reg_input reg_input_a">
-          <input type="text" style="color:#000;" v-model="password" placeholder="Введите ваш пароль">
+        <div class="slf">
+          <input type="text"  class="bg-white p-4 text-black rounded text-lg w-full text-center md:text-left" placeholder="Введите Пароль" v-model="password">
         </div>
         <button type="button" class="reg_btn" @click="loginUser" style="color: black">Войти</button>
       </div>
     </div>
-    <img class="img_down" src="../../../assets/images/RATE THIS.svg" alt="">
+      <img class="img_down" src="../../../assets/images/RATE THIS.svg" alt="">
+    </div>
+    <div v-else style="margin: 200px auto; width: 150px">
+      <v-progress-circular
+        :size="150"
+        color="#93e4d5"
+        indeterminate
+      ></v-progress-circular>
+    </div>
   </main>
 </template>
 <script>
@@ -46,6 +65,7 @@
         mode: '',
         phone: '',
         step: 1,
+        loadAuth: false,
         login: '',
         password: '',
         type: 1,
@@ -94,7 +114,7 @@
         window.console.log(user)
       },
       sendCode() {
-        this.$store.dispatch('request/sms_send', {phone: this.phone}).then((x) => {
+        this.$store.dispatch('request/sms_send', {phone: this.phone.replace('+', '').replace('(', '').replace(')', '').replace('-', '').replace(' ', '')}).then((x) => {
           if ( !x.data.error ) {
             this.step = 2;
             this.sendCodeDisabled = true
@@ -107,7 +127,8 @@
         })
       },
       checkCode() {
-        this.$store.dispatch('request/sms_check', {action: 'check', phone: this.phone, code: this.code}).then((x) => {
+        this.loadAuth = true;
+        this.$store.dispatch('request/sms_check', {action: 'check', phone: this.phone.replace('+', '').replace('(', '').replace(')', '').replace('-', '').replace(' ', ''), code: this.code}).then((x) => {
           console.log(x);
           if ( !x.data.error ) {
             this.step = 2
@@ -117,9 +138,11 @@
               this.$auth.setUserToken('Bearer ' + x.data.accessToken)
               this.$store.dispatch('request/auth_user').then((resp) => {
                 this.$router.push('')
+                this.loadAuth = false;
               })
             }
           } else {
+            this.loadAuth = false;
             this.$toast.error(x.data.error)
           }
         })
@@ -155,5 +178,11 @@
 <style>
   .login_pass_btn{
     font-size: 28px;
+  }
+  .slf{
+    margin: 0 15px;
+  }
+  .v-application .mt-5 {
+    margin-top: -24px !important;
   }
 </style>

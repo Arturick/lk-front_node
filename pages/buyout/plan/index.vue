@@ -52,7 +52,10 @@
                 </div>
             </template>
             <template v-if="step == 2">
-
+              <div v-if="model=='m2'">
+                <div class="result-empty">ЗДЕСЬ ПОКА НИЧЕГО</div>
+              </div>
+              <div v-else>
                 <div class="mt-12">
                   <div class="content-title">Добавить выкуп Wildberries</div>
 
@@ -108,7 +111,7 @@
                         {{item.price}} ₽
                       </template>
                       <template v-slot:item.size="{ item }">
-                        <template v-if="item.sizes.length > 0">
+                        <template :class="item.warn3" v-if="item.sizes.length > 0">
                           <v-select :items="item.sizes" label="" v-model="item.size" dense outlined hide-details="auto" class="rounded-lg bg-white"/></v-select>
                         </template>
                         <template v-else>
@@ -125,7 +128,7 @@
                         <Switcher v-model="item.rcount" :min="0" :max="item.count" maxMsg="Кол-во отзывов не должно превышть кол-во выкупов"/>
                       </template>
                       <template v-slot:item.query="{ item }">
-                        <div class="input-block" style="width: 150px;" v-if="loadingResultsInSearch">
+                        <div class="input-block" style="width: 150px;" :class="item.warn" v-if="loadingResultsInSearch">
                           <input type="text" class="input-block__input input-block__input_w_1 py-2 px-4" v-model="item.query">
                         </div>
                         <div v-else>
@@ -134,7 +137,7 @@
                         </div>
                       </template>
                       <template v-slot:item.barcode="{ item }">
-                        <div class="input-block" style="width: 150px;">
+                        <div class="input-block" :class="item.warn2" style="width: 150px;">
                           <input type="text" class="input-block__input input-block__input_w_1 py-2 px-4" v-model="item.barcode">
                         </div>
                       </template>
@@ -164,7 +167,7 @@
                   <div>Сумма выкупа: <strong>{{buyOutSum}}₽</strong></div>
                   <div>Услуги: <strong>{{servicesSum}}₽</strong></div>
                 </div>
-
+              </div>
 
 
             </template>
@@ -373,7 +376,9 @@
                     </div>
                 <div class="mt-5">
                     <template v-if="bulk.type == 1">
+
                         <v-textarea
+                          v-if="lotArtsLoad == false"
                           label="Артикул через пробел, запятую или перенос строки"
                           autofocus
                           clearable
@@ -383,7 +388,13 @@
                           rows="5"
                           v-model="bulk.arts"
                         ></v-textarea>
-
+                          <div v-else style="margin: 200px auto; width: 150px">
+                            <v-progress-circular
+                              :size="150"
+                              color="#93e4d5"
+                              indeterminate
+                            ></v-progress-circular>
+                          </div>
                         <div class="mt-5">
                             <Button class="rounded-lg p-2.5 but-1 w-full" @click="bulkSend">Добавить</Button>
                         </div>
@@ -442,6 +453,7 @@ export default {
         dialogDate: false,
         loadingExcel: true,
       userId: '',
+      lotArtsLoad: false,
       localeData: {
             firstDay: 1, format: 'dd-mm-yyyy',
             applyLabel: 'Принять',
@@ -734,9 +746,11 @@ export default {
         }
 
         if ( this.bulk.type == 1) {
+            this.lotArtsLoad = true;
             this.$store.dispatch('request/find_articles', {articles: this.bulk.arts}).then((x) => {
                     this.tHeaders = x.data.data.headers
-
+                    this.bulkAdd = false
+                    this.lotArtsLoad = false;
               console.log(x);
                 if (x.data.data.products.length > 0) {
                     for (var i = x.data.data.products.length - 1; i >= 0; i--) {
@@ -748,7 +762,7 @@ export default {
 
 
 
-                this.bulkAdd = false
+
             })
         }
         if ( this.bulk.type == 2) {
@@ -799,14 +813,23 @@ export default {
     },
     checkQueries: function() {
       this.loadingResultsInSearch = false;
-      for(let i of this.tItems){
-        if(i['barcode'].length < 2){
+      for(let i in this.tItems){
+        if(this.tItems[i]['barcode'].length < 2){
+          this.tItems[i]['warn2'] = 'status-warning';
           this.$toast.error('Поле баркод пусто');
           this.loadingResultsInSearch = true;
           return;
         }
-        if(i['query'].length < 2){
+        if(this.tItems[i]['query'].length < 2){
+          this.tItems[i]['warn'] = 'status-warning';
           this.$toast.error('Поле Запрос пусто пусто');
+          this.loadingResultsInSearch = true;
+          return;
+        }
+        console.log(this.tItems[i]['size']);
+        if(this.tItems[i]['sizes'].length > 0 && this.tItems[i]['size'] == 0){
+          this.tItems[i]['warn3'] = 'status-warning';
+          this.$toast.error('Размер не выбран');
           this.loadingResultsInSearch = true;
           return;
         }
@@ -817,6 +840,12 @@ export default {
 
         for (var i = x.data.data.length - 1; i >= 0; i--) {
                 console.log(x.data.data);
+                if(x.data.data[i].position < 0 || !x.data.data[i].position){
+                  this.tItems[ x.data.data[i].index ]['warn'] = 'status-warning';
+                  this.$toast.error('Запрос не найден');
+                  this.loadingResultsInSearch = true;
+                  return;
+                }
                 this.tItems[ x.data.data[i].index ]['position'] = x.data.data[i].position
                 this.tItems[ x.data.data[i].index ]['class'] = x.data.data[i].class
             }
@@ -957,7 +986,6 @@ export default {
 .progress__item:first-child .progress__wrap:before {
   display: none;
 }
-
 
 .progress__name {
   font-family: 'Montserrat';
