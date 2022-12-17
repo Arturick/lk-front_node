@@ -438,8 +438,8 @@ export default {
         bulkAdd: false,
         dialogDate: false,
         loadingExcel: true,
-
-        localeData: {
+      userId: +window.localStorage.getItem('id'),
+      localeData: {
             firstDay: 1, format: 'dd-mm-yyyy',
             applyLabel: 'Принять',
             cancelLabel: 'Закрыть',
@@ -777,7 +777,7 @@ export default {
 
     getByApi(){
       this.apiItemsLoading = true;
-      this.$store.dispatch('request/get_api', {task1: 1111}).then((x) => {
+      this.$store.dispatch('request/get_api', {id: this.userId,}).then((x) => {
         this.apiItemsLoading = false
         if ( !x.data.error ) {
 
@@ -836,7 +836,7 @@ export default {
     },
     orderSave: function( type ) {
       console.log(this.orderItems)
-      this.$store.dispatch('request/order_save', {items: this.orderItems, task1: 1111 }).then((x) => {
+      this.$store.dispatch('request/order_save', {items: this.orderItems, id: this.userId, }).then((x) => {
             if ( !x.data.error ) {
 
                 this.$toast.success('Заявка успешно оформлена');
@@ -851,7 +851,7 @@ export default {
     },
     draftSave: function (type) {
       console.log(this.orderItems)
-      this.$store.dispatch('request/draft_save', {items: this.orderItems, task1: 1111 }).then((x) => {
+      this.$store.dispatch('request/draft_save', {items: this.orderItems, id: this.userId, }).then((x) => {
         if ( !x.data.error ) {
 
           this.$toast.success('Товар Успешно Сохранен');
@@ -886,6 +886,7 @@ export default {
   },
   mounted() {
     //this.findByArt()
+    this.userId = +window.localStorage.getItem('id');
   }
 }
 </script>

@@ -87,6 +87,7 @@ export default {
       }
     },
     redirect: {
+
       login: '/user/login',
       logout: '/',
       callback: '/user/login',

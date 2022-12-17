@@ -71,6 +71,7 @@ export default {
       model: "m1",
       tItems:[],
       tHeaders:[],
+      userId: '',
     }
   },
   computed: {
@@ -96,7 +97,7 @@ export default {
 
         this.tItems = []
 
-        this.$store.dispatch('request/buyout_list', {task1: 1111, sort: 3, group: false}).then((x) => {
+        this.$store.dispatch('request/buyout_list', {id: this.userId, sort: 3, group: false}).then((x) => {
           console.log(x.data.data);
           if ( !x.data.error ) {
 
@@ -120,7 +121,7 @@ export default {
             }
         })
 
-        this.$store.dispatch('request/draft_list', {task1: 1111, group: false}).then((x) => {
+        this.$store.dispatch('request/draft_list', {id: this.userId, group: false}).then((x) => {
         console.log(x.data.data);
         if ( !x.data.error ) {
           for (let i of x.data.data.products) {
@@ -143,6 +144,7 @@ export default {
 
   },
   mounted() {
+    this.userId = +window.localStorage.getItem('id');
     this.list()
   }
 }

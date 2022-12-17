@@ -46,7 +46,15 @@ export default {
         })
     })
   },
-
+  getUser({ commit }, state) {
+    return new Promise((resolve, reject) => {
+      this.$axios
+        .post('getProfile', state)
+        .then((x) => {
+          resolve(x)
+        })
+    })
+  },
 
   get_statinfo({ commit }, state) {
     return new Promise((resolve, reject) => {
@@ -187,6 +195,15 @@ export default {
         })
     })
   },
+  updateUser({ commit }, state) {
+    return new Promise((resolve, reject) => {
+      this.$axios
+        .post('updateProfile', state)
+        .then((x) => {
+          resolve(x)
+        })
+    })
+  },
   buyout_list({ commit }, state) {
     return new Promise((resolve, reject) => {
       this.$axios
@@ -308,10 +325,8 @@ export default {
   auth_user_save({ commit }, state) {
     return new Promise((resolve, reject) => {
       this.$axios
-        .post('auth/user/save/', state)
+        .post('updateProfile', state)
         .then((x) => {
-          console.log("req")
-          console.log(x)
           commit('SET_USER', x.data.data.user)
           resolve(x)
         })

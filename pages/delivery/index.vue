@@ -90,7 +90,8 @@ export default {
       tHeadersIm:[],
       tHeadersForMe:[],
       tItemsForMe:[],
-      pvz_opt: []
+      pvz_opt: [],
+      userId: +window.localStorage.getItem('id'),
     }
   },
   computed: {
@@ -115,7 +116,7 @@ export default {
 
     listIm: function( type ) {
         this.tItemsIm = []
-        this.$store.dispatch('request/delivery_list', {task1: 999}).then((x) => {
+        this.$store.dispatch('request/delivery_list', {id: this.userId}).then((x) => {
             console.log(x);
             if ( !x.data.data.error ) {
               if (this.tHeadersIm.length == 0 && x.data.data.headers.length > 0) {
@@ -140,7 +141,7 @@ export default {
     },
     listForMe: function( type ) {
         this.tItemsForMe = []
-        this.$store.dispatch('request/delivery_list', {task1: 999}).then((x) => {
+        this.$store.dispatch('request/delivery_list', {id: this.userId}).then((x) => {
           console.log(x)
             if ( !x.data.error ) {
               if (this.tHeadersForMe.length == 0 && x.data.data.headers.length > 0) {
@@ -166,6 +167,7 @@ export default {
   mounted() {
     //this.listIm()
    this.listForMe()
+    this.userId = +window.localStorage.getItem('id');
   }
 }
 </script>

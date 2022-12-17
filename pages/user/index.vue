@@ -13,19 +13,19 @@
             <div class="mt-4">
                 <div class="md:grid md:grid-cols-3 gap-10 flex flex-wrap">
                     <div class="input-block">
-                        <input type="text" class="input-block__input py-5 px-6" placeholder="Имя" v-model="user_new.u_name" autocomplete="off">
+                        <input type="text" class="input-block__input py-5 px-6" placeholder="Имя" v-model="profile.u_name" autocomplete="off">
                     </div>
                     <div class="input-block">
-                        <input type="text"  class="input-block__input py-5 px-6" placeholder="Фамилия" v-model="user_new.u_surname" autocomplete="off">
+                        <input type="text"  class="input-block__input py-5 px-6" placeholder="Фамилия" v-model="profile.u_surname" autocomplete="off">
                     </div>
                     <div class="input-block">
-                        <input type="text"  class="input-block__input py-5 px-6" placeholder="ИНН" readonly v-model="user_new.inn" autocomplete="off">
+                        <input type="text"  class="input-block__input py-5 px-6" placeholder="ИНН" readonly v-model="profile.inn" autocomplete="off">
                     </div>
                     <div class="input-block">
-                        <input type="text" class="input-block__input py-5 px-6" placeholder="Банк" v-model="user_new.bank" autocomplete="off">
+                        <input type="text" class="input-block__input py-5 px-6" placeholder="Банк" v-model="profile.bank" autocomplete="off">
                     </div>
                     <div class="input-block">
-                        <input type="text" class="input-block__input py-5 px-6" placeholder="Расчетный счет" v-model="user_new.ks" autocomplete="off">
+                        <input type="text" class="input-block__input py-5 px-6" placeholder="Расчетный счет" v-model="profile.ks" autocomplete="off">
                     </div>
                 </div>
             </div>
@@ -39,7 +39,7 @@
                 <div class="md:grid md:grid-cols-2 gap-10 flex flex-wrap">
                     <v-textarea
                       outlined
-                      v-model="user_new.wb_api_key"
+                      v-model="profile.wb_api_key"
                     ></v-textarea>
                 </div>
             </div>
@@ -57,7 +57,7 @@
                 </div>
             </div>
             <div class="mt-4 flex justify-end">
-                <button class="w-full md:w-52 p-2.5 teal lighten-2 text-2xl text-gray-800 rounded" @click="save">Сохранить</button>
+                <button class="w-full md:w-52 p-2.5 teal lighten-2 text-2xl text-gray-800 rounded" @click="updateUser">Сохранить</button>
             </div>
 
             <div class="mt-12">
@@ -220,6 +220,7 @@ import { mapState } from "vuex";
 export default {
   data() {
     return {
+        id: '',
         userAdd: false,
         unew: {
             role: '',
@@ -228,7 +229,15 @@ export default {
             surname: ''
         },
         tHeaders: [],
-        tItems: []
+        tItems: [],
+        profile: {
+          u_name: '',
+          bank: '',
+          inn: '',
+          ks: '',
+          u_surname: '',
+          wb_api_key: ''
+        }
     }
   },
   computed: {
@@ -236,9 +245,7 @@ export default {
       'user',
       'opt_roles'
     ]),
-    user_new() {
-      return Object.assign({}, this.user);
-    },
+
   },
   watch: {
 
@@ -275,9 +282,18 @@ export default {
     save() {
       console.log(1)
       console.log(this.user_new)
-        this.$store.dispatch('request/auth_user_save', this.user_new).then((x) => {
+        this.$store.dispatch('request/auth_user_save', {profile: this.user_new}).then((x) => {
 
         })
+    },
+    user_new() {
+      this.$store.dispatch('request/getUser', {id: this.id}).then((x) => {
+          this.profile =  x.data;
+      })
+    },
+    updateUser() {
+      this.$store.dispatch('request/updateUser', {profile: this.profile}).then((x) => {
+      })
     },
     user_parent_get(){
         this.$store.dispatch('request/auth_user_parent_get', {}).then((x) => {
@@ -309,6 +325,8 @@ export default {
     }
   },
   mounted() {
+    this.id = +window.localStorage.getItem('id');
+    this.user_new();
     this.user_parent_get()
   }
 }

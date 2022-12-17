@@ -49,6 +49,7 @@ export default {
       tHeaders:[],
       tHeadersOther:[],
       tItemsOther:[],
+      userId: +window.localStorage.getItem('id'),
     }
   },
   computed: {
@@ -68,7 +69,7 @@ export default {
 
     list: function( type ) {
         this.tItems = []
-        this.$store.dispatch('request/reviews_list', {task1: 999}).then((x) => {
+        this.$store.dispatch('request/reviews_list', {id: this.userId}).then((x) => {
           console.log(x)
             if ( !x.data.error ) {
               if (this.tHeaders.length == 0 && x.data.data.headers.length > 0) {
@@ -126,6 +127,7 @@ export default {
   },
   mounted() {
     this.list()
+    this.userId = +window.localStorage.getItem('id');
     //this.listOther()
   }
 }

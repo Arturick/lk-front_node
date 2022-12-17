@@ -1,28 +1,12 @@
 <template>
   <main class="main">
-    <div class="main_authorize">
-      <div class="ma_title">Авторизоваться</div>
-      <div class="ma_btns">
-        <NuxtLink  to="login" class="login_pass_btn" style="font-size: 28px;">Войти по телефону</NuxtLink>
-      </div>
-      <div class="reg_title">Регистрация</div>
-      <div class="reg_block">
-        <div class="reg_input reg_input_a">
-          <input type="text" v-model="ln" placeholder="Введите ваш логин">
-        </div>
-        <div class="reg_input reg_input_a">
-          <input type="text" v-model="password" placeholder="Введите ваш пароль">
-        </div>
-        <button type="button" class="reg_btn" @click="login">Далее</button>
-      </div>
-      <NuxtLink class="rePass" to=''>Забыли пароль</NuxtLink>
-    </div>
-    <img class="img_down" src="../../assets/images/RATE THIS.svg" alt="">
+
+    <img class="img_down" src="../../../assets/images/RATE THIS.svg" alt="">
   </main>
 </template>
 <script>
   import { mapState } from "vuex";
-  import Button from "../../components/Button";
+  import Button from "../../../components/Button";
   export default {
     components: {Button},
     layout: 'login',
@@ -78,7 +62,7 @@
       onTelegramAuth (user) {
         window.console.log(user)
       },
-      login: () => {
+      login() {
         console.log('x');
         this.$store.dispatch('request/login_user', {login: this.ln, password: this.password}).then((x) => {
           console.log(x);

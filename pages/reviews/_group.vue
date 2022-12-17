@@ -213,6 +213,7 @@ export default {
       tItemsCache:[],
       tHeaders:[],
       art:null,
+      userId: +window.localStorage.getItem('id'),
       crumbs: [
           {"name": 'Отзывы', "link" : "/reviews", "type" : "link"},
           {"name": 'Артикул', "link" : "", "type" : "text"},
@@ -262,7 +263,7 @@ export default {
     save: function(index) {
 
 
-      this.$store.dispatch('request/reviews_save', {task1: 999, item: this.tItems[index]}).then((x) => {
+      this.$store.dispatch('request/reviews_save', {id: this.userId, item: this.tItems[index]}).then((x) => {
           if ( !x.data.error ) {
               this.tItems[index]['need_save'] = false
               this.getByGroup()
@@ -319,6 +320,7 @@ export default {
   },
   mounted() {
     this.getByGroup()
+    this.userId = +window.localStorage.getItem('id');
   }
 }
 </script>

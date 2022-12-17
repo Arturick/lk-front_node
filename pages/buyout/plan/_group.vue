@@ -660,7 +660,8 @@ export default {
             'skip': 0,
             'take': 10,
         },
-        dialogDate: false,
+      userId: '',
+      dialogDate: false,
         timeoutfindWb: null,
         apiItemsLoading: false,
         tDate: '',
@@ -841,7 +842,7 @@ export default {
 
 
 
-      this.$store.dispatch('request/delete', {task1: 1111, id: id}).then((x) => {
+      this.$store.dispatch('request/delete', {id: this.userId, id: this.userId}).then((x) => {
 
       })
 
@@ -971,7 +972,7 @@ export default {
 
     draftSave: function () {
       console.log(this.orderItems)
-      this.$store.dispatch('request/draft_update', {items: this.orderItems, task1: 1111, group: this.$route.params.group}).then((x) => {
+      this.$store.dispatch('request/draft_update', {items: this.orderItems, id: this.userId, group: this.$route.params.group}).then((x) => {
         if ( !x.data.error ) {
 
           this.$toast.success('Товар Успешно Сохранен');
@@ -1014,9 +1015,9 @@ export default {
     },
     orderSave: function( type ) {
       console.log(this.orderItems)
-      this.$store.dispatch('request/draft_update', {items: [], task1: 1111, group: this.$route.params.group}).then((x) => {
+      this.$store.dispatch('request/draft_update', {items: [], id: this.userId, group: this.$route.params.group}).then((x) => {
       })
-      this.$store.dispatch('request/order_save', {items: this.orderItems, task1: 1111 }).then((x) => {
+      this.$store.dispatch('request/order_save', {items: this.orderItems, id: this.userId, }).then((x) => {
         if ( !x.data.error ) {
 
           this.$toast.success(x.data.msg);
@@ -1044,7 +1045,7 @@ export default {
         })
     },
     deleteDraft(){
-      this.$store.dispatch('request/draft_update', {items: [], task1: 1111, group: this.$route.params.group}).then((x) => {
+      this.$store.dispatch('request/draft_update', {items: [], id: this.userId, group: this.$route.params.group}).then((x) => {
         if ( !x.data.error ) {
 
           this.$toast.success('Товар Успешно Удален');
@@ -1063,7 +1064,7 @@ export default {
       console.log(this.isDraft == 'true');
         this.tLoading = true
         if(this.isDraft == 'true'){
-          this.$store.dispatch('request/draft_list', {task1: 1111, group: this.$route.params.group}).then((x) => {
+          this.$store.dispatch('request/draft_list', {id: this.userId, group: this.$route.params.group}).then((x) => {
             if ( !x.data.data.error ) {
               //this.orderItems  = x.data.data.products
               //this.orderHeaders = x.data.data.headers
@@ -1081,7 +1082,7 @@ export default {
           })
 
         } else {
-          this.$store.dispatch('request/buyout_list', {task1: 1111, sort: this.sort, group: this.$route.params.group}).then((x) => {
+          this.$store.dispatch('request/buyout_list', {id: this.userId, sort: this.sort, group: this.$route.params.group}).then((x) => {
             if ( !x.data.data.error ) {
               this.tItems  = x.data.data.products
               this.tHeaders = x.data.data.headers
@@ -1109,7 +1110,8 @@ export default {
 
   },
   mounted() {
-    this.getByGroup()
+    this.userId = +window.localStorage.getItem('id');
+    this.getByGroup();
   }
 }
 </script>
