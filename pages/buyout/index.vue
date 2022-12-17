@@ -24,9 +24,9 @@
       <div class="bg-white rounded-3xl mt-2.5 mx-2.5 p-2.5 md:p-7">
           <div class="md:flex md:items-center md:justify-between">
               <div class="content-title">Выкупы WILDBERRIES</div>
-              <div class="md:mt-0 mt-2.5">
-                <Select :items="modelOptions" label="Модель работы: " v-model="model"/>
-              </div>
+            <div class="md:mt-0 mt-2.5">
+              <Select :items="modelOptions" label="Модель работы: " v-model="model"/>
+            </div>
           </div>
         <div class="mt-2.5 md:w-3/5">
           <template v-if="tItems.length == 0" >
@@ -72,6 +72,7 @@ export default {
       tItems:[],
       tHeaders:[],
       userId: '',
+
     }
   },
   computed: {

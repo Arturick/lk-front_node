@@ -338,19 +338,22 @@
                         </div>
                         <Button class="rounded-lg p-2.5 but-1" @click="addToTItems">Добавить</Button>
                     </div>
-                    <div class="grow" :loading="apiItemsLoading">
-                        <template>
-                            <CommonTable :headers="apiHeaders" :items="apiItems" :loading="apiItemsLoading" class="h-96">
-                                <template v-slot:item.image="{ item }">
-                                    <img :src="item.image" alt="" class="img-table">
-                                </template>
-                                <template v-slot:item.check="{ item }">
-                                    <Checkbox v-model="item.check"/>
-                                </template>
-
-                            </CommonTable>
+                  <div class="grow">
+                    <template v-if="apiItems.length == 0">
+                      <div class="result-empty">ЗДЕСЬ ПОКА НИЧЕГО</div>
+                    </template>
+                    <template v-else>
+                      <CommonTable :headers="apiHeaders" :items="apiItems" :loading="apiItemsLoading" class="h-96">
+                        <template v-slot:item.image="{ item }">
+                          <img :src="item.image" alt="" class="img-table">
                         </template>
-                    </div>
+                        <template v-slot:item.check="{ item }">
+                          <Checkbox v-model="item.check"/>
+                        </template>
+
+                      </CommonTable>
+                    </template>
+                  </div>
                 </div>
             </div>
         </Modal>
@@ -438,7 +441,7 @@ export default {
         bulkAdd: false,
         dialogDate: false,
         loadingExcel: true,
-      userId: +window.localStorage.getItem('id'),
+      userId: '',
       localeData: {
             firstDay: 1, format: 'dd-mm-yyyy',
             applyLabel: 'Принять',
@@ -799,6 +802,11 @@ export default {
       for(let i of this.tItems){
         if(i['barcode'].length < 2){
           this.$toast.error('Поле баркод пусто');
+          this.loadingResultsInSearch = true;
+          return;
+        }
+        if(i['query'].length < 2){
+          this.$toast.error('Поле Запрос пусто пусто');
           this.loadingResultsInSearch = true;
           return;
         }

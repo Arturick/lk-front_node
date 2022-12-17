@@ -9,8 +9,8 @@
       <div class="reg_title">Регистрация</div>
       <div class="reg_block">
         <div class="reg_input">
-          <input  v-if="step!=2" type="text" v-model="phone"  placeholder="Введите ваш телефон">
-          <input  v-if="step==2" type="text" v-model="code"   placeholder="Введите код в СМС">
+          <input  v-if="step!=2" type="text" v-model="phone" style="color:#000;"  placeholder="Введите ваш телефон">
+          <input  v-if="step==2" type="text" v-model="code" style="color:#000;"   placeholder="Введите код в СМС">
         </div>
         <div v-if="step!=2" class="reg_btn" @click="sendCode">Далее</div>
         <div v-if="step==2" class="reg_btn" @click="checkCode">Далее</div>
@@ -25,10 +25,10 @@
       <div class="reg_title">Регистрация</div>
       <div class="reg_block">
         <div class="reg_input reg_input_a">
-          <input type="text" v-model="login" placeholder="Введите ваш логин">
+          <input type="text" style="color:#000;" v-model="login" placeholder="Введите ваш логин">
         </div>
         <div class="reg_input reg_input_a">
-          <input type="text"  v-model="password" placeholder="Введите ваш пароль">
+          <input type="text" style="color:#000;" v-model="password" placeholder="Введите ваш пароль">
         </div>
         <button type="button" class="reg_btn" @click="loginUser" style="color: black">Войти</button>
       </div>
