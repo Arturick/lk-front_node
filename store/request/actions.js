@@ -280,7 +280,7 @@ export default {
   sms_send({ commit }, state) {
     return new Promise((resolve, reject) => {
       this.$axios
-        .post('sms/send/', state)
+        .post('sendCode', state)
         .then((x) => {
           resolve(x)
         })
@@ -289,7 +289,7 @@ export default {
   sms_check({ commit }, state) {
     return new Promise((resolve, reject) => {
       this.$axios
-        .post('sms/check/', state)
+        .post('register', state)
         .then((x) => {
           resolve(x)
         })
@@ -340,6 +340,16 @@ export default {
     return new Promise((resolve, reject) => {
       this.$axios
         .post('auth/parent/del/', state)
+        .then((x) => {
+          resolve(x)
+        })
+    })
+  },
+
+  login_user({ commit }, state) {
+    return new Promise((resolve, reject) => {
+      this.$axios
+        .post('login', state)
         .then((x) => {
           resolve(x)
         })

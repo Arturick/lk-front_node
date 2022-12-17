@@ -136,7 +136,7 @@
     },
     methods: {
       getReport(){
-        this.$store.dispatch('request/getReportBuyout', {task1: 5122022}).then((x) => {
+        this.$store.dispatch('request/getReportBuyout', {task1: 5122022, }).then((x) => {
           cosnole.log(x);
           this.resultsInSearch = x.data;
           this.loadingResultsInSearch = false

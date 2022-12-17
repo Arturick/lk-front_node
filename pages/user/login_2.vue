@@ -1,18 +1,30 @@
 <template>
   <main class="main">
     <div class="main_authorize">
-      <div style="margin: auto;font-size: 35px;text-align: center;width: 954px;font-weight: bold">
-                Приносим свои извинения, в личном кабинете ведутся технические работы, платформа заработает в 20:00 по МСК!
+      <div class="ma_title">Авторизоваться</div>
+      <div class="ma_btns">
+        <NuxtLink  to="login" class="login_pass_btn" style="font-size: 28px;">Войти по телефону</NuxtLink>
       </div>
-      <div style="margin: 15px auto; text-align: center;">всем, кто загрустил сделаем подарки)</div>
-
+      <div class="reg_title">Регистрация</div>
+      <div class="reg_block">
+        <div class="reg_input reg_input_a">
+          <input type="text" v-model="ln" placeholder="Введите ваш логин">
+        </div>
+        <div class="reg_input reg_input_a">
+          <input type="text" v-model="password" placeholder="Введите ваш пароль">
+        </div>
+        <button type="button" class="reg_btn" @click="login">Далее</button>
       </div>
+      <NuxtLink class="rePass" to=''>Забыли пароль</NuxtLink>
+    </div>
     <img class="img_down" src="../../assets/images/RATE THIS.svg" alt="">
   </main>
 </template>
 <script>
   import { mapState } from "vuex";
+  import Button from "../../components/Button";
   export default {
+    components: {Button},
     layout: 'login',
     data() {
       return {
@@ -21,6 +33,8 @@
         phone: '',
         step: 1,
         code: '',
+        ln: '',
+        password: '',
         sendCodeDisabled: false,
         timeInterval: false,
         timer: 0
@@ -64,40 +78,22 @@
       onTelegramAuth (user) {
         window.console.log(user)
       },
-      sendCode() {
-        this.$store.dispatch('request/sms_send', {action: 'send', phone: this.phone}).then((x) => {
+      login: () => {
+        console.log('x');
+        this.$store.dispatch('request/login_user', {login: this.ln, password: this.password}).then((x) => {
+          console.log(x);
           if ( !x.data.error ) {
             this.step = 2
-            this.sendCodeDisabled = true
-            let timeIsOut = Date.now() + 60
-            this.$store.dispatch('request/set_timeisout', timeIsOut)
-            this.phone = '';
-            window.localStorage.setItem("timeIsOut", timeIsOut)
-          } else {
-            this.$toast.error(x.data.error)
-          }
-        })
-      },
-      checkCode(code) {
-        this.$store.dispatch('request/sms_check', {action: 'check', phone: this.phone, code: code}).then((x) => {
-          if ( !x.data.error ) {
-            this.step = 2
-            if (x.data.accessToken) {
-              this.$auth.setUserToken('Bearer ' + x.data.accessToken)
-              this.$store.dispatch('request/auth_user').then((resp) => {
-                this.$router.push('/user')
-              })
+            if (x.data.data.access_token) {
+              this.$auth.setUserToken('Bearer ' + x.data.data.access_token)
             }
           } else {
-            this.$toast.error(x.data.error)
+            //this.$toast.error(x.data.error)
           }
         })
       },
     },
     mounted() {
-      let timeIsOut = window.localStorage.getItem("timeIsOut")
-      if (!timeIsOut) timeIsOut = 0
-      this.$store.dispatch('request/set_timeisout', timeIsOut)
     }
   }
 </script>
