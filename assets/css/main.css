@@ -770,7 +770,7 @@ body,
   border-top: 0;
   color: white;
   /* background-color: rgba(0, 0, 0, 0.802); */
-  height: 89%;
+  height: 100%;
   overflow: hidden;
   position: relative;
   z-index: 2;
@@ -845,6 +845,14 @@ body,
   align-items: center;
   display: flex;
   margin-top: 2rem;
+}
+
+
+.reg_block2{
+  width: 80%;
+  justify-content: center;
+  align-items: center;
+  margin: 15px auto;
 }
 
 .reg_input{
