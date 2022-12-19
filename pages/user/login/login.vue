@@ -8,7 +8,7 @@
       <div  @click="type=2" class="ma_btns">
         <NuxtLink   to="" class="login_pass_btn" style="font-size: 28px;">Войти по паролю</NuxtLink>
       </div>
-        <div  @click="isReg=!isReg" class="ma_btns">
+        <div  class="ma_btns">
           <NuxtLink  v-if="isReg == false"  to="./register" class="login_pass_btn" style="font-size: 28px;">Регистрация</NuxtLink>
         </div>
         <div class="reg_block">

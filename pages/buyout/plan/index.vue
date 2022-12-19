@@ -105,39 +105,39 @@
                         <img :src="item.image"  alt="" class="img-table">
                       </template>
                       <template v-slot:item.status="{ item }">
-                        <span :class="'status-' + item.status.split('|')[1]">{{item.status.split('|')[0]}}</span>
+                        <span  :class="'status-' + item.status.split('|')[1]">{{item.status.split('|')[0]}}</span>
                       </template>
                       <template v-slot:item.price="{ item }">
                         {{item.price}} ₽
                       </template>
                       <template v-slot:item.size="{ item }">
-                        <template :class="item.warn3" v-if="item.sizes.length > 0">
-                          <v-select :items="item.sizes" label="" v-model="item.size" dense outlined hide-details="auto" class="rounded-lg bg-white"/></v-select>
+                        <template  v-if="item.sizes.length > 0">
+                          <v-select style="width: 104px" :items="item.sizes" label="" v-model="item.size" dense outlined hide-details="auto" class="rounded-lg bg-white"/></v-select>
                         </template>
                         <template v-else>
                           {{item.size}}
                         </template>
                       </template>
                       <template v-slot:item.gender="{ item }">
-                        <v-select :items="genderOptions" v-model="item.gender" dense outlined hide-details="auto" class="rounded-lg bg-white"></v-select>
+                        <v-select style="width: 104px"   :items="genderOptions" v-model="item.gender" dense outlined hide-details="auto" class="rounded-lg bg-white"></v-select>
                       </template>
                       <template v-slot:item.count="{ item }">
-                        <Switcher v-model="item.count" :min="1"/>
+                        <Switcher v-model="item.count"  :min="1"/>
                       </template>
                       <template v-slot:item.rcount="{ item }">
                         <Switcher v-model="item.rcount" :min="0" :max="item.count" maxMsg="Кол-во отзывов не должно превышть кол-во выкупов"/>
                       </template>
                       <template v-slot:item.query="{ item }">
-                        <div class="input-block" style="width: 150px;" :class="item.warn" v-if="loadingResultsInSearch">
-                          <input type="text" class="input-block__input input-block__input_w_1 py-2 px-4" v-model="item.query">
+                        <div class="input-block" style="width: 150px;"  v-if="loadingResultsInSearch">
+                          <input ty pe="text" class="input-block__input input-block__input_w_1 py-2 px-4"   v-model="item.query">
                         </div>
                         <div v-else>
-                          <input type="text" disabled class="input-block__input input-block__input_w_1 py-2 px-4" v-model="item.query">
+                          <input type="text" disabled class="input-block__input input-block__input_w_1 py-2 px-4"  v-model="item.query">
 
                         </div>
                       </template>
                       <template v-slot:item.barcode="{ item }">
-                        <div class="input-block" :class="item.warn2" style="width: 150px;">
+                        <div class="input-block"  style="width: 150px;">
                           <input type="text" class="input-block__input input-block__input_w_1 py-2 px-4" v-model="item.barcode">
                         </div>
                       </template>
@@ -337,7 +337,7 @@
                     <div class="content-title">Выберите товары</div>
                     <div class="flex gap-4">
                         <div class="input-block">
-                            <input type="text" class="input-block__input input-block__input_w p-2.5" placeholder="Поиск по баркоду, артикулу поставщика, бренду" autocomplete="off" v-model="findWbParams.search">
+                            <input type="text" class="input-block__input input-block__input_w p-2.5" placeholder="Поиск по баркоду, артикулу поставщика, бренду" autocomplete="off" v-model="queryParams">
                         </div>
                         <Button class="rounded-lg p-2.5 but-1" @click="addToTItems">Добавить</Button>
                     </div>
@@ -346,7 +346,7 @@
                       <div class="result-empty">ЗДЕСЬ ПОКА НИЧЕГО</div>
                     </template>
                     <template v-else>
-                      <CommonTable :headers="apiHeaders" :items="apiItems" :loading="apiItemsLoading" class="h-96">
+                      <CommonTable :headers="apiHeaders" :items="sortPost" :loading="apiItemsLoading" class="h-96">
                         <template v-slot:item.image="{ item }">
                           <img :src="item.image" alt="" class="img-table">
                         </template>
@@ -452,6 +452,7 @@ export default {
         bulkAdd: false,
         dialogDate: false,
         loadingExcel: true,
+      queryParams: '',
       userId: '',
       lotArtsLoad: false,
       localeData: {
@@ -543,7 +544,12 @@ export default {
     }
   },
   computed: {
-
+    sortPost: function(){
+      return this.apiItems.filter(i => {
+        console.log(i);
+        return i.name.toLowerCase().includes(this.queryParams.toLowerCase());
+      })
+    },
 
     dateRangeText: function() {
         let text = ''
@@ -815,26 +821,32 @@ export default {
       this.loadingResultsInSearch = false;
       for(let i in this.tItems){
         if(this.tItems[i]['barcode'].length < 2){
-          this.tItems[i]['warn2'] = 'status-warning';
+          this.tItems[i]['warn'] = 'new_req_err';
           this.$toast.error('Поле баркод пусто');
           this.loadingResultsInSearch = true;
-          return;
+          this.tItems[i].class = 'new_req_err';
         }
         if(this.tItems[i]['query'].length < 2){
-          this.tItems[i]['warn'] = 'status-warning';
+          this.tItems[i]['warn'] = 'new_req_err';
           this.$toast.error('Поле Запрос пусто пусто');
           this.loadingResultsInSearch = true;
-          return;
+          this.tItems[i].class = 'new_req_err';
         }
-        console.log(this.tItems[i]['size']);
+        console.log(this.tItems[i]);
         if(this.tItems[i]['sizes'].length > 0 && this.tItems[i]['size'] == 0){
-          this.tItems[i]['warn3'] = 'status-warning';
+          this.tItems[i]['warn'] = 'new_req_err';
           this.$toast.error('Размер не выбран');
           this.loadingResultsInSearch = true;
-          return;
+          this.tItems[i].class = 'new_req_err';
+        }
+        if(+this.tItems[i]['rcount'] > +this.tItems[i]['count']){
+          this.$toast.error('Комментариев не должно быть больше чем выкупов');
+          this.loadingResultsInSearch = true;
+          this.tItems[i].class = 'new_req_err';
         }
 
       }
+      if(this.loadingResultsInSearch){return;}
       this.$store.dispatch('request/checkallquery', {items: this.tItems}).then((x) => {
         this.loadingResultsInSearch = true;
 
@@ -1001,4 +1013,7 @@ export default {
   display: inline-block;
   padding-right: 8px;
 }
+  .close{
+    width: 32px;
+  }
 </style>
