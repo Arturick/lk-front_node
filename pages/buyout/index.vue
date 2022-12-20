@@ -29,10 +29,11 @@
             </div>
           </div>
         <div class="mt-2.5 md:w-3/5">
-          <template v-if="tItems.length == 0" >
+          <div v-if="model == 'm1'">
+            <template v-if="tItems.length == 0" >
             <div class="result-empty" style="margin-top: 24px">ЗДЕСЬ ПОКА НИЧЕГО</div>
           </template>
-          <template v-else>
+            <template v-else>
             <v-data-table
             :headers="tHeaders"
             :items="tItems"
@@ -53,6 +54,10 @@
             </template>
           </v-data-table>
           </template>
+          </div>
+          <div v-else>
+            <div class="result-empty" style="margin-top: 24px">ЗДЕСЬ ПОКА НИЧЕГО</div>
+          </div>
         </div>
       </div>
 

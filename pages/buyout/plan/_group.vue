@@ -6,11 +6,11 @@
                 <div>
                     <Breadcrumbs :items="crumbs" :back="back"/>
                 </div>
-                <div>
+                <div style="">
                     <template v-if="!showActions">
                         <div  class="h-full flex gap-8 items-center">
                             <div class="w-52">
-                                <v-select :items="sort_opt" label="" v-model="sort" dense outlined hide-details="auto" class="rounded-lg bg-white"/></v-select>
+                                <v-select style="width: 182px;" :items="sort_opt" label="" v-model="sort" dense outlined hide-details="auto" class="rounded-lg bg-white"/></v-select>
                             </div>
                         </div>
                     </template>
@@ -48,8 +48,6 @@
                   </div>
                 </div>
               </div>
-
-
               <div v-if="this.isDraft == 'true'" class="mt-12">
                 <template v-if="tItems.length == 0">
                   <div class="result-empty">ЗДЕСЬ ПОКА НИЧЕГО</div>
@@ -143,17 +141,11 @@
                             <template v-if="item.status">
                                 <span :class="'status-' + item.status.split('|')[1]">{{item.status.split('|')[0]}}</span>
                             </template>
-                          <template v-if="item.status.split('|')[0] == 'Запланировано' ">
-                            <v-btn icon @click="del( item['id'], item ,index)">
-                              <v-icon>mdi-close</v-icon>
-                            </v-btn>
-                          </template>
-
                         </template>
                         <template v-slot:item.price="{ item }">
                             {{item.price}} ₽
                         </template>
-                        <template v-slot:item.size="{ item }">
+                        <template @focus="rmClass(item)"  v-slot:item.size="{ item }">
                             <template v-if="item.can_be_edited">
                                 <v-select :items="item.sizes" style="width: 104px" label="" v-model="item.size" dense outlined hide-details="auto" class="rounded-lg bg-white"/></v-select>
                             </template>
@@ -165,19 +157,19 @@
                             </template>
                             <template v-else>{{item.gender}}</template>
                         </template>
-                        <template v-slot:item.count="{ item }">
+                        <template   v-slot:item.count="{ item }">
                             <template v-if="item.can_be_edited">
                                 <Switcher v-model="item.count"/>
                             </template>
                             <template v-else>{{item.count}}</template>
                         </template>
-                        <template v-slot:item.rcount="{ item }">
+                        <template @click="rmClass(item)"  v-slot:item.rcount="{ item }">
                             <template v-if="item.can_be_edited">
                                 <Switcher v-model="item.rcount"/>
                             </template>
                             <template v-else>{{item.rcount}}</template>
                         </template>
-                        <template v-slot:item.query="{ item }">
+                        <template @click="rmClass(item)"  v-slot:item.query="{ item }">
                             <template v-if="item.can_be_edited">
                                <div class="input-block" style="width: 150px;">
                                   <input type="text" class="input-block__input input-block__input_w_1 py-2 px-4" v-model="item.query">
@@ -185,7 +177,7 @@
                             </template>
                             <template v-else>{{item.query}}</template>
                         </template>
-                        <template v-slot:item.barcode="{ item }">
+                        <template @click="rmClass(item)" v-slot:item.barcode="{ item }">
 
                             <template>{{item.barcode}}</template>
                         </template>
@@ -195,8 +187,10 @@
                             </template>
                         </template>
                         <template v-slot:item.del="{ item, index }">
-                            <template v-if="item.can_be_edited">
-                                <a href="#" @click.prevent="del(index)"><i class="icon icon_close_g"></i></a>
+                            <template v-if="item.status == 'Запланировано|plan'">
+                              <v-btn icon @click="del( item['id'], item ,index)">
+                                <v-icon>mdi-close</v-icon>
+                              </v-btn>
                             </template>
                         </template>
                         <template v-slot:item.position="{ item }">
@@ -703,121 +697,132 @@ export default {
       // return text
     },
     artCount : function() {
-        let arts = []
-        if(this.draft){
-          if ( this.orderItems.length > 0 ) {
-            for (var i = 0; i < this.orderItems.length; i++) {
-              let art = this.orderItems[i]['art']
-              if ( art ) {
-                arts.push( art )
-              }
+      let arts = []
+      switch(this.step){
+        case 1:
+          for (var i = 0; i < this.tItems.length; i++) {
+            console.log(1221131);
+            let art = this.tItems[i]['article']
+            if ( arts.indexOf(art) < 0) {
+              arts.push( art );
             }
           }
-        } else {
-          if ( this.tItems.length > 0 ) {
-            for (var i = 0; i < this.tItems.length; i++) {
-              let art = this.tItems[i]['art']
-              if ( art ) {
-                arts.push( art )
-              }
+          break;
+        case 4:
+          for (var i = 0; i < this.orderItems.length; i++) {
+            let art = this.orderItems[i]['article']
+            if ( arts.indexOf(art) < 0) {
+              arts.push( art );
             }
           }
-        }
+          break;
+      }
 
-        arts = _.uniq(arts)
-        return arts.length
+
+      return arts.length
     },
     posCount : function() {
-        let counts = []
-      let total = 0;
+      let counts = []
       if(this.draft){
-        for (var i = 0; i < this.orderItems.length; i++) {
-          let count = parseInt(this.orderItems[i]['count'], 10)
-          if ( count ) {
-            counts.push( count )
-          }
+        switch (this.step) {
+          case 1:
+            for (var i = 0; i < this.tItems.length; i++) {
+              let count = parseInt(this.tItems[i]['count'], 10)
+              if ( count ) {
+                counts.push( count )
+              }
+            }
+            break;
+          case 4:
+            for (var i = 0; i < this.orderItems.length; i++) {
+              let count = parseInt(this.orderItems[i]['count'], 10)
+              if ( count ) {
+                counts.push( count )
+              }
+            }
+            break;
         }
       } else {
-        switch (this.sort) {
-          case 1:
-            this.tItems.map(i => {total+=i['plan']});
-            return total;
-            break;
-          case 2:
-            this.tItems.map(i => {total+=i['plan']});
-            return total;
-            break;
-          case 3:
-            return this.tItems.length
-            break;
-        }
-
-        for (var i = 0; i < this.tItems.length; i++) {
-          let count = parseInt(this.tItems[i]['count'], 10)
-          if ( count ) {
-            counts.push( count )
-          }
+        for(let i in this.tItems){
+          counts.push(1);
         }
       }
 
-        return _.sum(counts)
+
+      return _.sum(counts)
     },
     posRCount : function() {
-      let total = 0;
+      let counts = []
       if(this.draft){
-        this.orderItems.map(i => {total+= +i['comment']});
-        return total;
-      } else {
-        switch (this.sort) {
+        switch (this.step) {
           case 1:
-            this.tItems.map(i => {total+= +i['comment']});
-            return total;
-            break;
-          case 2:
-            this.tItems.map(i => {total+= +i['comment']});
-            return total;
-            break;
-          case 3:
-            this.tItems.map(i => {
-
-              if(i['type'] == 'отзыв') {
-                total+=1;
+            for (var i = 0; i < this.tItems.length; i++) {
+              let count = parseInt(this.tItems[i]['rcount'], 10)
+              if ( count ) {
+                counts.push( count )
               }
-            });
-            return total;
+            }
+            break;
+          case 4:
+            for (var i = 0; i < this.orderItems.length; i++) {
+              let count = parseInt(this.orderItems[i]['rcount'], 10)
+              if ( count ) {
+                counts.push( count )
+              }
+            }
             break;
         }
+      } else {
+        for(let i of this.tItems){
+          if(i.type == 'отзыв'){
+            counts.push(1);
+          }
+        }
       }
-
+      return _.sum(counts)
     },
     buyOutSum : function() {
-      let total = 0;
-      switch (this.sort) {
-        case 1:
-          this.tItems.map(i => {total+= +i['plan'] * +i['price']});
-          return total;
-          break;
-        case 2:
-          this.tItems.map(i => {total+=i['plan']});
-          return total;
-          break;
-        case 3:
-          this.tItems.map(i => {total+=+i['price']});
-          return total;
-          break;
+      let sums = []
+      if(this.draft){
+        switch (this.step) {
+          case 1:
+            for (var i = 0; i < this.tItems.length; i++) {
+              let count = parseInt(this.tItems[i]['count'], 10)
+              let price = parseInt(this.tItems[i]['price'], 10)
+              if ( count && price ) {
+                sums.push( count * price )
+              }
+            }
+            break;
+          case 4:
+            for (var i = 0; i < this.orderItems.length; i++) {
+              let count = parseInt(this.orderItems[i]['count'], 10)
+              let price = parseInt(this.orderItems[i]['price'], 10)
+              if ( count && price ) {
+                sums.push( count * price )
+              }
+            }
+            break;
+        }
+      } else {
+        for(let i of this.tItems){
+          sums.push(+i.price);
+        }
       }
 
+
+      return _.sum(sums)
     },
     servicesSum : function() {
-        let sums = []
-        for (var i = 0; i < this.tItems.length; i++) {
-            let rcount = parseInt(this.tItems[i]['rcount'], 10)
-            let price = parseInt(this.tItems[i]['price'], 10)
-            if ( rcount && price ) {
-                sums.push( rcount * price )
-            }
+      let sums = []
+      for (var i = 0; i < this.tItems.length; i++) {
+        let rcount = parseInt(this.tItems[i]['rcount'], 10)
+        let price = parseInt(this.tItems[i]['price'], 10)
+        if ( rcount && price ) {
+          sums.push( rcount * price )
         }
-        return _.sum(sums)
+      }
+      return _.sum(sums)
     },
   },
   methods: {
@@ -1143,7 +1148,7 @@ export default {
         } else {
           this.$store.dispatch('request/buyout_list', {id: this.userId, sort: this.sort, group: this.$route.params.group}).then((x) => {
             if ( !x.data.data.error ) {
-              this.tItems  = x.data.data.products
+              this.tItems  = x.data.data.products;
               this.tHeaders = x.data.data.headers
 
               if ( this.sort == 3 ) {
@@ -1165,7 +1170,10 @@ export default {
     sortBy(name){
 
     },
-
+    rmClass(item){
+      item.class = 'new_req_err';
+      console.log(2);
+    },
 
   },
   mounted() {
@@ -1251,9 +1259,11 @@ export default {
 }
 
 .w-52{
-  width: 125px;
+  width: 182px;
   position: relative;
   left: -20px;
 }
-
+.theme--light.v-input {
+  width: 77px;
+}
 </style>

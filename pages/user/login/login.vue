@@ -9,7 +9,7 @@
         <NuxtLink   to="" class="login_pass_btn" style="font-size: 28px;">Войти по паролю</NuxtLink>
       </div>
         <div  class="ma_btns">
-          <NuxtLink  v-if="isReg == false"  to="./register" class="login_pass_btn" style="font-size: 28px;">Регистрация</NuxtLink>
+          <NuxtLink  v-if="isReg == false"  to="./register" class="auth_link" style="font-size: 28px;">Регистрация</NuxtLink>
         </div>
         <div class="reg_block">
         <div>
@@ -23,7 +23,7 @@
               </div>
             </div>
           </template>
-          <input type="text" v-if="step!=2" class="bg-white p-4 text-black rounded text-lg w-full text-center md:text-left" placeholder="Введите телефон" v-mask="'+7 (###) ###-##-##'" v-model="phone"   style="width: 400px;" inputmode="numeric">
+          <input type="text" v-if="step!=2" class="bg-white p-4 text-black rounded text-lg w-full text-center md:text-left" placeholder="Введите телефон" v-mask="'+# (###) ###-##-################'" v-model="phone"   style="width: 400px;" inputmode="numeric">
           <input type="text" v-if="step==2" class="bg-white p-4 text-black rounded text-lg w-full text-center md:text-left" placeholder="Введите код" v-mask="'####'" v-model="code"  inputmode="numeric" style="width: 400px;">
         </div>
         <div v-if="step!=2" class="reg_btn" @click="sendCode">Далее</div>
@@ -37,8 +37,8 @@
       <div  @click="type=1" class="ma_btns">
         <NuxtLink   to="" class="login_pass_btn" style="font-size: 28px;">Войти по Телефону</NuxtLink>
       </div>
-        <div  @click="type=1, isReg=true" class="ma_btns">
-          <NuxtLink   to="" class="login_pass_btn" style="font-size: 28px;">Регистрация</NuxtLink>
+        <div  class="ma_btns">
+          <NuxtLink  v-if="isReg == false"  to="./register" class="auth_link" style="font-size: 28px;">Регистрация</NuxtLink>
         </div>
       <div class="reg_block">
         <div class="slf">
@@ -221,4 +221,15 @@
   .slfInpt{
     width: 300px;
   }
+
+
+  .auth_link{
+    color: white;
+    transition: 0.3s;
+  }
+
+  .auth_link:hover{
+      border-bottom: 1px solid #92E6D6;
+  }
+
 </style>

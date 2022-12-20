@@ -110,9 +110,9 @@
                       <template v-slot:item.price="{ item }">
                         {{item.price}} ₽
                       </template>
-                      <template v-slot:item.size="{ item }">
+                      <template v-slot:item.size="{ item , index}">
                         <template  v-if="item.sizes.length > 0">
-                          <v-select style="width: 104px" :items="item.sizes" label="" v-model="item.size" dense outlined hide-details="auto" class="rounded-lg bg-white"/></v-select>
+                          <v-select @click="rmClass(index)" style="width: 104px; z-index: 2; position: relative" :items="item.sizes" label="" v-model="item.size" dense outlined hide-details="auto" class="rounded-lg bg-white"/></v-select>
                         </template>
                         <template v-else>
                           {{item.size}}
@@ -122,23 +122,23 @@
                         <v-select style="width: 104px"   :items="genderOptions" v-model="item.gender" dense outlined hide-details="auto" class="rounded-lg bg-white"></v-select>
                       </template>
                       <template v-slot:item.count="{ item }">
-                        <Switcher v-model="item.count"  :min="1"/>
+                        <Switcher v-model="item.count" @input="numberWrite(item)" :min="1"/>
                       </template>
                       <template v-slot:item.rcount="{ item }">
-                        <Switcher v-model="item.rcount" :min="0" :max="item.count" maxMsg="Кол-во отзывов не должно превышть кол-во выкупов"/>
+                        <Switcher v-model="item.rcount" @input="numberWrite(item)" :min="0" :max="item.count" maxMsg="Кол-во отзывов не должно превышть кол-во выкупов"/>
                       </template>
-                      <template v-slot:item.query="{ item }">
+                      <template v-slot:item.query="{ item, index }">
                         <div class="input-block" style="width: 150px;"  v-if="loadingResultsInSearch">
-                          <input ty pe="text" class="input-block__input input-block__input_w_1 py-2 px-4"   v-model="item.query">
+                          <input type="text" style="z-index: 2; position:relative;" @click="rmClass(index)" class="input-block__input input-block__input_w_1 py-2 px-4"   v-model="item.query">
                         </div>
                         <div v-else>
-                          <input type="text" disabled class="input-block__input input-block__input_w_1 py-2 px-4"  v-model="item.query">
+                          <input type="text" style="z-index: 2; position:relative;" @click="rmClass(index)" disabled class="input-block__input input-block__input_w_1 py-2 px-4"  v-model="item.query">
 
                         </div>
                       </template>
-                      <template v-slot:item.barcode="{ item }">
+                      <template v-slot:item.barcode="{ item, index }">
                         <div class="input-block"  style="width: 150px;">
-                          <input type="text" class="input-block__input input-block__input_w_1 py-2 px-4" v-model="item.barcode">
+                          <input type="text" style="z-index: 2; position:relative;" @click="rmClass(index)" class="input-block__input input-block__input_w_1 py-2 px-4" v-model="item.barcode">
                         </div>
                       </template>
                       <template v-slot:item.copy="{ item, index }">
@@ -284,7 +284,7 @@
                             </template>
                         </template>
                         <template v-slot:item.gender="{ item }">
-                            <v-select :items="genderOptions" v-model="item.gender" dense outlined hide-details="auto" class="rounded-lg bg-white"></v-select>
+                            <v-select style="width: 88px" :items="genderOptions" v-model="item.gender" dense outlined hide-details="auto" class="rounded-lg bg-white"></v-select>
                         </template>
                         <template v-slot:item.count="{ item }">
                             <Switcher v-model="item.count"/>
@@ -731,7 +731,6 @@ export default {
           return item.class;
         }
     },
-
     bulkFile: function( e ) {
         let files = e.target.files;
         console.log(e.target.files);
@@ -739,7 +738,6 @@ export default {
         this.bulk.files = files
         this.bulkSend()
     },
-
     addToTItems: function() {
         let items = this.apiItems.filter(item => (item.check) );
         console.log(items);
@@ -754,7 +752,6 @@ export default {
         }
 
     },
-
     copy: function(index) {
       this.tItems.splice(index, 0, _.cloneDeep(this.tItems[index]) )
     },
@@ -865,7 +862,6 @@ export default {
             })
         }
     },
-
     getByApi(){
       this.apiItemsLoading = true;
       this.$store.dispatch('request/get_api', {id: this.userId,}).then((x) => {
@@ -1002,7 +998,20 @@ export default {
                 this.$toast.error(x.data.msg);
             }
         })
-    }
+    },
+    numberWrite(item){
+      if(item.rcount > item.count){
+        item.rcount = item.count;
+        this.$toast.error('Комментариев не должно быть больше выкупов');
+      }
+      console.log(item);
+    },
+    rmClass(index){
+      this.loadingResultsInSearch = false;
+      this.tItems[index].class = 'new_req_err2';
+      this.loadingResultsInSearch = true;
+      console.log(index);
+    },
   },
   mounted() {
     //this.findByArt()
@@ -1092,5 +1101,9 @@ export default {
     font-size: 20px;
     margin: 20px 0;
     width: 100%;
+  }
+
+  .v-input__append-inner{
+    width: 100px;
   }
 </style>

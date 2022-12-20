@@ -4,12 +4,9 @@
     <div v-if="loadAuth==false">
       <div v-if="type==1" class="main_authorize">
 
-        <div v-if="isReg == false" class="ma_title">Авторизоваться</div>
-        <div  @click="type=2" class="ma_btns">
-          <NuxtLink   to="" class="login_pass_btn" style="font-size: 28px;">Войти по паролю</NuxtLink>
-        </div>
+        <div v-if="isReg == false" class="ma_title">Зарегестрироваться</div>
         <div  class="ma_btns">
-          <NuxtLink  v-if="isReg == false"  to="./register" class="login_pass_btn" style="font-size: 28px;">Регистрация</NuxtLink>
+          <NuxtLink  v-if="isReg == false"  to="./login" class="auth_link" style="font-size: 28px;">Авторизация</NuxtLink>
         </div>
         <div class="reg_block">
           <div>
@@ -23,7 +20,7 @@
                 </div>
               </div>
             </template>
-            <input type="text" v-if="step!=2" class="bg-white p-4 text-black rounded text-lg w-full text-center md:text-left" placeholder="Введите телефон" v-mask="'+7 (###) ###-##-##'" v-model="phone"   style="width: 400px;" inputmode="numeric">
+            <input type="text" v-if="step!=2" class="bg-white p-4 text-black rounded text-lg w-full text-center md:text-left" placeholder="Введите телефон" v-mask="'+# (###) ###-##-################'" v-model="phone"   style="width: 400px;" inputmode="numeric">
             <input type="text" v-if="step==2" class="bg-white p-4 text-black rounded text-lg w-full text-center md:text-left" placeholder="Введите код" v-mask="'####'" v-model="code"  inputmode="numeric" style="width: 400px;">
           </div>
           <div v-if="step!=2" class="reg_btn" @click="sendCode">Далее</div>
@@ -37,8 +34,8 @@
         <div  @click="type=1" class="ma_btns">
           <NuxtLink   to="" class="login_pass_btn" style="font-size: 28px;">Войти по Телефону</NuxtLink>
         </div>
-        <div  @click="type=1, isReg=true" class="ma_btns">
-          <NuxtLink   to="" class="login_pass_btn" style="font-size: 28px;">Регистрация</NuxtLink>
+        <div  class="ma_btns">
+          <NuxtLink  v-if="isReg == false"  to="./register" class="auth_link" style="font-size: 28px;">Регистрация</NuxtLink>
         </div>
         <div class="reg_block">
           <div class="slf">
@@ -125,7 +122,7 @@
           this.$toast.error('Не заполнен телефон');
           return
         }
-        this.$store.dispatch('request/sms_send', {phone: this.phone.replace('+', '').replace('(', '').replace(')', '').replace('-', '').replace(' ', ''), reg: this.isReg}).then((x) => {
+        this.$store.dispatch('request/sms_send', {phone: this.phone.replace('+', '').replace('(', '').replace(')', '').replace('-', '').replace(' ', ''), reg: true}).then((x) => {
           if ( !x.data.error ) {
             this.step = 2;
             this.sendCodeDisabled = true;
@@ -221,4 +218,15 @@
   .slfInpt{
     width: 300px;
   }
+
+
+  .auth_link{
+    color: white;
+    transition: 0.3s;
+  }
+
+  .auth_link:hover{
+    border-bottom: 1px solid #92E6D6;
+  }
+
 </style>

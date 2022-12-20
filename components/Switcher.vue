@@ -4,7 +4,7 @@
         <span  class="switcher__value">
           <input type="number" v-model="value">
         </span>
-        <a href="" class="switcher__but" @click.prevent="action('plus')">+</a>
+        <a href=""  class="switcher__but" @click.prevent="action('plus')">+</a>
     </div>
 </template>
 
@@ -53,12 +53,13 @@ export default {
             if ( this.maxMsg ) {
               this.$toast.warning( this.maxMsg )
             }
-            
+
           }
         }
 
       }
-    }
+    },
+
   }
 }
 </script>
@@ -92,7 +93,7 @@ input[type=number] {
   display: flex;
   text-align: center;
   align-items: center;
-      
+
 }
 
 .switcher.switcher_w {
