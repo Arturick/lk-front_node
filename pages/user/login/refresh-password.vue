@@ -1,64 +1,29 @@
 <template>
   <main class="main">
-
-    <div v-if="loadAuth==false">
-      <div v-if="type==1" class="main_authorize">
-
-        <div v-if="isReg == false" class="ma_title">Авторизоваться</div>
-      <div  @click="type=2" class="ma_btns">
-        <NuxtLink   to="" class="login_pass_btn" style="font-size: 28px;">Войти по паролю</NuxtLink>
+    <div class="rec_authorize">
+      <div class="ma_title">Восстановление пароля</div>
+      <div class="rec_title">
+        Для восстановления пароля, заполните<br> пожалуйста данные
       </div>
-        <div  class="ma_btns">
-          <NuxtLink  v-if="isReg == false"  to="./register" class="login_pass_btn" style="font-size: 28px;">Регистрация</NuxtLink>
+      <div class="rec_inputs">
+        <div class="reg_input reg_input_a">
+          <input type="text" placeholder="Имя">
         </div>
-        <div class="reg_block">
-        <div>
-          <template v-if="step == 2">
-            <div class="flex gap-4 mt-5 justify-center">
-              <div v-if="timer > 0">
-                Не приходит смс. Повторная отправка через {{timer}} сек
-              </div>
-              <div v-if="timer <= 0">
-                <span class="againSend" @click="sendCode">Отправить</span>
-              </div>
-            </div>
-          </template>
-          <input type="text" v-if="step!=2" class="bg-white p-4 text-black rounded text-lg w-full text-center md:text-left" placeholder="Введите телефон" v-mask="'+7 (###) ###-##-##'" v-model="phone"   style="width: 400px;" inputmode="numeric">
-          <input type="text" v-if="step==2" class="bg-white p-4 text-black rounded text-lg w-full text-center md:text-left" placeholder="Введите код" v-mask="'####'" v-model="code"  inputmode="numeric" style="width: 400px;">
+        <div class="reg_input reg_input_a">
+          <input type="text" placeholder="Фамилия">
         </div>
-        <div v-if="step!=2" class="reg_btn" @click="sendCode">Далее</div>
-        <div v-if="step==2" class="reg_btn" @click="checkCode">Далее</div>
+        <div class="reg_input reg_input_a">
+          <input type="text" placeholder="Номер телефона">
         </div>
-
-
-        </div>
-      <div v-else class="main_authorize">
-      <div class="ma_title">Авторизоваться</div>
-      <div  @click="type=1" class="ma_btns">
-        <NuxtLink   to="" class="login_pass_btn" style="font-size: 28px;">Войти по Телефону</NuxtLink>
       </div>
-        <div  @click="type=1, isReg=true" class="ma_btns">
-          <NuxtLink   to="" class="login_pass_btn" style="font-size: 28px;">Регистрация</NuxtLink>
-        </div>
-      <div class="reg_block">
-        <div class="slf">
-          <input type="text" class="bg-white p-4 text-black rounded text-lg w-full text-center md:text-left" placeholder="Введите Логин" v-model="login">
-        </div>
-        <div class="slf">
-          <input type="text"  class="bg-white p-4 text-black rounded text-lg w-full text-center md:text-left" placeholder="Введите Пароль" v-model="password">
-        </div>
-        <button type="button" class="reg_btn" @click="loginUser" style="color: black">Войти</button>
+      <div class="reg_input reg_input_a inp_tel">
+        <input type="text" placeholder="Номер договора">
+      </div>
+      <div class="btn_container_r">
+        <div class="reg_btn">Далее</div>
       </div>
     </div>
-      <img class="img_down" src="../../../assets/images/RATE THIS.svg" alt="">
-    </div>
-    <div v-else style="margin: 200px auto; width: 150px">
-      <v-progress-circular
-        :size="150"
-        color="#93e4d5"
-        indeterminate
-      ></v-progress-circular>
-    </div>
+    <img class="img_down" src="../../../assets/images/RATE THIS.svg" alt="">
   </main>
 </template>
 <script>
@@ -191,34 +156,13 @@
   }
 </script>
 <style scoped>
-  input:active, :focus {
+  .reg_input_a{
+    color: black;
+  }
+  .reg_input_a:active,  :focus {
     outline: 0;
     outline-offset: 0;
     border: none;
     box-shadow: none;
-  }
-  .login_pass_btn{
-    font-size: 28px;
-  }
-  .slf{
-    margin: 0 15px;
-  }
-  .v-application .mt-5 {
-    margin-top: -24px !important;
-  }
-
-  .reg_btn:hover{
-    cursor: pointer;
-  }
-  .againSend{
-    color: #92E6D6;
-    transition: 0.3s;
-  }
-
-  .againSend:hover{
-    border-bottom: 1px solid #92E6D6;
-  }
-  .slfInpt{
-    width: 300px;
   }
 </style>

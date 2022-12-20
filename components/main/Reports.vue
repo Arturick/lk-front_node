@@ -5,16 +5,16 @@
 
 		<div class="grid grid-cols-2 gap-4 mt-12">
         <div class="report-box report-box_color_1">
-            <a href="#" class="report-box__link">Отчет о выкупленных товарах ></a>
+            <nuxt-link to="/reports" class="report-box__link">Отчет о выкупленных товарах ></nuxt-link>
         </div>
         <div class="report-box report-box_color_2">
-            <a href="#" class="report-box__link">Отчет о забраных товарах ></a>
+          <nuxt-link to="/reports" class="report-box__link">Отчет о забраных товарах ></nuxt-link>
         </div>
         <div class="report-box report-box_color_3">
-            <a href="#" class="report-box__link">Отчет об опубликованных отзывах ></a>
+            <nuxt-link to="/reports" class="report-box__link">Отчет об опубликованных отзывах ></nuxt-link>
         </div>
         <div class="report-box report-box_color_4">
-            <a href="#" class="report-box__link">Товары на нашем складе ></a>
+            <nuxt-link to="/reports"class="report-box__link">Товары на нашем складе ></nuxt-link>
         </div>
 		</div>
 
@@ -26,15 +26,28 @@
 </template>
 
 <script>
-	export default {
-	  name: 'Reports',
-	  components: {  },
-	  data() {
-	    return {
+  export default {
+    components: { },
+    data() {
+      return {
 
-	    }
-	  },
-	}
+        crumbs: [
+          {"name": 'Отчеты', "link": "/reports", "type": "link"},
+        ],
+
+      }
+    },
+    watch: {
+    },
+    computed: {
+
+    },
+    methods: {
+
+    },
+    mounted() {
+    }
+  }
 </script>
 
 <style scoped>

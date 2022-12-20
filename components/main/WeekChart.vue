@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<no-ssr> 
+		<no-ssr>
 			<VueApexCharts max-width="300" type="area" :options="chartOptions" :series="series"></VueApexCharts>
 		</no-ssr>
 	</div>
@@ -11,7 +11,8 @@
 	  name: 'WeekChart',
 	  components: {  },
 		props: {
-			weekData: {}
+			weekData: {},
+      dates:  [],
 		},
 		computed: {
 		  series: function () {
@@ -36,7 +37,7 @@
 				    locales: [{
 				      "name": "ru",
 				      "options": {
-				        "shortDays": ["Сб", "Вс", "Пн", "Вт", "Ср", "Чт", "Пт" ],
+				        "shortDays": this.dates,
 				      }
 				    }],
 				    defaultLocale: "ru"
@@ -48,7 +49,7 @@
 	          curve: 'smooth'
 	        },
 	        xaxis: {
-	          categories: ["Сб", "Вс", "Пн", "Вт", "Ср", "Чт", "Пт" ]
+	          categories: ["Вс", "Пн", "Вт", "Ср", "Чт", "Пт", "Сб"]
 	        },
 			colors:['#D9D9D9', '#92E6D6'],
 			legend: {

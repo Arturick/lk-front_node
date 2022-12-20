@@ -290,7 +290,7 @@
                             <Switcher v-model="item.count"/>
                         </template>
                         <template v-slot:item.rcount="{ item }">
-                            <Switcher v-model="item.rcount"/>
+                            <Switcher v-model="item.rcount" :max="item.count" maxMsg="Кол-во отзывов не должно превышть кол-во выкупов"/>
                         </template>
                         <template v-slot:item.barcode="{ item }">
                            <div class="input-block" style="width: 150px;">
@@ -322,11 +322,11 @@
 
                 </div>
 
-                <div class="mt-12">
-                    <div>Общее количество:  <strong>{{artCount}} артикула, {{posCount}} шт</strong> </div>
-                    <div>Сумма выкупа: <strong>{{buyOutSum}}₽</strong></div>
-                    <div>Услуги: <strong>{{servicesSum}}₽</strong></div>
-                </div>
+              <div class="mt-12">
+                <div>Общее количество:  <strong>артикулы - {{artCount}} шт, выкупов - {{posCount}} шт, отзывов - {{posRCount}} шт</strong> </div>
+                <div>Сумма выкупа: <strong>{{buyOutSum}}₽</strong></div>
+                <div>Услуги: <strong>{{servicesSum}}₽</strong></div>
+              </div>
 
             </template>
 
@@ -342,10 +342,7 @@
                         <Button class="rounded-lg p-2.5 but-1" @click="addToTItems">Добавить</Button>
                     </div>
                   <div class="grow">
-                    <template v-if="apiItems.length == 0">
-                      <div class="result-empty">ЗДЕСЬ ПОКА НИЧЕГО</div>
-                    </template>
-                    <template v-else>
+                    <template>
                       <CommonTable :headers="apiHeaders" :items="sortPost" :loading="apiItemsLoading" class="h-96">
                         <template v-slot:item.image="{ item }">
                           <img :src="item.image" alt="" class="img-table">
@@ -388,13 +385,16 @@
                           rows="5"
                           v-model="bulk.arts"
                         ></v-textarea>
-                          <div v-else style="margin: 200px auto; width: 150px">
-                            <v-progress-circular
-                              :size="150"
-                              color="#93e4d5"
-                              indeterminate
-                            ></v-progress-circular>
-                          </div>
+                          <div v-else style="margin: 40px auto; width: 100%">
+                            <div class="load_title">Ищем товары, в выдаче товаров</div>
+                            <div style="width: 150px;margin: auto;">
+                              <v-progress-circular
+                                :size="150"
+                                color="#93e4d5"
+                                indeterminate
+                              ></v-progress-circular>
+                            </div>
+                            </div>
                         <div class="mt-5">
                             <Button class="rounded-lg p-2.5 but-1 w-full" @click="bulkSend">Добавить</Button>
                         </div>
@@ -435,6 +435,63 @@
             </div>
           </v-card>
         </v-dialog>
+      <v-dialog
+        v-model="bulkAdd2"
+        transition="dialog-bottom-transition"
+        max-width="450"
+      >
+        <v-card>
+          <div class="bg-white rounded-3xl p-2.5 md:p-7">
+
+            <div class="mt-5">
+              <template v-if="bulk.type == 1">
+                <div style="margin: 40px auto; width: 100%">
+                  <div class="load_title">Ищем товары, в выдаче товаров</div>
+                  <div style="width: 150px;margin: auto;">
+                    <v-progress-circular
+                      :size="150"
+                      color="#93e4d5"
+                      indeterminate
+                    ></v-progress-circular>
+                  </div>
+                </div>
+              </template>
+              <template v-if="bulk.type == 2">
+                <div v-if="!loadingExcel" style="    width: 100%;height: 120px;position: relative;overflow: hidden;">
+                  <v-progress-circular
+                    :size="70"
+                    :width="7"
+                    color="#92E6D6"
+                    indeterminate
+                    style="position: initial;"
+                  ></v-progress-circular>
+                </div>
+                <div v-else>
+                  <div class="flex flex-col gap-4">
+                    <a href="/Массовое добавление(под ключ).xlsx" download="" class="rounded-lg p-2.5 but-0">
+                      <v-icon dense>mdi-tray-arrow-down</v-icon>
+                      Скачать шаблон XLS
+                    </a>
+
+                    <Button class="rounded-lg p-2.5 but-1 overflow-hidden relative" :loading="loadingExcel">
+                      <v-icon dense>mdi-tray-arrow-up</v-icon>
+                      <template v-if="!bulk.files">Загрузить XLS</template>
+                      <template v-else>
+                        <template v-if="bulk.files[0]['name']">
+                          {{bulk.files[0]['name']}}
+                        </template>
+                      </template>
+
+                      <input type="file" @change="bulkFile" class="file-up" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
+                    </Button>
+                  </div>
+                </div>
+
+              </template>
+            </div>
+          </div>
+        </v-card>
+      </v-dialog>
     </div>
 </template>
 
@@ -450,11 +507,13 @@ export default {
         },
         loadingResultsInSearch:true,
         bulkAdd: false,
+        bulkAdd2: false,
         dialogDate: false,
         loadingExcel: true,
       queryParams: '',
       userId: '',
       lotArtsLoad: false,
+      lotArtsLoad2: false,
       localeData: {
             firstDay: 1, format: 'dd-mm-yyyy',
             applyLabel: 'Принять',
@@ -569,9 +628,9 @@ export default {
               }
             }
             break;
-          case 3:
+          case 4:
             for (var i = 0; i < this.orderItems.length; i++) {
-              let art = this.tItems[i]['article']
+              let art = this.orderItems[i]['article']
               if ( arts.indexOf(art) < 0) {
                 arts.push( art );
               }
@@ -593,9 +652,9 @@ export default {
               }
             }
             break;
-          case 3:
+          case 4:
             for (var i = 0; i < this.orderItems.length; i++) {
-              let count = parseInt(this.tItems[i]['count'], 10)
+              let count = parseInt(this.orderItems[i]['count'], 10)
               if ( count ) {
                 counts.push( count )
               }
@@ -616,9 +675,9 @@ export default {
             }
           }
           break;
-        case 3:
+        case 4:
           for (var i = 0; i < this.orderItems.length; i++) {
-            let count = parseInt(this.tItems[i]['rcount'], 10)
+            let count = parseInt(this.orderItems[i]['rcount'], 10)
             if ( count ) {
               counts.push( count )
             }
@@ -640,7 +699,7 @@ export default {
               }
             }
             break;
-          case 3:
+          case 4:
             for (var i = 0; i < this.orderItems.length; i++) {
               let count = parseInt(this.orderItems[i]['count'], 10)
               let price = parseInt(this.orderItems[i]['price'], 10)
@@ -720,7 +779,10 @@ export default {
     findByArt: function(count = false, rcount = false, barcode = false, query = false) {
         this.$store.dispatch('request/get_findbyart', {article: this.art}).then((x) => {
 
-
+              if(!x.data.data.products){
+                this.$toast.warning(`Артикул ${this.art} Не найден`);
+                return 0;
+              }
               this.tHeaders = x.data.data.headers;
           if(count){
             x.data.data.products['count'] = count;
@@ -781,7 +843,12 @@ export default {
             console.log(formData);
             this.$store.dispatch('request/parseExcel', formData).then((x) => {
                 this.bulkAdd = false;
-              this.loadingExcel = true;
+              if(x.data.data.ers){
+                this.$toast.error(`Ошибка в файле на строке ${x.data.data.line}`);
+                this.loadingExcel = true;
+                return 0;
+              }
+                this.loadingExcel = true;
                 if (x.data.data.length > 0) {
                     for (let i = x.data.data.length - 1; i >= 0; i--) {
                         this.art = x.data.data[i]['art'];
@@ -793,6 +860,7 @@ export default {
 
             }).catch((error) => {
               console.log(error);
+              this.loadingExcel = true;
                 this.$toast.error('Что то пошло не так')
             })
         }
@@ -847,9 +915,12 @@ export default {
 
       }
       if(this.loadingResultsInSearch){return;}
+      this.bulkAdd2 = true;
+      this.lotArtsLoad2 = true;
       this.$store.dispatch('request/checkallquery', {items: this.tItems}).then((x) => {
         this.loadingResultsInSearch = true;
-
+        this.lotArtsLoad2 = false;
+        this.bulkAdd2 = false;
         for (var i = x.data.data.length - 1; i >= 0; i--) {
                 console.log(x.data.data);
                 if(x.data.data[i].position < 0 || !x.data.data[i].position){
@@ -1015,5 +1086,11 @@ export default {
 }
   .close{
     width: 32px;
+  }
+
+  .load_title{
+    font-size: 20px;
+    margin: 20px 0;
+    width: 100%;
   }
 </style>

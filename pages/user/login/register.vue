@@ -5,12 +5,12 @@
       <div v-if="type==1" class="main_authorize">
 
         <div v-if="isReg == false" class="ma_title">Авторизоваться</div>
-
+        <div  @click="type=2" class="ma_btns">
           <NuxtLink   to="" class="login_pass_btn" style="font-size: 28px;">Войти по паролю</NuxtLink>
-
-
-          <NuxtLink to="./register" class="login_pass_btn" style="font-size: 28px;">Регистрация</NuxtLink>
-
+        </div>
+        <div  class="ma_btns">
+          <NuxtLink  v-if="isReg == false"  to="./register" class="login_pass_btn" style="font-size: 28px;">Регистрация</NuxtLink>
+        </div>
         <div class="reg_block">
           <div>
             <template v-if="step == 2">
@@ -190,7 +190,13 @@
     }
   }
 </script>
-<style>
+<style scoped>
+  input:active, :focus {
+    outline: 0;
+    outline-offset: 0;
+    border: none;
+    box-shadow: none;
+  }
   .login_pass_btn{
     font-size: 28px;
   }

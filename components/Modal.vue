@@ -3,7 +3,7 @@
     <div class="modal-overlay md:px-12" @click="$emit('close-modal')">
       <div class="modal-content md:w-4/5 w-full">
         <div class="modal h-full" @click.stop>
-          <slot></slot>  
+          <slot></slot>
         </div>
         <div class="close" @click="$emit('close-modal')">x</div>
       </div>
@@ -20,7 +20,7 @@ export default {
   watch: {
     show: function( val ){
       if ( val ) {
-        
+
       }
     }
   },
@@ -51,16 +51,19 @@ export default {
   position: relative;
 }
 .modal {
-  
+
 }
 .close {
   cursor: pointer;
   background-color: #fff;
   position: absolute;
   top: 0px;
-  right: -10px;
-  padding: 1px 6px;
+  right: -12px;
+  padding: 0px 0px;
   border-radius: 100%;
+  height: 28px;
+  width: 27px;
+
 }
 
 .modal-fade-enter,

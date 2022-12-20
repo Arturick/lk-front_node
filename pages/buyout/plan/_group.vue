@@ -73,14 +73,14 @@
                     </template>
                     <template v-slot:item.size="{ item }">
                       <template v-if="item.sizes.length > 0">
-                        <v-select :items="item.sizes" label="" v-model="item.size" dense outlined hide-details="auto" class="rounded-lg bg-white"/></v-select>
+                        <v-select style="width: 104px" :items="item.sizes" label="" v-model="item.size" dense outlined hide-details="auto" class="rounded-lg bg-white"/></v-select>
                       </template>
                       <template v-else>
                         {{item.size}}
                       </template>
                     </template>
                     <template v-slot:item.gender="{ item }">
-                      <v-select :items="genderOptions" v-model="item.gender" dense outlined hide-details="auto" class="rounded-lg bg-white"></v-select>
+                      <v-select  style="width: 104px" :items="genderOptions" v-model="item.gender" dense outlined hide-details="auto" class="rounded-lg bg-white"></v-select>
                     </template>
                     <template v-slot:item.count="{ item }">
                       <Switcher v-model="item.count" :min="1"/>
@@ -119,12 +119,11 @@
                   </v-data-table>
                 </template>
               </div>
-              <div v-else class="mt-12">
+              <div v-else :class="cls[sort]">
                     <template v-if="tItems.length == 0">
                         <div class="result-empty">ЗДЕСЬ ПОКА НИЧЕГО</div>
                     </template>
                     <template v-else>
-
                       <v-data-table
                         :headers="tHeaders"
                         :items="tItems"
@@ -156,13 +155,13 @@
                         </template>
                         <template v-slot:item.size="{ item }">
                             <template v-if="item.can_be_edited">
-                                <v-select :items="item.sizes" label="" v-model="item.size" dense outlined hide-details="auto" class="rounded-lg bg-white"/></v-select>
+                                <v-select :items="item.sizes" style="width: 104px" label="" v-model="item.size" dense outlined hide-details="auto" class="rounded-lg bg-white"/></v-select>
                             </template>
                             <template v-else>{{item.size}}</template>
                         </template>
                         <template v-slot:item.gender="{ item }">
                             <template v-if="item.can_be_edited">
-                                <v-select :items="genderOptions" v-model="item.gender" dense outlined hide-details="auto" class="rounded-lg bg-white"></v-select>
+                                <v-select :items="genderOptions"  v-model="item.gender" dense outlined hide-details="auto" class="rounded-lg bg-white" style="width: 104px"></v-select>
                             </template>
                             <template v-else>{{item.gender}}</template>
                         </template>
@@ -217,11 +216,11 @@
                 </div>
 
 
-                <div class="mt-12">
-                    <div>Общее количество:  <strong>артикулы - {{artCount}} шт, выкупов - {{posCount}} шт, отзывов - {{posRCount}} шт</strong> </div>
-                    <div>Сумма выкупа: <strong>{{buyOutSum}}₽</strong></div>
-                    <div>Услуги: <strong>{{servicesSum}}₽</strong></div>
-                </div>
+              <div class="mt-12">
+                <div>Общее количество:  <strong>артикулы - {{artCount}} шт, выкупов - {{posCount}} шт, отзывов - {{posRCount}} шт</strong> </div>
+                <div>Сумма выкупа: <strong>{{buyOutSum}}₽</strong></div>
+                <div>Услуги: <strong>{{servicesSum}}₽</strong></div>
+              </div>
 
             </template>
             <template v-if="step == 2">
@@ -331,20 +330,20 @@
                   </template>
                   <template v-slot:item.size="{ item }">
                     <template v-if="item.sizes.length > 0">
-                      <v-select :items="item.sizes" label="" v-model="item.size" dense outlined hide-details="auto" class="rounded-lg bg-white"/></v-select>
+                      <v-select style="width: 104px" :items="item.sizes" label="" v-model="item.size" dense outlined hide-details="auto" class="rounded-lg bg-white"/></v-select>
                     </template>
                     <template v-else>
                       {{item.size}}
                     </template>
                   </template>
                   <template v-slot:item.gender="{ item }">
-                    <v-select :items="genderOptions" v-model="item.gender" dense outlined hide-details="auto" class="rounded-lg bg-white"></v-select>
+                    <v-select style="width: 104px" :items="genderOptions" v-model="item.gender" dense outlined hide-details="auto" class="rounded-lg bg-white"></v-select>
                   </template>
                   <template v-slot:item.count="{ item }">
                     <Switcher v-model="item.count"/>
                   </template>
                   <template v-slot:item.rcount="{ item }">
-                    <Switcher v-model="item.rcount"/>
+                    <Switcher v-model="item.rcount" :max="item.count" maxMsg="Колличество отзывов не должно превышать колличетсво выкупов"/>
                   </template>
                   <template v-slot:item.barcode="{ item }">
                     <div class="input-block" style="width: 150px;">
@@ -352,9 +351,8 @@
                     </div>
                   </template>
                   <template v-slot:item.del="{ item, index }">
-                    <a href="#" @click.prevent="del(index)"><i class="icon icon_close_g"></i></a>
+                    <a href="#" @click.prevent="del(item.id, item, index)"><i class="icon icon_close_g"></i></a>
                   </template>
-
                   <template v-slot:item.position="{ item }">
                     <template v-if="item.position >= 0">
                       <template v-if="item.position == 0">
@@ -377,7 +375,7 @@
               </div>
 
               <div class="mt-12">
-                <div>Общее количество:  <strong>{{artCount}} артикула, {{posCount}} шт</strong> </div>
+                <div>Общее количество:  <strong>артикулы - {{artCount}} шт, выкупов - {{posCount}} шт, отзывов - {{posRCount}} шт</strong> </div>
                 <div>Сумма выкупа: <strong>{{buyOutSum}}₽</strong></div>
                 <div>Услуги: <strong>{{servicesSum}}₽</strong></div>
               </div>
@@ -641,7 +639,11 @@ export default {
         art:'',
         tItems:[],
         tHeaders:[],
-
+        cls: {
+          1:'mt-2.5',
+          2:'mt-2.5 md:w-3/5',
+          3: 'mt-2.5'
+        },
         bufferTItems:[],
         bufferTHeaders:[],
 
@@ -702,21 +704,41 @@ export default {
     },
     artCount : function() {
         let arts = []
-        if ( this.tItems.length > 0 ) {
-            for (var i = 0; i < this.tItems.length; i++) {
-                let art = this.tItems[i]['art']
-                if ( art ) {
-                    arts.push( art )
-                }
+        if(this.draft){
+          if ( this.orderItems.length > 0 ) {
+            for (var i = 0; i < this.orderItems.length; i++) {
+              let art = this.orderItems[i]['art']
+              if ( art ) {
+                arts.push( art )
+              }
             }
+          }
+        } else {
+          if ( this.tItems.length > 0 ) {
+            for (var i = 0; i < this.tItems.length; i++) {
+              let art = this.tItems[i]['art']
+              if ( art ) {
+                arts.push( art )
+              }
+            }
+          }
         }
+
         arts = _.uniq(arts)
         return arts.length
     },
     posCount : function() {
         let counts = []
       let total = 0;
-      switch (this.sort) {
+      if(this.draft){
+        for (var i = 0; i < this.orderItems.length; i++) {
+          let count = parseInt(this.orderItems[i]['count'], 10)
+          if ( count ) {
+            counts.push( count )
+          }
+        }
+      } else {
+        switch (this.sort) {
           case 1:
             this.tItems.map(i => {total+=i['plan']});
             return total;
@@ -726,39 +748,47 @@ export default {
             return total;
             break;
           case 3:
-              return this.tItems.length
+            return this.tItems.length
             break;
         }
 
         for (var i = 0; i < this.tItems.length; i++) {
-            let count = parseInt(this.tItems[i]['count'], 10)
-            if ( count ) {
-                counts.push( count )
-            }
+          let count = parseInt(this.tItems[i]['count'], 10)
+          if ( count ) {
+            counts.push( count )
+          }
         }
+      }
+
         return _.sum(counts)
     },
     posRCount : function() {
       let total = 0;
-      switch (this.sort) {
-        case 1:
-          this.tItems.map(i => {total+= +i['comment']});
-          return total;
-          break;
-        case 2:
-          this.tItems.map(i => {total+= +i['comment']});
-          return total;
-          break;
-        case 3:
-          this.tItems.map(i => {
+      if(this.draft){
+        this.orderItems.map(i => {total+= +i['comment']});
+        return total;
+      } else {
+        switch (this.sort) {
+          case 1:
+            this.tItems.map(i => {total+= +i['comment']});
+            return total;
+            break;
+          case 2:
+            this.tItems.map(i => {total+= +i['comment']});
+            return total;
+            break;
+          case 3:
+            this.tItems.map(i => {
 
-            if(i['type'] == 'отзыв') {
+              if(i['type'] == 'отзыв') {
                 total+=1;
               }
-          });
-          return total;
-          break;
+            });
+            return total;
+            break;
+        }
       }
+
     },
     buyOutSum : function() {
       let total = 0;
@@ -842,7 +872,7 @@ export default {
 
 
 
-      this.$store.dispatch('request/delete', {id: this.userId, id: this.userId}).then((x) => {
+      this.$store.dispatch('request/delete', {userId: this.userId, id: id}).then((x) => {
 
       })
 
@@ -987,9 +1017,38 @@ export default {
     },
     checkQueries: function() {
       this.loadingResultsInSearch = false;
+      for(let i in this.tItems){
+        if(this.tItems[i]['barcode'].length < 2){
+          this.tItems[i]['warn'] = 'new_req_err';
+          this.$toast.error('Поле баркод пусто');
+          this.loadingResultsInSearch = true;
+          this.tItems[i].class = 'new_req_err';
+        }
+        if(this.tItems[i]['query'].length < 2){
+          this.tItems[i]['warn'] = 'new_req_err';
+          this.$toast.error('Поле Запрос пусто пусто');
+          this.loadingResultsInSearch = true;
+          this.tItems[i].class = 'new_req_err';
+        }
+        console.log(this.tItems[i]);
+        if(this.tItems[i]['sizes'].length > 0 && this.tItems[i]['size'] == 0){
+          this.tItems[i]['warn'] = 'new_req_err';
+          this.$toast.error('Размер не выбран');
+          this.loadingResultsInSearch = true;
+          this.tItems[i].class = 'new_req_err';
+        }
+        if(+this.tItems[i]['rcount'] > +this.tItems[i]['count']){
+          this.$toast.error('Комментариев не должно быть больше чем выкупов');
+          this.loadingResultsInSearch = true;
+          this.tItems[i].class = 'new_req_err';
+        }
+
+      }
+      if(this.loadingResultsInSearch){
+        return 0;
+      }
       this.$store.dispatch('request/checkallquery', {items: this.tItems}).then((x) => {
         this.loadingResultsInSearch = true;
-
         for (var i = x.data.data.length - 1; i >= 0; i--) {
           console.log(x.data.data);
           this.tItems[ x.data.data[i].index ]['position'] = x.data.data[i].position;

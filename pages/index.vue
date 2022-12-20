@@ -61,6 +61,7 @@
 export default {
   components: { },
   name: 'Push',
+  middleware: 'auth',
   data() {
     return {
       modalByApiShow: false,
