@@ -213,7 +213,7 @@ export default {
       tItemsCache:[],
       tHeaders:[],
       art:null,
-      userId: +window.localStorage.getItem('id'),
+      userId: 0,
       crumbs: [
           {"name": 'Отзывы', "link" : "/reviews", "type" : "link"},
           {"name": 'Артикул', "link" : "", "type" : "text"},
@@ -303,7 +303,7 @@ export default {
 
     getByGroup: function() {
         this.tLoading = true
-        this.$store.dispatch('request/reviews_list', {article: this.$route.params.group, task1: 999}).then((x) => {
+        this.$store.dispatch('request/reviews_list', {article: this.$route.params.group, id: this.userId}).then((x) => {
           console.log(x);
           if ( !x.data.data.error ) {
                 this.tItems  = x.data.data.products;
@@ -319,8 +319,9 @@ export default {
 
   },
   mounted() {
-    this.getByGroup()
     this.userId = +window.localStorage.getItem('id');
+    this.getByGroup()
+
   }
 }
 </script>

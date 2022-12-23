@@ -49,7 +49,7 @@ export default {
       tHeaders:[],
       tHeadersOther:[],
       tItemsOther:[],
-      userId: +window.localStorage.getItem('id'),
+      userId: 0,
     }
   },
   computed: {
@@ -126,8 +126,9 @@ export default {
 
   },
   mounted() {
-    this.list()
     this.userId = +window.localStorage.getItem('id');
+    this.list()
+
     //this.listOther()
   }
 }
