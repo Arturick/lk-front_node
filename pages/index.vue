@@ -34,113 +34,84 @@
   </div>
 </template>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 <script>
 
-export default {
-  components: { },
-  name: 'Push',
-  middleware: 'auth',
-  data() {
-    return {
-      modalByApiShow: false,
-      msg: 'Push',
-      tItems:[],
-      tHeaders:[],
-      resultsInSearch: {},
-      loadingResultsInSearch: true,
-    }
-  },
-  methods: {
-    getPositions() {
-      this.loadingResultsInSearch = true
+  export default {
+    components: { },
+    name: 'Push',
+    middleware: 'auth',
+    data() {
+      return {
+        modalByApiShow: false,
+        msg: 'Push',
+        tItems:[],
+        tHeaders:[],
+        resultsInSearch: {},
+        loadingResultsInSearch: true,
+      }
     },
-    getAccounts() {
-      this.loadingResultsInSearch = true
-      this.$store.dispatch('request/get_account').then((x) => {
-        this.resultsInSearch = x.data
-        this.loadingResultsInSearch = false
-      })
-    },
-
-    getNotification() {
-      this.loadingResultsInSearch = true
-      this.$store.dispatch('request/get_notification').then((x) => {
-        console.log(x)
-      })
-      this.$store.dispatch('request/dbupdate').then((x) => {
-        console.log(x)
-      })
-
-      Notification.requestPermission(function (status) {
-        console.log('Notification permission status:', status);
-      });
-      if (Notification.permission === 'granted') {
-        navigator.serviceWorker.getRegistration()
-          .then(function (reg) {
-              if (reg == undefined) {
-                console.log("only works online")
-                return
-              }
-              var options = {
-                body: 'First notification!',
-                icon: '../static/images/close.png',
-                vibrate: [100, 50, 100],
-                data: {
-                  dateOfArrival: Date.now(),
-                  primaryKey: 1
-                },
-                actions: [
-                  {
-                    action: 'explore',
-                    title: 'Go to the site',
-                    icon: '../static/images/close.png'
+    methods: {
+      getPositions() {
+        this.loadingResultsInSearch = true
+      },
+      getAccounts() {
+        this.loadingResultsInSearch = true
+        this.$store.dispatch('request/get_account').then((x) => {
+          this.resultsInSearch = x.data
+          this.loadingResultsInSearch = false
+        })
+      },
+      getNotification() {
+        this.loadingResultsInSearch = true
+        this.$store.dispatch('request/get_notification').then((x) => {
+          console.log(x)
+        })
+        this.$store.dispatch('request/dbupdate').then((x) => {
+          console.log(x)
+        })
+        Notification.requestPermission(function (status) {
+          console.log('Notification permission status:', status);
+        });
+        if (Notification.permission === 'granted') {
+          navigator.serviceWorker.getRegistration()
+            .then(function (reg) {
+                if (reg == undefined) {
+                  console.log("only works online")
+                  return
+                }
+                var options = {
+                  body: 'First notification!',
+                  icon: '../static/images/close.png',
+                  vibrate: [100, 50, 100],
+                  data: {
+                    dateOfArrival: Date.now(),
+                    primaryKey: 1
                   },
-                  {
-                    action: 'close',
-                    title: 'Close the notification',
-                    icon: '../static/images/close.png'
-                  }
-                ]
+                  actions: [
+                    {
+                      action: 'explore',
+                      title: 'Go to the site',
+                      icon: '../static/images/close.png'
+                    },
+                    {
+                      action: 'close',
+                      title: 'Close the notification',
+                      icon: '../static/images/close.png'
+                    }
+                  ]
+                }
+                reg.showNotification('Your Message Here!', options)
               }
-              reg.showNotification('Your Message Here!', options)
-            }
-          )
-          }
-
-
-
-
-      //setTimeout(this.getNotification, 3000)
-    }
-  },
-  mounted() {
-   this.getPositions()
-    //this.getNotification()
-
-  },
-}
+            )
+        }
+        //setTimeout(this.getNotification, 3000)
+      }
+    },
+    mounted() {
+      this.getPositions()
+      //this.getNotification()
+    },
+  }
 </script>
 
 

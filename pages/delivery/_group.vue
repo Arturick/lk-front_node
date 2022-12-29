@@ -64,7 +64,7 @@ export default {
   data() {
     return {
         tItems:[],
-      userId: +window.localStorage.getItem('id'),
+      userId: '',
       tHeaders:[],
         tDate: '',
         tLoading: false,
@@ -85,7 +85,7 @@ export default {
     },
     getByGroup: function() {
         this.tLoading = true
-        this.$store.dispatch('request/delivery_list', {id: this.userId, date_get: this.$route.params.group}).then((x) => {
+        this.$store.dispatch('request/delivery_list', {userId: this.userId, date_get: this.$route.params.group}).then((x) => {
             if ( !x.data.error ) {
                 this.tItems  = x.data.data.products;
                 this.tHeaders = x.data.data.headers
@@ -99,8 +99,9 @@ export default {
 
   },
   mounted() {
-    this.getByGroup()
     this.userId = +window.localStorage.getItem('id');
+    this.getByGroup()
+
   }
 }
 </script>

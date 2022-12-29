@@ -96,7 +96,7 @@ export default {
     strategies: {
       local: {
         token: {
-          maxAge: 60 * 60 * 24 * 7,
+          maxAge: 60 * 60 * 24,
         },
         endpoints: {
           login: { url: "/api/sms/check/", method: "post" },

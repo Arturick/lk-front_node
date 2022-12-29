@@ -57,7 +57,7 @@
 	      sw: 1,
         toggle: false,
         weekData: {},
-        id: '',
+        userId: '',
 
       options: [
       ],
@@ -75,7 +75,7 @@
     },
     methods: {
       getStatInfo() {
-        this.$store.dispatch('request/get_statinfo', {id: this.id}).then((x) => {
+        this.$store.dispatch('request/get_statinfo', {userId: this.userId}).then((x) => {
           console.log(x);
           this.weekData = x.data
           this.$nextTick(() => {
@@ -85,7 +85,7 @@
       },
     },
     mounted() {
-     this.id = +window.localStorage.getItem('id');
+     this.userId = +window.localStorage.getItem('id');
      this.getStatInfo();
     },
 	}

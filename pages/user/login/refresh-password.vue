@@ -5,24 +5,36 @@
       <div class="rec_title">
         Для восстановления пароля, заполните<br> пожалуйста данные
       </div>
-      <div class="rec_inputs">
-        <div class="reg_input reg_input_a">
-          <input type="text" placeholder="Имя">
+      <div v-if="!isReg">
+        <div class="rec_inputs">
+          <div class="reg_input reg_input_a">
+            <input v-model="userData.name" type="text" placeholder="Имя">
+          </div>
+          <div class="reg_input reg_input_a">
+            <input v-model="userData.surname" type="text" placeholder="Фамилия">
+          </div>
+          <div class="reg_input reg_input_a">
+            <input v-model="userData.phone" type="text" placeholder="Номер телефона">
+          </div>
         </div>
-        <div class="reg_input reg_input_a">
-          <input type="text" placeholder="Фамилия">
-        </div>
-        <div class="reg_input reg_input_a">
-          <input type="text" placeholder="Номер телефона">
+        <div class="reg_input reg_input_a inp_tel">
+          <input v-model="userData.task1" type="text" placeholder="Номер договора">
         </div>
       </div>
-      <div class="reg_input reg_input_a inp_tel">
-        <input type="text" placeholder="Номер договора">
+      <div v-else style="width: 100%; text-align: center;">
+        <div class="reg_input reg_input_a inp_tel" style="margin: 0 auto">
+          <input v-model="code" type="text" placeholder="Код из СМС">
+        </div>
       </div>
       <div class="btn_container_r">
-        <div class="reg_btn">Далее</div>
+      <div v-if="!isReg">
+        <div class="reg_btn" @click="sendCode">Далее</div>
       </div>
-    </div>
+      <div v-else>
+        <div class="reg_btn" @click="checkCode">Далее</div>
+      </div>
+      </div>
+      </div>
     <img class="img_down" src="../../../assets/images/RATE THIS.svg" alt="">
   </main>
 </template>
@@ -44,7 +56,13 @@
         isReg: false,
         sendCodeDisabled: false,
         timeInterval: false,
-        timer: 0
+        timer: 0,
+        userData: {
+          name: '',
+          username: '',
+          phone: '',
+          task1: ''
+        },
       }
     },
     computed: {
@@ -86,13 +104,14 @@
         window.console.log(user)
       },
       sendCode() {
-        if(this.phone.length < 4){
+        if(this.userData.phone.length < 4){
           this.$toast.error('Не заполнен телефон');
           return
         }
-        this.$store.dispatch('request/sms_send', {phone: this.phone.replace('+', '').replace('(', '').replace(')', '').replace('-', '').replace(' ', ''), reg: this.isReg}).then((x) => {
+        let phone = this.userData.phone.replaceAll(',', '').replaceAll('(', '').replaceAll(')', '').replaceAll(' ', '').replaceAll('-', '');
+        this.$store.dispatch('request/refreshPassword', {phone: phone, name: this.userData.name, surname: this.userData.surname, task1: +this.userData.task1}).then((x) => {
           if ( !x.data.error ) {
-            this.step = 2;
+            this.isReg = true;
             this.sendCodeDisabled = true;
             let timeIsOut = Date.now() + 60;
             this.$store.dispatch('request/set_timeisout', timeIsOut)

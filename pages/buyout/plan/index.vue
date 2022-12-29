@@ -774,7 +774,7 @@ export default {
         else this.step = this.step - 1
     },
     findByArt: function(count = false, rcount = false, barcode = false, query = false) {
-        this.$store.dispatch('request/get_findbyart', {article: this.art}).then((x) => {
+        this.$store.dispatch('request/get_findbyart', {userId: this.userId,article: this.art}).then((x) => {
 
               if(!x.data.data.products){
                 this.$toast.warning(`Артикул ${this.art} Не найден`);
@@ -812,7 +812,7 @@ export default {
 
         if ( this.bulk.type == 1) {
             this.lotArtsLoad = true;
-            this.$store.dispatch('request/find_articles', {articles: this.bulk.arts}).then((x) => {
+            this.$store.dispatch('request/find_articles', {userId: this.userId, articles: this.bulk.arts}).then((x) => {
                     this.tHeaders = x.data.data.headers
                     this.bulkAdd = false
                     this.lotArtsLoad = false;
@@ -864,7 +864,7 @@ export default {
     },
     getByApi(){
       this.apiItemsLoading = true;
-      this.$store.dispatch('request/get_api', {id: this.userId,}).then((x) => {
+      this.$store.dispatch('request/get_api', {userId: this.userId,}).then((x) => {
         this.apiItemsLoading = false
         if ( !x.data.error ) {
 

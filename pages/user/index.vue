@@ -220,7 +220,7 @@ import { mapState } from "vuex";
 export default {
   data() {
     return {
-        id: '',
+        userId: '',
         userAdd: false,
         unew: {
             role: '',
@@ -269,7 +269,7 @@ export default {
             return false
         }
 
-        this.$store.dispatch('request/auth_user_parent_save', {item: this.unew}).then((x) => {
+        this.$store.dispatch('request/auth_user_parent_save', {userId: this.userId, item: this.unew}).then((x) => {
           if ( !x.data.error ) {
             this.user_parent_get()
             this.userAdd = false
@@ -282,17 +282,17 @@ export default {
     save() {
       console.log(1)
       console.log(this.user_new)
-        this.$store.dispatch('request/auth_user_save', {profile: this.user_new}).then((x) => {
+        this.$store.dispatch('request/auth_user_save', {userId: this.userId, profile: this.user_new}).then((x) => {
 
         })
     },
     user_new() {
-      this.$store.dispatch('request/getUser', {id: this.id}).then((x) => {
+      this.$store.dispatch('request/getUser', {userId: this.userId}).then((x) => {
           this.profile =  x.data;
       })
     },
     updateUser() {
-      this.$store.dispatch('request/updateUser', {profile: this.profile}).then((x) => {
+      this.$store.dispatch('request/updateUser', {userId: this.userId, profile: this.profile}).then((x) => {
       })
     },
     user_parent_get(){
@@ -325,7 +325,7 @@ export default {
     }
   },
   mounted() {
-    this.id = +window.localStorage.getItem('id');
+    this.userId = +window.localStorage.getItem('id');
     this.user_new();
     this.user_parent_get()
   }

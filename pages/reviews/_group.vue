@@ -263,7 +263,7 @@ export default {
     save: function(index) {
 
 
-      this.$store.dispatch('request/reviews_save', {id: this.userId, item: this.tItems[index]}).then((x) => {
+      this.$store.dispatch('request/reviews_save', {userId: this.userId, item: this.tItems[index]}).then((x) => {
           if ( !x.data.error ) {
               this.tItems[index]['need_save'] = false
               this.getByGroup()
@@ -303,7 +303,7 @@ export default {
 
     getByGroup: function() {
         this.tLoading = true
-        this.$store.dispatch('request/reviews_list', {article: this.$route.params.group, id: this.userId}).then((x) => {
+        this.$store.dispatch('request/reviews_list', {article: this.$route.params.group, userId: this.userId}).then((x) => {
           console.log(x);
           if ( !x.data.data.error ) {
                 this.tItems  = x.data.data.products;

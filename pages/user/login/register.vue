@@ -1,62 +1,46 @@
 <template>
   <main class="main">
 
-    <div v-if="loadAuth==false">
-      <div v-if="type==1" class="main_authorize">
 
-        <div v-if="isReg == false" class="ma_title">Зарегестрироваться</div>
-        <div  class="ma_btns">
-          <NuxtLink  v-if="isReg == false"  to="./login" class="auth_link" style="font-size: 28px;">Авторизация</NuxtLink>
+      <div class="rec_authorize">
+        <div class="ma_title">Регистрация</div>
+        <div class="rec_title">
+          Для Регистрации, заполните<br> пожалуйста данные
         </div>
-        <div class="reg_block">
-          <div>
-            <template v-if="step == 2">
-              <div class="flex gap-4 mt-5 justify-center">
-                <div v-if="timer > 0">
-                  Не приходит смс. Повторная отправка через {{timer}} сек
-                </div>
-                <div v-if="timer <= 0">
-                  <span class="againSend" @click="sendCode">Отправить</span>
-                </div>
-              </div>
-            </template>
-            <input type="text" v-if="step!=2" class="bg-white p-4 text-black rounded text-lg w-full text-center md:text-left" placeholder="Введите телефон" v-mask="'+# (###) ###-##-################'" v-model="phone"   style="width: 400px;" inputmode="numeric">
-            <input type="text" v-if="step==2" class="bg-white p-4 text-black rounded text-lg w-full text-center md:text-left" placeholder="Введите код" v-mask="'####'" v-model="code"  inputmode="numeric" style="width: 400px;">
+        <div v-if="!isReg">
+          <div class="rec_inputs">
+            <div class="reg_input reg_input_a">
+              <input v-model="userData.name" type="text" placeholder="Имя">
+            </div>
+            <div class="reg_input reg_input_a">
+              <input v-model="userData.surname" type="text" placeholder="Фамилия">
+            </div>
+            <div class="reg_input reg_input_a">
+              <input v-model="userData.phone" type="text" placeholder="Номер телефона">
+            </div>
           </div>
-          <div v-if="step!=2" class="reg_btn" @click="sendCode">Далее</div>
-          <div v-if="step==2" class="reg_btn" @click="checkCode">Далее</div>
+          <div class="reg_input reg_input_a inp_tel">
+            <input v-model="userData.task1" type="text" placeholder="Номер договора">
+          </div>
         </div>
+        <div v-else style="width: 100%; text-align: center;">
+          <div class="reg_input reg_input_a inp_tel" style="margin: 0 auto">
+            <input v-model="code" type="text" placeholder="Код из СМС">
+          </div>
+        </div>
+          <div class="btn_container_r">
+            <div v-if="!isReg">
+               <div class="reg_btn" @click="sendCode">Далее</div>
+            </div>
+            <div v-else>
+              <div class="reg_btn" @click="checkCode">Далее</div>
+            </div>
 
-
-      </div>
-      <div v-else class="main_authorize">
-        <div class="ma_title">Авторизоваться</div>
-        <div  @click="type=1" class="ma_btns">
-          <NuxtLink   to="" class="login_pass_btn" style="font-size: 28px;">Войти по Телефону</NuxtLink>
-        </div>
-        <div  class="ma_btns">
-          <NuxtLink  v-if="isReg == false"  to="./register" class="auth_link" style="font-size: 28px;">Регистрация</NuxtLink>
-        </div>
-        <div class="reg_block">
-          <div class="slf">
-            <input type="text" class="bg-white p-4 text-black rounded text-lg w-full text-center md:text-left" placeholder="Введите Логин" v-model="login">
           </div>
-          <div class="slf">
-            <input type="text"  class="bg-white p-4 text-black rounded text-lg w-full text-center md:text-left" placeholder="Введите Пароль" v-model="password">
-          </div>
-          <button type="button" class="reg_btn" @click="loginUser" style="color: black">Войти</button>
-        </div>
       </div>
       <img class="img_down" src="../../../assets/images/RATE THIS.svg" alt="">
-    </div>
-    <div v-else style="margin: 200px auto; width: 150px">
-      <v-progress-circular
-        :size="150"
-        color="#93e4d5"
-        indeterminate
-      ></v-progress-circular>
-    </div>
-  </main>
+    </main>
+
 </template>
 <script>
   import { mapState } from "vuex";
@@ -76,7 +60,13 @@
         isReg: false,
         sendCodeDisabled: false,
         timeInterval: false,
-        timer: 0
+        timer: 0,
+        userData: {
+          name: '',
+          username: '',
+          phone: '',
+          task1: ''
+        },
       }
     },
     computed: {
@@ -118,13 +108,14 @@
         window.console.log(user)
       },
       sendCode() {
-        if(this.phone.length < 4){
+        if(this.userData.phone.length < 4){
           this.$toast.error('Не заполнен телефон');
           return
         }
-        this.$store.dispatch('request/sms_send', {phone: this.phone.replace('+', '').replace('(', '').replace(')', '').replace('-', '').replace(' ', ''), reg: true}).then((x) => {
+        let phone = this.userData.phone.replaceAll(',', '').replaceAll('(', '').replaceAll(')', '').replaceAll(' ', '').replaceAll('-', '');
+        this.$store.dispatch('request/sms_send', {phone: phone, name: this.userData.name, surname: this.userData.surname, task1: +this.userData.task1}).then((x) => {
           if ( !x.data.error ) {
-            this.step = 2;
+            this.isReg = true;
             this.sendCodeDisabled = true;
             let timeIsOut = Date.now() + 60;
             this.$store.dispatch('request/set_timeisout', timeIsOut)
@@ -227,6 +218,9 @@
 
   .auth_link:hover{
     border-bottom: 1px solid #92E6D6;
+  }
+  input{
+    color: black;
   }
 
 </style>

@@ -9,6 +9,7 @@
         <NuxtLink   to="" class="login_pass_btn" style="font-size: 28px;">Войти по паролю</NuxtLink>
       </div>
         <div  class="ma_btns">
+
           <NuxtLink  v-if="isReg == false"  to="./register" class="auth_link" style="font-size: 28px;">Регистрация</NuxtLink>
         </div>
         <div class="reg_block">
@@ -38,7 +39,7 @@
         <NuxtLink   to="" class="login_pass_btn" style="font-size: 28px;">Войти по Телефону</NuxtLink>
       </div>
         <div  class="ma_btns">
-          <NuxtLink  v-if="isReg == false"  to="./register" class="auth_link" style="font-size: 28px;">Регистрация</NuxtLink>
+          <NuxtLink  v-if="isReg == false"  to="./refresh-password" class="auth_link" style="font-size: 28px;">Восстановление пароля</NuxtLink>
         </div>
       <div class="reg_block">
         <div class="slf">
@@ -174,7 +175,7 @@
               window.localStorage.setItem('id', id);
               this.$auth.setUserToken('Bearer ' + x.data.accessToken)
               this.$store.dispatch('request/auth_user').then((resp) => {
-                this.$router.push('')
+                this.$router.push('/');
               })
             }
           } else {

@@ -49,7 +49,7 @@ export default {
   getUser({ commit }, state) {
     return new Promise((resolve, reject) => {
       this.$axios
-        .post('getProfile', state)
+        .post('get-profile', state)
         .then((x) => {
           resolve(x)
         })
@@ -59,7 +59,7 @@ export default {
   get_statinfo({ commit }, state) {
     return new Promise((resolve, reject) => {
       this.$axios
-        .post('graphInfo/', state)
+        .post('graph-info/', state)
         .then((x) => {
           resolve(x)
         })
@@ -68,7 +68,7 @@ export default {
   find_articles({ commit }, state) {
     return new Promise((resolve, reject) => {
       this.$axios
-        .post('findByArticles', state)
+        .post('find-by-articles', state)
         .then((x) => {
           resolve(x)
         })
@@ -77,7 +77,7 @@ export default {
   get_api({ commit }, state) {
     return new Promise((resolve, reject) => {
       this.$axios
-        .post('getByApi', state)
+        .post('get-by-api', state)
         .then((x) => {
           resolve(x)
         })
@@ -87,7 +87,7 @@ export default {
   getReportBuyout({ commit }, state) {
     return new Promise((resolve, reject) => {
       this.$axios
-        .post('reportBuyout', state)
+        .post('report-buyout', state)
         .then((x) => {
           resolve(x)
         })
@@ -99,7 +99,7 @@ export default {
   get_findbyart({ commit }, state) {
     return new Promise((resolve, reject) => {
       this.$axios
-        .post('findByArticle', state)
+        .post('find-by-article', state)
         .then((x) => {
           resolve(x)
         })
@@ -120,7 +120,7 @@ export default {
   parseExcel({ commit }, state) {
     return new Promise((resolve, reject) => {
       this.$axios
-        .post('parseExcel', state, {
+        .post('parse-excel', state, {
           headers: {
             'Content-Type': 'multipart/form-data'
           }
@@ -152,7 +152,7 @@ export default {
   checkallquery({ commit }, state) {
     return new Promise((resolve, reject) => {
       this.$axios
-        .post('findPosition', state)
+        .post('find-position', state)
         .then((x) => {
           resolve(x)
         })
@@ -161,7 +161,7 @@ export default {
   splitbydate({ commit }, state) {
     return new Promise((resolve, reject) => {
       this.$axios
-        .post('sortBuyByDate', state)
+        .post('sort-buy-by-date', state)
         .then((x) => {
           resolve(x)
         })
@@ -180,7 +180,7 @@ export default {
   draft_save({ commit }, state) {
     return new Promise((resolve, reject) => {
       this.$axios
-        .post('saveDraft', state)
+        .post('save-draft', state)
         .then((x) => {
           resolve(x)
         })
@@ -198,7 +198,7 @@ export default {
   updateUser({ commit }, state) {
     return new Promise((resolve, reject) => {
       this.$axios
-        .post('updateProfile', state)
+        .post('update-profile', state)
         .then((x) => {
           resolve(x)
         })
@@ -288,7 +288,7 @@ export default {
   reviews_save({ commit }, state) {
     return new Promise((resolve, reject) => {
       this.$axios
-        .post('updateReview', state)
+        .post('update-review', state)
         .then((x) => {
           resolve(x)
         })
@@ -297,7 +297,7 @@ export default {
   sms_send({ commit }, state) {
     return new Promise((resolve, reject) => {
       this.$axios
-        .post('sendCode', state)
+        .post('send-code', state)
         .then((x) => {
           resolve(x)
         })
@@ -325,7 +325,7 @@ export default {
   auth_user_save({ commit }, state) {
     return new Promise((resolve, reject) => {
       this.$axios
-        .post('updateProfile', state)
+        .post('update-profile', state)
         .then((x) => {
           commit('SET_USER', x.data.data.user)
           resolve(x)
@@ -379,4 +379,14 @@ export default {
         })
     })
   },
+  refreshPassword({ commit }, state) {
+    return new Promise((resolve, reject) => {
+      this.$axios
+        .post('refresh-password', state)
+        .then((x) => {
+          resolve(x)
+        })
+    })
+  },
 }
+

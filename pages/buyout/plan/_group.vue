@@ -1052,7 +1052,7 @@ export default {
       if(this.loadingResultsInSearch){
         return 0;
       }
-      this.$store.dispatch('request/checkallquery', {items: this.tItems}).then((x) => {
+      this.$store.dispatch('request/checkallquery', {userId: this.userId, items: this.tItems}).then((x) => {
         this.loadingResultsInSearch = true;
         for (var i = x.data.data.length - 1; i >= 0; i--) {
           console.log(x.data.data);
@@ -1071,7 +1071,7 @@ export default {
       })
     },
     splitByDate: function() {
-      this.$store.dispatch('request/splitbydate', {items: this.tItems, date: this.selectedDate}).then((x) => {
+      this.$store.dispatch('request/splitbydate', {userId: this.userId, items: this.tItems, date: this.selectedDate}).then((x) => {
         this.orderItems = x.data.data.items
         this.orderHeaders = x.data.data.headers
         this.step = 3;
@@ -1079,9 +1079,9 @@ export default {
     },
     orderSave: function( type ) {
       console.log(this.orderItems)
-      this.$store.dispatch('request/draft_update', {items: [], id: this.userId, group: this.$route.params.group}).then((x) => {
+      this.$store.dispatch('request/draft_update', {items: [], userId: this.userId, group: this.$route.params.group}).then((x) => {
       })
-      this.$store.dispatch('request/order_save', {items: this.orderItems, id: this.userId, }).then((x) => {
+      this.$store.dispatch('request/order_save', {items: this.orderItems, userId: this.userId,}).then((x) => {
         if ( !x.data.error ) {
 
           this.$toast.success(x.data.msg);
@@ -1098,7 +1098,7 @@ export default {
     findWb: function() {
 
         this.apiItemsLoading = true
-        this.$store.dispatch('request/find_wb', this.findWbParams).then((x) => {
+        this.$store.dispatch('request/find_wb', {userId: this.userId, ...this.findWbParams}).then((x) => {
             this.apiItemsLoading = false
             if ( !x.data.error ) {
                 this.apiItems  = x.data.items
@@ -1109,7 +1109,7 @@ export default {
         })
     },
     deleteDraft(){
-      this.$store.dispatch('request/draft_update', {items: [], id: this.userId, group: this.$route.params.group}).then((x) => {
+      this.$store.dispatch('request/draft_update', {items: [], userId: this.userId, group: this.$route.params.group}).then((x) => {
         if ( !x.data.error ) {
 
           this.$toast.success('Товар Успешно Удален');
@@ -1128,7 +1128,7 @@ export default {
       console.log(this.isDraft == 'true');
         this.tLoading = true
         if(this.isDraft == 'true'){
-          this.$store.dispatch('request/draft_list', {id: this.userId, group: this.$route.params.group}).then((x) => {
+          this.$store.dispatch('request/draft_list', {userId: this.userId, group: this.$route.params.group}).then((x) => {
             if ( !x.data.data.error ) {
               //this.orderItems  = x.data.data.products
               //this.orderHeaders = x.data.data.headers
@@ -1146,7 +1146,7 @@ export default {
           })
 
         } else {
-          this.$store.dispatch('request/buyout_list', {id: this.userId, sort: this.sort, group: this.$route.params.group}).then((x) => {
+          this.$store.dispatch('request/buyout_list', {userId: this.userId, sort: this.sort, group: this.$route.params.group}).then((x) => {
             if ( !x.data.data.error ) {
               this.tItems  = x.data.data.products;
               this.tHeaders = x.data.data.headers

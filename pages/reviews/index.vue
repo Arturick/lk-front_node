@@ -69,7 +69,7 @@ export default {
 
     list: function( type ) {
         this.tItems = []
-        this.$store.dispatch('request/reviews_list', {id: this.userId}).then((x) => {
+        this.$store.dispatch('request/reviews_list', {userId: this.userId}).then((x) => {
           console.log(x)
             if ( !x.data.error ) {
               if (this.tHeaders.length == 0 && x.data.data.headers.length > 0) {
@@ -101,7 +101,7 @@ export default {
             '8': 'Удалён|dunger',
         }
 
-        this.$store.dispatch('request/reviews_list', {type: 144}).then((x) => {
+        this.$store.dispatch('request/reviews_list', {userId: this.userId}).then((x) => {
             if ( !x.data.error ) {
               if (this.tHeadersOther.length == 0 && x.data.headers.length > 0) {
                   this.tHeadersOther = x.data.headers

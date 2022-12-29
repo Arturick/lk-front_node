@@ -103,7 +103,7 @@ export default {
 
         this.tItems = []
 
-        this.$store.dispatch('request/buyout_list', {id: this.userId, sort: 3, group: false}).then((x) => {
+        this.$store.dispatch('request/buyout_list', {userId: this.userId, sort: 3, group: false}).then((x) => {
           console.log(x.data.data);
           if ( !x.data.error ) {
 
@@ -127,7 +127,7 @@ export default {
             }
         })
 
-        this.$store.dispatch('request/draft_list', {id: this.userId, group: false}).then((x) => {
+        this.$store.dispatch('request/draft_list', {userId: this.userId, group: false}).then((x) => {
         console.log(x.data.data);
         if ( !x.data.error ) {
           for (let i of x.data.data.products) {
