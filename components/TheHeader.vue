@@ -1,5 +1,5 @@
 <template>
-    <div class="bg-white">
+     <div class="bg-white">
         <div class="md:container md:mx-auto">
             <div class="md:px-2.5 md:py-7 px-2.5 py-4">
                 <div class="md:flex md:items-center md:justify-between">
@@ -35,7 +35,7 @@
                                     <NuxtLink to="/reports" class="menu__link" exact-active-class="menu__link_active">Отчеты</NuxtLink>
                                   </li>
                                     <li class="menu__item">
-                                      <NuxtLink to="/tariffs" class="menu__link" exact-active-class="menu__link_active">Отчеты</NuxtLink>
+                                      <NuxtLink to="/tariffs" class="menu__link" exact-active-class="menu__link_active">Тарифы</NuxtLink>
                                     </li>
 
                                 </ul>

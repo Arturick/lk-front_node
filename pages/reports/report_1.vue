@@ -14,16 +14,16 @@
               <div class="mt-12">
                 <div style="display: flex; margin-bottom: 35px;">
                   <div>
-                    <Button class="rounded-lg p-2.5 but-0" :class="{'but-0_active' : sw == 1}" @click="sw = 1, showDateSelector = false">Все</Button>
+                    <Button class="rounded-lg p-2.5 but-0" :class="{'but-0_active' : sw == 4}" @click="sw = 4, showDateSelector = false, getReport()">Все</Button>
                   </div>
                   <div class="btn_rep_el">
-                    <Button class="rounded-lg p-2.5 but-0" :class="{'but-0_active' : sw == 2}" @click="sw = 2, showDateSelector = false">Сегодня</Button>
+                    <Button class="rounded-lg p-2.5 but-0" :class="{'but-0_active' : sw == 1}" @click="sw = 1, showDateSelector = false, getReport()">Сегодня</Button>
                   </div>
                   <div class="btn_rep_el">
-                    <Button class="rounded-lg p-2.5 but-0" :class="{'but-0_active' : sw == 3}" @click="sw = 3, showDateSelector = false">Неделя</Button>
+                    <Button class="rounded-lg p-2.5 but-0" :class="{'but-0_active' : sw == 2}" @click="sw = 2, showDateSelector = false, getReport()">Неделя</Button>
                   </div>
                   <div class="btn_rep_el">
-                    <Button class="rounded-lg p-2.5 but-0" :class="{'but-0_active' : sw == 4}" @click="sw = 4, showDateSelector = false">Месяц</Button>
+                    <Button class="rounded-lg p-2.5 but-0" :class="{'but-0_active' : sw == 3}" @click="sw = 3, showDateSelector = false, getReport()">Месяц</Button>
                   </div>
                   <div class="btn_rep_el">
                     <Button class="rounded-lg p-2.5 but-0" :class="{'but-0_active' : sw == 5}" @click="sw = 5, showDateSelector = !showDateSelector" >Задать период</Button>
@@ -70,7 +70,7 @@
                   </v-date-picker>
                 </v-dialog>
                   <div class="btn_rep_el">
-                    <Button class="rounded-lg p-2.5 but-1" @click="" >Получить</Button>
+                    <Button class="rounded-lg p-2.5 but-1" @click="getReport()" >Получить</Button>
                   </div>
               </div>
               </div>
@@ -81,6 +81,22 @@
                 <div class="content-title content-title_2">Раннее заказанные отчеты</div>
                 <template v-if="tItems.length == 0">
                   <div class="result-empty">ЗДЕСЬ ПОКА НИЧЕГО</div>
+                </template>
+                <template v-else>
+                  <div class="mt-2.5 md:w-3/5">
+                  <v-data-table
+                    :headers="productHeaders"
+                    :items="tItems"
+                    class="postable"
+                  >
+                    <template v-slot:item.action="{ item }">
+                      <span :class="'status-succses'">Заказали</span>
+                    </template>
+                    <template v-slot:item.date_reports="{ item }">
+                      {{item.date_reports.toLocaleString().split('T')[0]}}
+                    </template>
+                  </v-data-table>
+                  </div>
                 </template>
             </div>
 
@@ -113,13 +129,18 @@
         ],
         sw: 0,
         showDateSelector: false,
-
+        userId: '',
+        type: this.$route.query.type,
         // selectedDate: {
         //       startDate: new Date(),
         //       endDate:
         //   },
 
-
+        productHeaders: [
+          {"text": "Тип", "value": 'type', 'sortable': false},
+          {"text": "Дата Заказа", "value": 'date_reports', 'sortable': false},
+          {"text": "", "value": 'action', 'sortable': false},
+        ],
       }
     },
     watch: {
@@ -136,14 +157,22 @@
     },
     methods: {
       getReport(){
-        this.$store.dispatch('request/getReportBuyout', {task1: 5122022, }).then((x) => {
-          cosnole.log(x);
-          this.resultsInSearch = x.data;
-          this.loadingResultsInSearch = false
+        this.$store.dispatch(this.type == 'buyout' ? 'request/getReportBuyout' : this.type == 'delivery' ? 'request/getReportDelivery'  : 'request/getReportReview' , {userId: this.userId, type: this.sw, dates: this.selectedDate}).then((x) => {
+          let link = document.createElement('a');
+          link.setAttribute('href', '/Excel.xlsx');
+          link.click();
+          this.getReports()
+        })
+      },
+      getReports(){
+        this.$store.dispatch('request/getReport', {userId: this.userId, type: this.type}).then((x) => {
+          this.tItems = x.data;
         })
       }
     },
     mounted() {
+      this.userId = window.localStorage.getItem("id");
+      this.getReports()
     }
   }
 </script>

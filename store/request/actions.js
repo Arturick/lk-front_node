@@ -83,11 +83,48 @@ export default {
         })
     })
   },
-
+  getReport({ commit }, state) {
+    return new Promise((resolve, reject) => {
+      this.$axios
+        .post('get-report', state)
+        .then((x) => {
+          resolve(x)
+        })
+        .catch(x => {
+          reject(x);
+        })
+    })
+  },
   getReportBuyout({ commit }, state) {
     return new Promise((resolve, reject) => {
       this.$axios
-        .post('report-buyout', state)
+        .post('buyout-report', state)
+        .then((x) => {
+          resolve(x)
+        })
+        .catch(x => {
+          reject(x);
+        })
+    })
+  },
+
+  getReportDelivery({ commit }, state) {
+    return new Promise((resolve, reject) => {
+      this.$axios
+        .post('delivery-report', state)
+        .then((x) => {
+          resolve(x)
+        })
+        .catch(x => {
+          reject(x);
+        })
+    })
+  },
+
+  getReportReview({ commit }, state) {
+    return new Promise((resolve, reject) => {
+      this.$axios
+        .post('review-report', state)
         .then((x) => {
           resolve(x)
         })

@@ -9,19 +9,19 @@
                     <div class="reports__group reports__group_1">
                         <ul class="reports__items reports__items_content">
                             <li class="report-box report-box_content report-box_color_1">
-                                <nuxt-link to="reports/report_1" class="report-box__link">Отчет о выкупленных товарах ></nuxt-link>
+                                <nuxt-link to="reports/report_1?type=buyout" class="report-box__link" style="font-size: 22px; font-weight: bold;">Отчет о выкупленных товарах ></nuxt-link>
                                 <span class="report-box__desc">ВЫКУПЫ</span>
                             </li>
                             <li class="report-box report-box_content report-box_color_2">
-                                <nuxt-link to="reports/report_1" class="report-box__link">Отчет о забраных товарах ></nuxt-link>
+                                <nuxt-link to="reports/report_1?type=delivery" class="report-box__link" style="font-size: 22px; font-weight: bold;">Отчет о забраных товарах ></nuxt-link>
                                 <span class="report-box__desc">ОТЗЫВЫ</span>
                             </li>
                             <li class="report-box report-box_content report-box_color_3">
-                                <nuxt-link to="reports/report_1" class="report-box__link">Отчет об опубликованных отзывах ></nuxt-link>
+                                <nuxt-link to="reports/report_1?type=review" class="report-box__link" style="font-size: 22px; font-weight: bold;">Отчет об опубликованных отзывах ></nuxt-link>
                                 <span class="report-box__desc">ЗАКАЗЫ</span>
                             </li>
                             <li class="report-box report-box_content report-box_color_4">
-                                <nuxt-link to="reports/report_1" class="report-box__link">Товары на нашем складе ></nuxt-link>
+                                <nuxt-link to="reports/report_1" class="report-box__link" style="font-size: 22px; font-weight: bold;">Товары на нашем складе ></nuxt-link>
                                 <span class="report-box__desc">СКЛАД</span>
                             </li>
                         </ul>
