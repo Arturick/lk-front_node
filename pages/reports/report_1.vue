@@ -157,7 +157,7 @@
     },
     methods: {
       getReport(){
-        this.$store.dispatch(this.type == 'buyout' ? 'request/getReportBuyout' : this.type == 'delivery' ? 'request/getReportDelivery'  : 'request/getReportReview' , {userId: this.userId, type: this.sw, dates: this.selectedDate}).then((x) => {
+        this.$store.dispatch(this.type == 'buyout' ? 'request/getReportBuyout' : this.type == 'delivery' ? 'request/getReportDelivery'  : 'request/getReportReview' , {userId: this.userId, type: this.sw, dates: this.sw == 5 ? this.selectedDate : []}).then((x) => {
           let link = document.createElement('a');
           link.setAttribute('href', '/Excel.xlsx');
           link.click();
