@@ -154,6 +154,15 @@ export default {
         })
     })
   },
+  getManagerLink({ commit }, state) {
+    return new Promise((resolve, reject) => {
+      this.$axios
+        .post('get-manager-link', state)
+        .then((x) => {
+          resolve(x)
+        })
+    })
+  },
   parseExcel({ commit }, state) {
     return new Promise((resolve, reject) => {
       this.$axios
@@ -407,6 +416,15 @@ export default {
         })
     })
   },
+  add_manager({ commit }, state) {
+    return new Promise((resolve, reject) => {
+      this.$axios
+        .post('access-manager', state)
+        .then((x) => {
+          resolve(x)
+        })
+    })
+  },
   dadata_search({ commit }, state) {
     return new Promise((resolve, reject) => {
       this.$axios
@@ -420,6 +438,15 @@ export default {
     return new Promise((resolve, reject) => {
       this.$axios
         .post('refresh-password', state)
+        .then((x) => {
+          resolve(x)
+        })
+    })
+  },
+  sendResetCode({ commit }, state) {
+    return new Promise((resolve, reject) => {
+      this.$axios
+        .post('send-reset-code', state)
         .then((x) => {
           resolve(x)
         })

@@ -24,11 +24,18 @@
               </div>
             </div>
           </template>
-          <input type="text" v-if="step!=2" class="bg-white p-4 text-black rounded text-lg w-full text-center md:text-left" placeholder="Введите телефон" v-mask="'+# (###) ###-##-################'" v-model="phone"   style="width: 400px;" inputmode="numeric">
+          <input type="text" v-if="step==1" class="bg-white p-4 text-black rounded text-lg w-full text-center md:text-left" placeholder="Введите телефон" v-mask="'+# (###) ###-##-################'" v-model="phone"   style="width: 400px;" inputmode="numeric">
           <input type="text" v-if="step==2" class="bg-white p-4 text-black rounded text-lg w-full text-center md:text-left" placeholder="Введите код" v-mask="'####'" v-model="code"  inputmode="numeric" style="width: 400px;">
+          <div v-if="step==3">
+            <div class="md:mt-0 mt-2.5" style="width: 450px; color: black; font-size: 20px; font-weight: bold">
+              <Select :items="managerList" label="Client Id: " v-model="manager"/>
+            </div>
+
+          </div>
         </div>
-        <div v-if="step!=2" class="reg_btn" @click="sendCode">Далее</div>
+        <div v-if="step==1" class="reg_btn" @click="sendCode">Далее</div>
         <div v-if="step==2" class="reg_btn" @click="checkCode">Далее</div>
+          <div v-if="step==3" class="reg_btn" @click="authManager">Далее</div>
         </div>
 
 
@@ -46,7 +53,7 @@
           <input type="text" class="bg-white p-4 text-black rounded text-lg w-full text-center md:text-left" placeholder="Введите Логин" v-model="login">
         </div>
         <div class="slf">
-          <input type="text"  class="bg-white p-4 text-black rounded text-lg w-full text-center md:text-left" placeholder="Введите Пароль" v-model="password">
+          <input type="password"  class="bg-white p-4 text-black rounded text-lg w-full text-center md:text-left" placeholder="Введите Пароль" v-model="password">
         </div>
         <button type="button" class="reg_btn" @click="loginUser" style="color: black">Войти</button>
       </div>
@@ -80,7 +87,9 @@
         isReg: false,
         sendCodeDisabled: false,
         timeInterval: false,
-        timer: 0
+        timer: 0,
+        managerList: [],
+        manager: {},
       }
     },
     computed: {
@@ -126,7 +135,7 @@
           this.$toast.error('Не заполнен телефон');
           return
         }
-        this.$store.dispatch('request/sms_send', {phone: this.phone.replace('+', '').replace('(', '').replace(')', '').replace('-', '').replace(' ', ''), reg: this.isReg}).then((x) => {
+        this.$store.dispatch('request/sms_send', {phone: this.phone.replaceAll(' ', '').replaceAll('(', '').replaceAll(')', '').replaceAll('-', '').replaceAll('+', ''), reg: this.isReg}).then((x) => {
           if ( !x.data.error ) {
             this.step = 2;
             this.sendCodeDisabled = true;
@@ -143,19 +152,30 @@
         })
       },
       checkCode() {
-        this.loadAuth = true;
-        this.$store.dispatch('request/sms_check', {action: 'check', phone: this.phone.replace('+', '').replace('(', '').replace(')', '').replace('-', '').replace(' ', ''), code: this.code}).then((x) => {
+        this.$store.dispatch('request/sms_check', {action: 'check', phone: this.phone.replaceAll(' ', '').replaceAll('(', '').replaceAll(')', '').replaceAll('-', '').replaceAll('+', ''), code: this.code}).then((x) => {
           console.log(x);
           if ( !x.data.error ) {
-            this.step = 2
+
             if (x.data.accessToken) {
-              let id = x.data.id;
-              window.localStorage.setItem('id', id);
-              this.$auth.setUserToken('Bearer ' + x.data.accessToken)
-              this.$store.dispatch('request/auth_user').then((resp) => {
-                this.$router.push('')
-                this.loadAuth = false;
-              })
+              if(x.data.userId.length < 2){
+                this.loadAuth = true;
+                let id = x.data.userId[0]['id'];
+                window.localStorage.setItem('id', id);
+                this.$auth.setUserToken('Bearer ' + x.data.accessToken)
+                this.$store.dispatch('request/auth_user').then((resp) => {
+                  this.$router.push('')
+                  this.loadAuth = false;
+                })
+              } else {
+                for(let i of x.data.userId){
+                  this.managerList.push({});
+                  this.managerList[this.managerList.length - 1]['value'] = i;
+                  this.managerList[this.managerList.length - 1]['name'] = i['task1'];
+                }
+                console.log(this.managerList);
+                this.step = 3;
+              }
+
             }
           } else {
             this.loadAuth = false;
@@ -165,6 +185,33 @@
       },
       loginUser(){
         this.$store.dispatch('request/login_user', {login: this.login, password: this.password}).then((x) => {
+          console.log(x);
+          this.login = '';
+          this.password = '';
+          if ( !x.data.error ) {
+            this.step = 2
+            if (x.data.accessToken) {
+              let id = x.data.id;
+              window.localStorage.setItem('id', id);
+              this.$auth.setUserToken('Bearer ' + x.data.accessToken)
+              this.$store.dispatch('request/auth_user').then((resp) => {
+                this.$router.push('/');
+              })
+            }
+          } else {
+            if(x.data.error == 'wrong password'){
+              this.$toast.error('Не верный логин или ключ авторизации');
+            } else {
+              this.$toast.error('Вы исчерпали лимит попыток входа по паролю, в ближайшее время наш менеджер свяжется с вами и поможе трешить проблему');
+            }
+
+          }
+        })
+      },
+      authManager(){
+        this.loadAuth = true;
+        this.$store.dispatch('request/login_user', {login: this.manager.login, password: this.manager.password}).then((x) => {
+
           console.log(x);
           this.login = '';
           this.password = '';

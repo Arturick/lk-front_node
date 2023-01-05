@@ -131,7 +131,8 @@
       },
       checkCode() {
         this.loadAuth = true;
-        this.$store.dispatch('request/sms_check', {action: 'check', phone: this.phone.replace('+', '').replace('(', '').replace(')', '').replace('-', '').replace(' ', ''), code: this.code}).then((x) => {
+        let phone = this.userData.phone.replaceAll(',', '').replaceAll('(', '').replaceAll(')', '').replaceAll(' ', '').replaceAll('-', '');
+        this.$store.dispatch('request/sms_check', {action: 'check', phone: phone, code: this.code}).then((x) => {
           console.log(x);
           if ( !x.data.error ) {
             this.step = 2

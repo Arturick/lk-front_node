@@ -6,9 +6,9 @@
           v-for="(item, i) of items"
           :key="i"
           @click="
-            selected = item;
-            open = false;
-            $emit('input', item.value);
+            selected = item,
+            open = false,
+            $emit('input', item.value)
           "
           class="select__item p-2.5"
         >{{ item.name }}</div>
@@ -96,7 +96,7 @@ export default {
 .select__item {
   /*padding: 7px 14px;*/
   border-bottom: solid #9899992e 1px;
-  
+
 }
 .select__item:last-child {
   border: 0px;

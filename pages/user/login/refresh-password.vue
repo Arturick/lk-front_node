@@ -108,40 +108,28 @@
           this.$toast.error('Не заполнен телефон');
           return
         }
-        let phone = this.userData.phone.replaceAll(',', '').replaceAll('(', '').replaceAll(')', '').replaceAll(' ', '').replaceAll('-', '');
-        this.$store.dispatch('request/refreshPassword', {phone: phone, name: this.userData.name, surname: this.userData.surname, task1: +this.userData.task1}).then((x) => {
+        let phone = this.userData.phone.replaceAll(',', '').replaceAll('+', '').replaceAll('(', '').replaceAll(')', '').replaceAll(' ', '').replaceAll('-', '');
+        this.$store.dispatch('request/sendResetCode', {phone: phone, name: this.userData.name, surname: this.userData.surname, task1: +this.userData.task1}).then((x) => {
           if ( !x.data.error ) {
             this.isReg = true;
             this.sendCodeDisabled = true;
             let timeIsOut = Date.now() + 60;
             this.$store.dispatch('request/set_timeisout', timeIsOut)
             window.localStorage.setItem("timeIsOut", timeIsOut)
-            if(this.isReg){
-              console.log('');
-              this.$toast.success('Аккаунт успешно создан');
-            }
           } else {
-            this.$toast.error(x.data.error)
+            this.$toast.error('Акаунт не найден');
           }
         })
       },
       checkCode() {
         this.loadAuth = true;
-        this.$store.dispatch('request/sms_check', {action: 'check', phone: this.phone.replace('+', '').replace('(', '').replace(')', '').replace('-', '').replace(' ', ''), code: this.code}).then((x) => {
+        let phone = this.userData.phone.replaceAll(',', '').replaceAll('+', '').replaceAll('(', '').replaceAll(')', '').replaceAll(' ', '').replaceAll('-', '');
+        this.$store.dispatch('request/refreshPassword', {phone: phone, code: this.code, task1: -1}).then((x) => {
           console.log(x);
+          this.$router.push('/');
           if ( !x.data.error ) {
-            this.step = 2
-            if (x.data.accessToken) {
-              let id = x.data.id;
-              window.localStorage.setItem('id', id);
-              this.$auth.setUserToken('Bearer ' + x.data.accessToken)
-              this.$store.dispatch('request/auth_user').then((resp) => {
-                this.$router.push('')
-                this.loadAuth = false;
-              })
-            }
+
           } else {
-            this.loadAuth = false;
             this.$toast.error(x.data.error)
           }
         })

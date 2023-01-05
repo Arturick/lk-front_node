@@ -168,7 +168,10 @@
         this.$store.dispatch('request/getReport', {userId: this.userId, type: this.type}).then((x) => {
           this.tItems = x.data;
         })
-      }
+      },
+      back: function() {
+        this.$router.push('/reports');
+      },
     },
     mounted() {
       this.userId = window.localStorage.getItem("id");

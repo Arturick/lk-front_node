@@ -4,7 +4,9 @@
             <div class="content__group content__group_1">
                 <div class="reports content-box">
                   <div class=" flex gap-8 items-center" style="margin-bottom: 50px; margin-top: 5px;">
-                    <Breadcrumbs :items="crumbs" :back="back"/>
+                    <div>
+                      <Breadcrumbs :items="crumbs" :back="back"/>
+                    </div>
                   </div>
                     <div class="reports__group reports__group_1">
                         <ul class="reports__items reports__items_content">
@@ -50,7 +52,9 @@
 
     },
     methods: {
-
+      back: function() {
+        this.$router.push('/');
+      },
     },
     mounted() {
     }
