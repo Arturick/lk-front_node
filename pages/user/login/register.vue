@@ -128,7 +128,7 @@
             if(x.data.error == 'forbidden'){
               this.$router.push('/user/login/already');
             }
-            if(x.data.error = 'Слишком много попыток входа\n Попробуйте еще раз через время'){
+            if(x.data.error == 'Слишком много попыток входа\n Попробуйте еще раз через время'){
               this.$router.push('/user/login/spam')
             }
             this.$toast.error(x.data.error)
