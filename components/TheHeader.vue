@@ -53,7 +53,7 @@
                               class="w-full md:w-auto "
                             >
                                 <v-icon small>mdi-account</v-icon>
-                                <span class="truncate w-64" >{{ user.name }}</span>
+                                <span class="truncate w-64" >{{ profile.name }}</span>
                                 <v-icon large>mdi-chevron-down</v-icon>
                             </v-btn>
                           </template>
@@ -165,7 +165,10 @@ export default {
       companies: [],
       step: 1,
       number: '',
-      suggestions: []
+      suggestions: [],
+      userId: '',
+      profile: {},
+
     }
   },
   watch: {
@@ -224,12 +227,16 @@ export default {
         } else {
             this.$toast.warning('ИНН не валидный')
         }
-    }
+    },
+    getUser(){
+      this.$store.dispatch('request/getUser', {userId: this.userId}).then((x) => {
+        this.profile =  x.data;
+      })
+    },
   },
   mounted() {
-    this.$store.dispatch('request/auth_user').then((resp) => {
-        this.checkUserInfo()
-    })
+    this.userId = +window.localStorage.getItem('id');
+    this.getUser();
     this.$store.dispatch('request/get_options').then((x) => {})
   }
 }

@@ -46,8 +46,7 @@
         step: 1,
         managerList: [ {"value":"1", "name":"Только Чтение"},
           {"value":"2", "name":"Ограниченый доступ"},
-          {"value":"3", "name":"Полный доступ"},
-          {"value":"4", "name":"Владелец"},],
+          {"value":"3", "name":"Полный доступ"},],
         manager: '',
         managerInfo: {},
         login: '',
@@ -124,7 +123,7 @@
 
       addManager(access){
         this.$store.dispatch('request/add_manager', {phone: this.managerInfo.userLogin.replace('+', ''), access: access, name: this.managerInfo.name, surname: this.managerInfo.surname, role: this.manager, userId: this.managerInfo.userId, task1: this.managerInfo['task1']}).then((x) => {
-          this.$router.push('')
+          this.$router.push('/user/login/login');
         })
 
       }

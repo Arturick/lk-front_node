@@ -66,9 +66,9 @@ export default {
 .select__name {
     font-family: 'Montserrat';
     font-style: normal;
-    font-weight: 500;
-    font-size: 16px;
-    color: #989999;
+    font-weight: bold;
+    font-size: 25px;
+    color: black;
     position: relative;
     /*padding: 7px 14px;*/
     display: flex;
@@ -77,8 +77,7 @@ export default {
     width: 100%;
     background: #fff;
     justify-content: space-between;
-    border: 1px solid #989999;
-    border-radius: 10px;
+    height: 62px;
 }
 
 .select__items {

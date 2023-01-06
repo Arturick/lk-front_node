@@ -90,7 +90,7 @@
                     class="postable"
                   >
                     <template v-slot:item.action="{ item }">
-                      <span :class="'status-succses'">Заказали</span>
+                      <a :href="'/oldReport/'+item.link" download>Скачать</a>
                     </template>
                     <template v-slot:item.date_reports="{ item }">
                       {{item.date_reports.toLocaleString().split('T')[0]}}

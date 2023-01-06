@@ -28,10 +28,10 @@
       </div>
       <div class="btn_container_r">
       <div v-if="!isReg">
-        <div class="reg_btn" @click="sendCode">Далее</div>
+        <div class="reg_btn" @click="sendCode" style="cursor: pointer">Далее</div>
       </div>
       <div v-else>
-        <div class="reg_btn" @click="checkCode">Далее</div>
+        <div class="reg_btn" @click="checkCode" style="cursor: pointer">Далее</div>
       </div>
       </div>
       </div>
@@ -117,7 +117,10 @@
             this.$store.dispatch('request/set_timeisout', timeIsOut)
             window.localStorage.setItem("timeIsOut", timeIsOut)
           } else {
-            this.$toast.error('Акаунт не найден');
+            if(x.data.error = 'Слишком много попыток входа\n Попробуйте еще раз через время'){
+              this.$router.push('/user/login/spam')
+            }
+            this.$toast.error(x.data.error);
           }
         })
       },
@@ -126,10 +129,11 @@
         let phone = this.userData.phone.replaceAll(',', '').replaceAll('+', '').replaceAll('(', '').replaceAll(')', '').replaceAll(' ', '').replaceAll('-', '');
         this.$store.dispatch('request/refreshPassword', {phone: phone, code: this.code, task1: -1}).then((x) => {
           console.log(x);
-          this.$router.push('/');
-          if ( !x.data.error ) {
 
+          if ( !x.data.error ) {
+            this.$router.push('/user/login/login');
           } else {
+            console.log(x);
             this.$toast.error(x.data.error)
           }
         })
@@ -171,5 +175,8 @@
     outline-offset: 0;
     border: none;
     box-shadow: none;
+  }
+  button{
+    cursor: pointer;
   }
 </style>

@@ -4,13 +4,18 @@
     <div v-if="loadAuth==false">
       <div v-if="type==1" class="main_authorize">
 
-        <div v-if="isReg == false" class="ma_title">Авторизоваться</div>
-      <div  @click="type=2" class="ma_btns">
+        <div v-if="isReg == false && step < 3" class="ma_title">Авторизоваться</div>
+        <div v-else class="ma_title">Добро Пожалговать!<br>Вас приветствует Компания RATE-THIS</div>
+        <div  @click="type=2" v-if="step < 3" class="ma_btns">
         <NuxtLink   to="" class="login_pass_btn" style="font-size: 28px;">Войти по паролю</NuxtLink>
       </div>
+        <div v-else>
+          <div class="rec_title" style="text-align: center; margin: 30px auto; width: 100%">
+            Мы заметили лялялляляллялял
+          </div>
+        </div>
         <div  class="ma_btns">
-
-          <NuxtLink  v-if="isReg == false"  to="./register" class="auth_link" style="font-size: 28px;">Регистрация</NuxtLink>
+          <NuxtLink  v-if="isReg == false && step < 3"  to="./register" class="auth_link" style="font-size: 28px;">Регистрация</NuxtLink>
         </div>
         <div class="reg_block">
         <div>
@@ -26,8 +31,8 @@
           </template>
           <input type="text" v-if="step==1" class="bg-white p-4 text-black rounded text-lg w-full text-center md:text-left" placeholder="Введите телефон" v-mask="'+# (###) ###-##-################'" v-model="phone"   style="width: 400px;" inputmode="numeric">
           <input type="text" v-if="step==2" class="bg-white p-4 text-black rounded text-lg w-full text-center md:text-left" placeholder="Введите код" v-mask="'####'" v-model="code"  inputmode="numeric" style="width: 400px;">
-          <div v-if="step==3">
-            <div class="md:mt-0 mt-2.5" style="width: 450px; color: black; font-size: 20px; font-weight: bold">
+          <div v-if="step==3" class="select_back">
+            <div class="md:mt-0 mt-2.5 self_mt" style="">
               <Select :items="managerList" label="Client Id: " v-model="manager"/>
             </div>
 
@@ -147,6 +152,9 @@
               this.$toast.success('Аккаунт успешно создан');
             }
           } else {
+            if(x.data.error = 'Слишком много попыток входа\n Попробуйте еще раз через время'){
+              this.$router.push('/user/login/spam')
+            }
             this.$toast.error(x.data.error)
           }
         })
@@ -194,14 +202,13 @@
               let id = x.data.id;
               window.localStorage.setItem('id', id);
               this.$auth.setUserToken('Bearer ' + x.data.accessToken)
-              this.$store.dispatch('request/auth_user').then((resp) => {
-                this.$router.push('/');
-              })
+              this.$router.push('/');
             }
           } else {
             if(x.data.error == 'wrong password'){
-              this.$toast.error('Не верный логин или ключ авторизации');
+              this.$toast.error(`Не верный логин или ключ авторизации\n Попытак осталось  ${3 - (+x.data.count)}`);
             } else {
+              this.$router.push('/user/login/password-spam');
               this.$toast.error('Вы исчерпали лимит попыток входа по паролю, в ближайшее время наш менеджер свяжется с вами и поможе трешить проблему');
             }
 
@@ -279,5 +286,17 @@
   .auth_link:hover{
       border-bottom: 1px solid #92E6D6;
   }
-
+  .select_back{
+    width: 500px;
+    background: white;
+    height: 62px;
+    border-radius: 15px;
+  }
+  .self_mt{
+      width: 300px;
+    margin-left: 100px;
+    font-weight: bold;
+    font-size: 30px;
+    color: black;
+  }
 </style>
