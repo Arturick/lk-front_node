@@ -913,7 +913,7 @@ export default {
        this.model = value
     },
     findByArt: function(cnt = false, rcnt = false, barcode = false) {
-      this.$store.dispatch('request/get_findbyart', {article: this.art}).then((x) => {
+      this.$store.dispatch('request/get_findbyart', {article: this.art, userId: this.userId}).then((x) => {
 
 
         this.tHeaders = x.data.data.headers;
@@ -1007,7 +1007,7 @@ export default {
 
     draftSave: function () {
       console.log(this.orderItems)
-      this.$store.dispatch('request/draft_update', {items: this.orderItems, id: this.userId, group: this.$route.params.group}).then((x) => {
+      this.$store.dispatch('request/draft_update', {items: this.orderItems, userId: this.userId, group: this.$route.params.group}).then((x) => {
         if ( !x.data.error ) {
 
           this.$toast.success('Товар Успешно Сохранен');

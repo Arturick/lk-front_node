@@ -332,7 +332,7 @@
 
         </div>
         <Modal v-show="modalByApiShow" @close-modal="modalByApiShow = false">
-            <div class="bg-white rounded-3xl mt-2.5 mx-2.5 p-2.5 md:p-7 h-full">
+            <div class="bg-white rounded-3xl mt-2.5 mx-2.5 p-2.5 md:p-7" style="height: 600px">
                 <div class="h-full flex flex-col gap-1">
                     <div class="content-title">Выберите товары</div>
                     <div class="flex gap-4">
@@ -341,9 +341,9 @@
                         </div>
                         <Button class="rounded-lg p-2.5 but-1" @click="addToTItems">Добавить</Button>
                     </div>
-                  <div class="grow">
+                  <div class="grow" style="overflow: scroll; height: 70%">
                     <template>
-                      <CommonTable :headers="apiHeaders" :items="sortPost" :loading="apiItemsLoading" class="h-96">
+                      <CommonTable :headers="apiHeaders" :items="sortPost" :loading="apiItemsLoading" class="h-96" style="overflow: auto">
                         <template v-slot:item.image="{ item }">
                           <img :src="item.image" alt="" class="img-table">
                         </template>
@@ -913,7 +913,7 @@ export default {
       if(this.loadingResultsInSearch){return;}
       this.bulkAdd2 = true;
       this.lotArtsLoad2 = true;
-      this.$store.dispatch('request/checkallquery', {items: this.tItems}).then((x) => {
+      this.$store.dispatch('request/checkallquery', {items: this.tItems, userId: this.userId,}).then((x) => {
         this.loadingResultsInSearch = true;
         this.lotArtsLoad2 = false;
         this.bulkAdd2 = false;
@@ -921,6 +921,7 @@ export default {
                 console.log(x.data.data);
                 if(x.data.data[i].position < 0 || !x.data.data[i].position){
                   this.tItems[ x.data.data[i].index ]['warn'] = 'status-warning';
+                  this.tItems[i].class = 'new_req_err';
                   this.$toast.error('Запрос не найден');
                   this.loadingResultsInSearch = true;
                   return;
@@ -944,7 +945,7 @@ export default {
       })
     },
     splitByDate: function() {
-        this.$store.dispatch('request/splitbydate', {items: this.tItems, date: this.selectedDate}).then((x) => {
+        this.$store.dispatch('request/splitbydate', {items: this.tItems, date: this.selectedDate, userId: this.userId,}).then((x) => {
             this.orderItems = x.data.data.items
             this.orderHeaders = x.data.data.headers
             this.step = 4
@@ -952,7 +953,7 @@ export default {
     },
     orderSave: function( type ) {
       console.log(this.orderItems)
-      this.$store.dispatch('request/order_save', {items: this.orderItems, id: this.userId, }).then((x) => {
+      this.$store.dispatch('request/order_save', {items: this.orderItems, userId: this.userId, }).then((x) => {
             if ( !x.data.error ) {
 
                 this.$toast.success('Заявка успешно оформлена');
@@ -967,7 +968,7 @@ export default {
     },
     draftSave: function (type) {
       console.log(this.orderItems)
-      this.$store.dispatch('request/draft_save', {items: this.orderItems, id: this.userId, }).then((x) => {
+      this.$store.dispatch('request/draft_save', {items: this.orderItems, userId: this.userId, }).then((x) => {
         if ( !x.data.error ) {
 
           this.$toast.success('Товар Успешно Сохранен');

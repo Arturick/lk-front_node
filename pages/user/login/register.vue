@@ -143,7 +143,7 @@
           if ( !x.data.error ) {
             this.step = 2
             if (x.data.accessToken) {
-              let id = x.data.id;
+              let id = x.data.userId[0].id;
               window.localStorage.setItem('id', id);
               this.$auth.setUserToken('Bearer ' + x.data.accessToken)
               this.$store.dispatch('request/auth_user').then((resp) => {

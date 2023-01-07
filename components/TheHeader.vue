@@ -53,7 +53,7 @@
                               class="w-full md:w-auto "
                             >
                                 <v-icon small>mdi-account</v-icon>
-                                <span class="truncate w-64" >{{ profile.name }}</span>
+                                <span class="truncate w-64" >{{ profile.u_name }}</span>
                                 <v-icon large>mdi-chevron-down</v-icon>
                             </v-btn>
                           </template>
