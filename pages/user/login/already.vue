@@ -1,8 +1,11 @@
 <template>
   <main class="main">
     <div  class="ma_title">Добро Пожалговать!<br>Вас приветствует Компания RATE-THIS</div>
-    <div class="rec_title" style="text-align: center; margin: 30px auto; width: 100%">
-      Уже есть это в базе ляляля
+    <div class="rec_title" style="text-align: left; margin: 30px auto; width: 85%; font-size: 25px">
+      Данный номер договора уже заведен к нам в систему, владельцу личного кабинета выслана ссылка с подтверждением на допуск в личный кабинет, ожидайте пожалуйста, как только владелец подтвердит, вам прийдет смс с логином и паролем
+    </div>
+    <div class="rec_title" style="text-align: left; margin: 80px auto; width: 85%; font-size: 25px">
+      Если вы и являетесь владельцем личного кабинета, пожалуйста напишите, <br> нам  https://t.me/ratethisgroup
     </div>
   </main>
 </template>

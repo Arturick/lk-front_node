@@ -5,7 +5,7 @@
       <div class="rec_title">
         Для восстановления пароля, заполните<br> пожалуйста данные
       </div>
-      <div v-if="!isReg">
+      <div>
         <div class="rec_inputs">
           <div class="reg_input reg_input_a">
             <input v-model="userData.name" type="text" placeholder="Имя">
@@ -21,12 +21,12 @@
           <input v-model="userData.task1" type="text" placeholder="Номер договора">
         </div>
       </div>
-      <div v-else style="width: 100%; text-align: center;">
-        <div class="reg_input reg_input_a inp_tel" style="margin: 0 auto">
-          <input v-model="code" type="text" placeholder="Код из СМС">
-        </div>
-      </div>
       <div class="btn_container_r">
+
+      <div v-if="isReg" class="reg_input reg_input_a inp_tel" style="margin-right: 55px">
+        <input v-model="code" type="text" placeholder="Код из СМС">
+      </div>
+
       <div v-if="!isReg">
         <div class="reg_btn" @click="sendCode" style="cursor: pointer">Далее</div>
       </div>
