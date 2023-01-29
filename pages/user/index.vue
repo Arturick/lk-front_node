@@ -45,7 +45,7 @@
               <div class="input-block">
                 <input type="password" class="input-block__input py-5 px-6" placeholder="Телефон"  v-model="profile.password" autocomplete="off">
               </div>
-                <button class="w-full md:w-52 p-2.5 teal lighten-2 text-2xl text-gray-800 rounded" @click="updateUser">Сохранить</button>
+                <button class="w-full md:w-52 p-2.5 teal lighten-2 text-2xl text-gray-800 rounded" @click="updateLog">Сохранить</button>
             </div>
           </div>
 
@@ -227,7 +227,36 @@
             </div>
           </v-card>
         </v-dialog>
+      <v-dialog
+        v-model="userAdd2"
+        transition="dialog-bottom-transition"
+        max-width="400"
+      >
+        <v-card>
 
+          <div class="bg-white rounded-3xl p-7 relative">
+
+            <div class="absolute top-4 right-1">
+              <v-btn icon @click="userAdd2 = false">
+                <v-icon>mdi-close</v-icon>
+              </v-btn>
+            </div>
+
+            <div class="content-title text-center">Добавление пользователя</div>
+            <div class="mt-4">
+              <v-text-field
+                label="ИМЯ"
+                v-model="code"
+                outlined
+                hide-details="auto"
+              ></v-text-field>
+            </div>
+            <div class="mt-4">
+              <button class="w-full p-2.5 teal lighten-2 text-2xl text-gray-800 rounded" @click="sendUpdateLog">Добавить</button>
+            </div>
+          </div>
+        </v-card>
+      </v-dialog>
     </div>
 
 </template>
@@ -241,12 +270,15 @@ export default {
     return {
         userId: '',
         userAdd: false,
+      userAdd2: false,
         unew: {
             role: '',
             phone: '',
             name: '',
-            surname: ''
+            surname: '',
+
         },
+      code: '',
         tHeaders: [],
         tItems: [],
         profile: {
@@ -341,7 +373,16 @@ export default {
               this.$toast.error(x.data.error)
           }
         })
-    }
+    },
+    updateLog(){
+      this.userAdd2 = true;
+      this.$store.dispatch('request/sendUpdateLogPhone', {userId: this.userId, phone: this.profile.phone}).then((x) => {
+      })
+    },
+    sendUpdateLog(){
+      this.$store.dispatch('request/sendUpdateLogPhone', {userId: this.userId, userNew: this.profile, code: this.code}).then((x) => {
+      })
+    },
   },
   mounted() {
     this.userId = +window.localStorage.getItem('id');
