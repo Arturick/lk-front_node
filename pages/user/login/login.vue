@@ -246,7 +246,7 @@
               let id = x.data.id;
               window.localStorage.setItem('id', id);
               this.$auth.setUserToken('Bearer ' + x.data.accessToken)
-              this.0$store.dispatch('request/auth_user').then((resp) => {
+              this.$store.dispatch('request/auth_user').then((resp) => {
                 this.$router.push('/');
               })
             }
