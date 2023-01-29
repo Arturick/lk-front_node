@@ -145,7 +145,7 @@
                         <a href="#" @click.prevent="copy(index)"><i class="icon icon_copy"></i></a>
                       </template>
                       <template v-slot:item.del="{ item, index }">
-                        <a href="#" @click.prevent="del(index)"><i class="icon icon_close_g"></i></a>
+                        <a href="#" @click.prevent="del(index)"><i class="icon icon_close_g" style="position:relative; z-index: 999"></i></a>
                       </template>
                       <template v-slot:item.link="{ item }">
                         <a :href="item.link"><i class="icon icon_arrow_r"></i></a>
@@ -165,7 +165,7 @@
                 <div class="mt-12">
                   <div>Общее количество:  <strong>артикулы - {{artCount}} шт, выкупов - {{posCount}} шт, отзывов - {{posRCount}} шт</strong> </div>
                   <div>Сумма выкупа: <strong>{{buyOutSum}}₽</strong></div>
-                  <div>Услуги: <strong>{{servicesSum}}₽</strong></div>
+                  <div>Услуги: <strong>0₽</strong></div>
                 </div>
               </div>
 
@@ -325,7 +325,7 @@
               <div class="mt-12">
                 <div>Общее количество:  <strong>артикулы - {{artCount}} шт, выкупов - {{posCount}} шт, отзывов - {{posRCount}} шт</strong> </div>
                 <div>Сумма выкупа: <strong>{{buyOutSum}}₽</strong></div>
-                <div>Услуги: <strong>{{servicesSum}}₽</strong></div>
+                <div>Услуги: <strong>0₽</strong></div>
               </div>
 
             </template>
@@ -444,7 +444,7 @@
           <div class="bg-white rounded-3xl p-2.5 md:p-7">
 
             <div class="mt-5">
-              <template v-if="bulk.type == 1">
+              <template v-if="bulk.type == 2">
                 <div style="margin: 40px auto; width: 100%">
                   <div class="load_title">Ищем товары, в выдаче товаров</div>
                   <div style="width: 150px;margin: auto;">
@@ -456,7 +456,7 @@
                   </div>
                 </div>
               </template>
-              <template v-if="bulk.type == 2">
+              <template v-if="bulk.type == 1">
                 <div v-if="!loadingExcel" style="    width: 100%;height: 120px;position: relative;overflow: hidden;">
                   <v-progress-circular
                     :size="70"
@@ -501,7 +501,7 @@ export default {
   data() {
     return {
         bulk: {
-            type: 1,
+            type: 2,
             arts: '',
             files: null
         },
@@ -882,6 +882,7 @@ export default {
       })
     },
     checkQueries: function() {
+
       this.loadingResultsInSearch = false;
       for(let i in this.tItems){
         if(this.tItems[i]['barcode'].length < 2){
@@ -911,26 +912,28 @@ export default {
 
       }
       if(this.loadingResultsInSearch){return;}
+      this.bulk.type = 2;
       this.bulkAdd2 = true;
       this.lotArtsLoad2 = true;
       this.$store.dispatch('request/checkallquery', {items: this.tItems, userId: this.userId,}).then((x) => {
         this.loadingResultsInSearch = true;
         this.lotArtsLoad2 = false;
         this.bulkAdd2 = false;
+        let isError = false;
         for (var i = x.data.data.length - 1; i >= 0; i--) {
                 console.log(x.data.data);
                 if(x.data.data[i].position < 0 || !x.data.data[i].position){
                   this.tItems[ x.data.data[i].index ]['warn'] = 'status-warning';
                   this.tItems[i].class = 'new_req_err';
-                  this.$toast.error('Запрос не найден');
+                  this.$toast.warning('Запрос не найден');
                   this.loadingResultsInSearch = true;
-                  return;
+                  isError = true;
                 }
                 this.tItems[ x.data.data[i].index ]['position'] = x.data.data[i].position
                 this.tItems[ x.data.data[i].index ]['class'] = x.data.data[i].class
             }
 
-            if ( !x.data.error ) {
+            if ( !isError ) {
                 ++this.step
             } else {
                 for (var i = x.data.msgs.length - 1; i >= 0; i--) {
@@ -945,7 +948,7 @@ export default {
       })
     },
     splitByDate: function() {
-        this.$store.dispatch('request/splitbydate', {items: this.tItems, date: this.selectedDate, userId: this.userId,}).then((x) => {
+        this.$store.dispatch('request/splitbydate', {items: this.tItems, date: this.selectedDate.sort((a,r) =>{return a < r}), userId: this.userId,}).then((x) => {
             this.orderItems = x.data.data.items
             this.orderHeaders = x.data.data.headers
             this.step = 4

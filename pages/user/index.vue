@@ -27,8 +27,27 @@
                     <div class="input-block">
                         <input type="text" class="input-block__input py-5 px-6" placeholder="Расчетный счет" v-model="profile.ks" autocomplete="off">
                     </div>
+                    <div class="input-block">
+                      <input type="text" class="input-block__input py-5 px-6" placeholder="Телефон" disabled :value="profile.phone" autocomplete="off">
+                    </div>
                 </div>
             </div>
+
+          <div class="mt-12">
+            <div class="content-title content-title_2">Авторизация</div>
+            <div>Данные требуются для формирования закрывающих документов.</div>
+          </div>
+          <div class="mt-4">
+            <div class="md:grid md:grid-cols-3 gap-10 flex flex-wrap">
+              <div class="input-block">
+                <input type="text" class="input-block__input py-5 px-6" placeholder="Расчетный счет" v-model="profile.login" autocomplete="off">
+              </div>
+              <div class="input-block">
+                <input type="password" class="input-block__input py-5 px-6" placeholder="Телефон"  v-model="profile.password" autocomplete="off">
+              </div>
+                <button class="w-full md:w-52 p-2.5 teal lighten-2 text-2xl text-gray-800 rounded" @click="updateUser">Сохранить</button>
+            </div>
+          </div>
 
 
             <div class="mt-12">

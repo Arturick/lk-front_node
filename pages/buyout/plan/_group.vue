@@ -57,56 +57,58 @@
                   <v-data-table
                     :headers="tHeaders"
                     :items="tItems"
-                    class="postable"
                     :item-class= "rowClasses"
+                    class="postable"
+
                   >
-                    <template v-slot:item.image="{ item }">
+                    <template v-slot:item.image="{ item }" :class="item.class">
                       <img :src="item.image"  alt="" class="img-table">
                     </template>
-                    <template v-slot:item.status="{ item }">
+                    <template v-slot:item.status="{ item }" :class="item.class">
                       <span :class="'status-' + item.status.split('|')[1]">{{item.status.split('|')[0]}}</span>
                     </template>
-                    <template v-slot:item.price="{ item }">
+                    <template v-slot:item.price="{ item }" :class="item.class">
                       {{item.price}} ₽
                     </template>
-                    <template v-slot:item.size="{ item }">
-                      <template v-if="item.sizes.length > 0">
-                        <v-select style="width: 104px" :items="item.sizes" label="" v-model="item.size" dense outlined hide-details="auto" class="rounded-lg bg-white"/></v-select>
+                    <template v-slot:item.size="{ item , index}" :class="item.class">
+                      <template  v-if="item.sizes.length > 0">
+                        <v-select @click="rmClass(index)" style="width: 104px; z-index: 2; position: relative" :items="item.sizes" label="" v-model="item.size" dense outlined hide-details="auto" class="rounded-lg bg-white"/></v-select>
                       </template>
                       <template v-else>
                         {{item.size}}
                       </template>
                     </template>
-                    <template v-slot:item.gender="{ item }">
-                      <v-select  style="width: 104px" :items="genderOptions" v-model="item.gender" dense outlined hide-details="auto" class="rounded-lg bg-white"></v-select>
+                    <template v-slot:item.gender="{ item }" :class="item.class">
+                      <v-select style="width: 104px"   :items="genderOptions" v-model="item.gender" dense outlined hide-details="auto" class="rounded-lg bg-white"></v-select>
                     </template>
-                    <template v-slot:item.count="{ item }">
+                    <template v-slot:item.count="{ item }" :class="item.class">
                       <Switcher v-model="item.count" :min="1"/>
                     </template>
-                    <template v-slot:item.rcount="{ item }">
+                    <template v-slot:item.rcount="{ item }" :class="item.class">
                       <Switcher v-model="item.rcount" :min="0" :max="item.count" maxMsg="Кол-во отзывов не должно превышть кол-во выкупов"/>
                     </template>
-                    <template v-slot:item.query="{ item }">
-                      <div class="input-block" style="width: 150px;">
-                        <input type="text" class="input-block__input input-block__input_w_1 py-2 px-4" v-model="item.query">
+                    <template v-slot:item.query="{ item, index }" :class="item.class">
+                      <div class="input-block" style="width: 150px;" >
+                        <input type="text" style="z-index: 2; position:relative;" @click="rmClass(index)" class="input-block__input input-block__input_w_1 py-2 px-4"   v-model="item.query">
+                      </div>
+
+                    </template>
+                    <template v-slot:item.barcode="{ item, index }" :class="item.class">
+                      <div class="input-block"  style="width: 150px;">
+                        <input type="text" style="z-index: 2; position:relative;" @click="rmClass(index)" class="input-block__input input-block__input_w_1 py-2 px-4" v-model="item.barcode">
                       </div>
                     </template>
-                    <template v-slot:item.barcode="{ item }">
-                      <div class="input-block" style="width: 150px;">
-                        <input type="text" class="input-block__input input-block__input_w_1 py-2 px-4" v-model="item.barcode">
-                      </div>
-                    </template>
-                    <template v-slot:item.copy="{ item, index }">
+                    <template v-slot:item.copy="{ item, index }" :class="item.class">
                       <a href="#" @click.prevent="copy(index)"><i class="icon icon_copy"></i></a>
                     </template>
-                    <template v-slot:item.del="{ item, index }">
-                      <a href="#" @click.prevent="del(index)"><i class="icon icon_close_g"></i></a>
+                    <template v-slot:item.del="{ item, index }" :class="item.class">
+                      <a href="#" @click.prevent="del(index)"><i class="icon icon_close_g" style="z-index: 2; position: relative"></i></a>
                     </template>
-                    <template v-slot:item.link="{ item }">
+                    <template v-slot:item.link="{ item }" :class="item.class">
                       <a :href="item.link"><i class="icon icon_arrow_r"></i></a>
                     </template>
-                    <template v-slot:item.position="{ item }">
-                      <template v-if="item.position >= 0">
+                    <template v-slot:item.position="{ item }" :class="item.class">
+                      <template v-if="item.position >= 0" >
                         <template v-if="item.position == 0">
                           <span class="status-dunger">{{item.position}}</span>
                         </template>
@@ -213,7 +215,7 @@
               <div class="mt-12">
                 <div>Общее количество:  <strong>артикулы - {{artCount}} шт, выкупов - {{posCount}} шт, отзывов - {{posRCount}} шт</strong> </div>
                 <div>Сумма выкупа: <strong>{{buyOutSum}}₽</strong></div>
-                <div>Услуги: <strong>{{servicesSum}}₽</strong></div>
+                <div>Услуги: <strong>0₽</strong></div>
               </div>
 
             </template>
@@ -371,7 +373,7 @@
               <div class="mt-12">
                 <div>Общее количество:  <strong>артикулы - {{artCount}} шт, выкупов - {{posCount}} шт, отзывов - {{posRCount}} шт</strong> </div>
                 <div>Сумма выкупа: <strong>{{buyOutSum}}₽</strong></div>
-                <div>Услуги: <strong>{{servicesSum}}₽</strong></div>
+                <div>Услуги: <strong>0₽</strong></div>
               </div>
 
             </template>
@@ -470,6 +472,7 @@
         >
           <v-card>
               <div class="bg-white rounded-3xl p-2.5 md:p-7">
+                <div v-if="bulk.type == 1">
                 <v-data-table
                     :headers="bufferTHeaders"
                     :items="groupItems"
@@ -549,7 +552,35 @@
                         <template v-else><span></span></template>
                     </template>
                   </v-data-table>
+                </div>
+                <template v-if="bulk.type == 2">
+
+                  <v-textarea
+                    v-if="lotArtsLoad == false"
+                    label="Артикул через пробел, запятую или перенос строки"
+                    autofocus
+                    clearable
+                    clear-icon="mdi-close-circle"
+                    auto-grow
+                    outlined
+                    rows="5"
+                    v-model="bulk.arts"
+                  ></v-textarea>
+                  <div v-else style="margin: 40px auto; width: 100%">
+                    <div class="load_title">Ищем товары, в выдаче товаров</div>
+                    <div style="width: 150px;margin: auto;">
+                      <v-progress-circular
+                        :size="150"
+                        color="#93e4d5"
+                        indeterminate
+                      ></v-progress-circular>
+                    </div>
                   </div>
+                  <div class="mt-5">
+                    <Button class="rounded-lg p-2.5 but-1 w-full" @click="bulkSend">Добавить</Button>
+                  </div>
+                </template>
+              </div>
           </v-card>
         </v-dialog>
 
@@ -830,6 +861,7 @@ export default {
     showGroupModal( item ) {
         this.groupItems = this.bufferTItems.filter( x => (_.indexOf(item.ids, x.id) > -1)  )
         this.groupDialog = true
+      this.bulk.type = 1;
     },
 
     deleteDraft() {
@@ -839,11 +871,6 @@ export default {
       let text = ''
       return this.selectedDate
       // return text
-    },
-    rowClasses(item) {
-        if (item.class) {
-          return item.class;
-        }
     },
 
     bulkFile: function( e ) {
@@ -1021,54 +1048,64 @@ export default {
       })
     },
     checkQueries: function() {
-      this.loadingResultsInSearch = false;
+      let loadingResultsInSearch2 = false;
       for(let i in this.tItems){
         if(this.tItems[i]['barcode'].length < 2){
-          this.tItems[i]['warn'] = 'new_req_err';
-          this.$toast.error('Поле баркод пусто');
-          this.loadingResultsInSearch = true;
+          this.$toast.warning('Поле баркод пусто');
+          console.log(this.tItems[i]);
           this.tItems[i].class = 'new_req_err';
+          loadingResultsInSearch2 = true;
         }
         if(this.tItems[i]['query'].length < 2){
-          this.tItems[i]['warn'] = 'new_req_err';
-          this.$toast.error('Поле Запрос пусто пусто');
-          this.loadingResultsInSearch = true;
+          this.$toast.warning('Поле Запрос пусто пусто');
           this.tItems[i].class = 'new_req_err';
+          loadingResultsInSearch2 = true;
         }
         console.log(this.tItems[i]);
         if(this.tItems[i]['sizes'].length > 0 && this.tItems[i]['size'] == 0){
-          this.tItems[i]['warn'] = 'new_req_err';
-          this.$toast.error('Размер не выбран');
-          this.loadingResultsInSearch = true;
+          this.$toast.warning('Размер не выбран');
           this.tItems[i].class = 'new_req_err';
+          loadingResultsInSearch2 = true;
         }
         if(+this.tItems[i]['rcount'] > +this.tItems[i]['count']){
-          this.$toast.error('Комментариев не должно быть больше чем выкупов');
-          this.loadingResultsInSearch = true;
+          this.$toast.warning('Комментариев не должно быть больше чем выкупов');
           this.tItems[i].class = 'new_req_err';
+          loadingResultsInSearch2 = true;
         }
 
       }
-      if(this.loadingResultsInSearch){
+      if(loadingResultsInSearch2){
         return 0;
       }
+      this.bulk.type = 2;
+      this.groupDialog = true;
       this.$store.dispatch('request/checkallquery', {userId: this.userId, items: this.tItems}).then((x) => {
-        this.loadingResultsInSearch = true;
+        this.groupDialog = false;
+        let isError = false;
         for (var i = x.data.data.length - 1; i >= 0; i--) {
           console.log(x.data.data);
-          this.tItems[ x.data.data[i].index ]['position'] = x.data.data[i].position;
-          this.tItems[ x.data.data[i].index ]['class'] = x.data.data[i].class;
+          if(x.data.data[i].position < 0 || !x.data.data[i].position){
+            this.tItems[ x.data.data[i].index ]['warn'] = 'status-warning';
+            this.tItems[i].class = 'new_req_err';
+            this.$toast.warning('Запрос не найден');
+            isError = true;
+          }
+          this.tItems[ x.data.data[i].index ]['position'] = x.data.data[i].position
+          this.tItems[ x.data.data[i].index ]['class'] = x.data.data[i].class
         }
 
-        if ( !x.data.error ) {
+        if ( !isError ) {
           ++this.step
         } else {
-          for (var i = x.data.msgs.length - 1; i >= 0; i--) {
-            this.$toast.error(x.data.msgs[i]);
-          }
-
         }
       })
+    },
+    rowClasses(item) {
+      console.log(item.class);
+      if(item.class == "new_req_err"){
+        console.log(item, 1);
+        return 'new_req_err'
+      }
     },
     splitByDate: function() {
       this.$store.dispatch('request/splitbydate', {userId: this.userId, items: this.tItems, date: this.selectedDate}).then((x) => {
@@ -1171,8 +1208,6 @@ export default {
 
     },
     rmClass(item){
-      item.class = 'new_req_err';
-      console.log(2);
     },
 
   },
@@ -1262,8 +1297,5 @@ export default {
   width: 182px;
   position: relative;
   left: -20px;
-}
-.theme--light.v-input {
-  width: 77px;
 }
 </style>
