@@ -27,10 +27,10 @@
             <div v-if="isReg" class="reg_input reg_input_a inp_tel" style="margin-right: 50px">
               <input v-model="code" type="text" placeholder="Код из СМС">
             </div>
-            <div v-if="!isReg">
+            <div v-if="!isReg" class="syti">
                <div class="reg_btn" @click="sendCode">Далее</div>
             </div>
-            <div v-else>
+            <div v-else class="syti">
               <div class="reg_btn" @click="checkCode">Далее</div>
             </div>
 

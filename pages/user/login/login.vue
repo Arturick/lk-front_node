@@ -25,7 +25,7 @@
           <NuxtLink  v-if="isReg == false && step < 3"  to="./register" class="auth_link" style="font-size: 28px;">Регистрация</NuxtLink>
         </div>
         <div class="reg_block">
-        <div>
+        <div style="text-align: center">
 
           <input type="text" v-if="step<3" class="bg-white p-4 text-black rounded text-lg w-full text-center md:text-left" placeholder="Введите телефон" v-mask="'+# (###) ###-##-################'" v-model="phone"   style="width: 400px;" inputmode="numeric">
           <div v-if="step==3" class="select_back">
@@ -64,7 +64,7 @@
           <NuxtLink  v-if="isReg == false && step < 3"  to="./register" class="auth_link" style="font-size: 28px;">Регистрация</NuxtLink>
         </div>
       <div class="reg_block">
-        <div class="slf">
+        <div class="slf" >
           <input type="text" class="bg-white p-4 text-black rounded text-lg w-full text-center md:text-left" :class="[isErrorInput ? 'back_input' : '']" @input="isErrorInput=false" @click="isErrorInput=false" placeholder="Введите Логин" v-model="login" style="width: 334px">
         </div>
         <div class="slf">
