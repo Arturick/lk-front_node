@@ -27,7 +27,7 @@
         <div class="reg_block">
         <div style="text-align: center">
 
-          <input type="text" v-if="step<3" class="bg-white p-4 text-black rounded text-lg w-full text-center md:text-left" placeholder="Введите телефон" v-mask="'+# (###) ###-##-################'" v-model="phone"   style="width: 400px;" inputmode="numeric">
+          <input type="text" v-if="step<3" class="bg-white p-4 text-black rounded text-lg w-full text-center md:text-left" placeholder="Введите телефон" v-mask="'+# (###) ###-##-################'" v-model="phone"   style="width: 90%;" inputmode="numeric">
           <div v-if="step==3" class="select_back">
             <div class="md:mt-0 mt-2.5 self_mt" style="">
               <Select :items="managerList" label="Client Id: " v-model="manager"/>
@@ -65,10 +65,10 @@
         </div>
       <div class="reg_block">
         <div class="slf" >
-          <input type="text" class="bg-white p-4 text-black rounded text-lg w-full text-center md:text-left" :class="[isErrorInput ? 'back_input' : '']" @input="isErrorInput=false" @click="isErrorInput=false" placeholder="Введите Логин" v-model="login" style="width: 334px">
+          <input type="text" class="bg-white p-4 text-black rounded text-lg w-full text-center md:text-left" :class="[isErrorInput ? 'back_input' : '']" @input="isErrorInput=false" @click="isErrorInput=false" placeholder="Введите Логин" v-model="login" style="width: 100%;">
         </div>
         <div class="slf">
-          <input type="password"  class="bg-white p-4 text-black rounded text-lg w-full text-center md:text-left" :class="[isErrorInput ? 'back_input' : '']" @input="isErrorInput=false" @click="isErrorInput=false" placeholder="Введите Пароль" style="width: 300px" v-model="password">
+          <input type="password"  class="bg-white p-4 text-black rounded text-lg w-full text-center md:text-left" :class="[isErrorInput ? 'back_input' : '']" @input="isErrorInput=false" @click="isErrorInput=false" placeholder="Введите Пароль" style="width: 100%;" v-model="password">
         </div>
         <button type="button" class="reg_btn" @click="loginUser" style="color: black">Войти</button>
       </div>
@@ -274,7 +274,7 @@
     font-size: 28px;
   }
   .slf{
-    margin: 0 15px;
+    margin: 16px 15px;
   }
   .v-application .mt-5 {
     margin-top: -24px !important;

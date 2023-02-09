@@ -66,6 +66,7 @@
     font-size: 35px;
   }
   .ma_btns{
+    text-align: center;
     display: block;
   }
   .login_tg_btn{
@@ -88,7 +89,7 @@
   }
   .slf{
     text-align: center;
-    margin: 15px auto;
+    margin: 20px auto;
   }
   .rec_inputs{
     display: block;
@@ -109,6 +110,7 @@
     font-size: 35px;
   }
   .ma_btns{
+    text-align: center;
     display: block;
   }
   .login_tg_btn{
@@ -131,7 +133,7 @@
   }
   .slf{
     text-align: center;
-    margin: 15px auto;
+    margin: 20px auto;
   }
   .rec_inputs{
 
@@ -153,6 +155,7 @@
     font-size: 35px;
   }
   .ma_btns{
+    text-align: center;
     display: block;
   }
   .login_tg_btn{
@@ -175,7 +178,7 @@
   }
   .slf{
     text-align: center;
-    margin: 15px auto;
+    margin: 20px auto;
   }
   .rec_inputs{
     display: block;
@@ -186,7 +189,7 @@
   .reg_input{
     width: 90%;
   }
-  .syti{
+  .a{
     width: 90%;
   }
 }
