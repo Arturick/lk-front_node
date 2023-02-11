@@ -55,6 +55,15 @@ export default {
         })
     })
   },
+  UpdateLogPhone({ commit }, state) {
+    return new Promise((resolve, reject) => {
+      this.$axios
+        .post('update-log', state)
+        .then((x) => {
+          resolve(x)
+        })
+    })
+  },
   getUser({ commit }, state) {
     return new Promise((resolve, reject) => {
       this.$axios

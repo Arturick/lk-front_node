@@ -242,10 +242,10 @@
               </v-btn>
             </div>
 
-            <div class="content-title text-center">Добавление пользователя</div>
+            <div class="content-title text-center">Введтте Код</div>
             <div class="mt-4">
               <v-text-field
-                label="ИМЯ"
+                label="КОД"
                 v-model="code"
                 outlined
                 hide-details="auto"
@@ -380,7 +380,14 @@ export default {
       })
     },
     sendUpdateLog(){
-      this.$store.dispatch('request/sendUpdateLogPhone', {userId: this.userId, userNew: this.profile, code: this.code}).then((x) => {
+      this.$store.dispatch('request/UpdateLogPhone', {userId: this.userId, userNew: this.profile, code: this.code}).then((x) => {
+        if(x.data.error){
+          this.$toast.error('Не векрный код')
+          return;
+        }
+        this.userAdd2 = false;
+        this.$toast.success('данные успешно обновлены')
+
       })
     },
   },

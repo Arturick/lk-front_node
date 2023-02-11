@@ -36,8 +36,10 @@
           </div>
         </div>
         <div v-if="step==1" class="reg_btn" @click="sendCode">Далее</div>
-          <input type="text" v-if="step==2" @input="checkCode" class="bg-white p-4 text-black rounded text-lg w-full text-center md:text-left" placeholder="Введите код" v-mask="'####'" v-model="code"  inputmode="numeric" style="width: 200px; margin-left: 5px">
-          <div v-if="step==3" class="reg_btn" @click="authManager">Далее</div>
+          <div style="text-align: center">
+          <input type="text" v-if="step==2" @input="checkCode" class="bg-white p-4 text-black rounded text-lg w-full text-center md:text-left" placeholder="Введите код" v-mask="'####'" v-model="code"  inputmode="numeric" style="width: 90%; margin-top: 10px">
+          </div>
+            <div v-if="step==3" class="reg_btn" @click="authManager">Далее</div>
         </div>
         <template v-if="step == 2" style="display: flex">
           <div class="flex gap-4 mt-5 justify-center" style="width: 500px; margin: 0 auto">

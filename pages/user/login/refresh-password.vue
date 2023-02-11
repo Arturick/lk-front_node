@@ -31,7 +31,7 @@
         <div class="reg_btn" @click="sendCode" style="cursor: pointer">Далее</div>
       </div>
       <div v-else class="syti">
-        <div class="reg_btn" @click="checkCode" style="cursor: pointer">Далее</div>
+        <div class=" " @click="checkCode" style="cursor: pointer">Далее</div>
       </div>
       </div>
       </div>

@@ -583,6 +583,22 @@
               </div>
           </v-card>
         </v-dialog>
+      <v-dialog
+        v-model="searchDialog"
+        transition="dialog-bottom-transition"
+        max-width="400"
+      >
+        <v-card style="width: 500px; overflow: hidden">
+          <div class="load_title" style="text-align: center; margin: 10px 0; font-size: 23px; font-weight: bold">Ищем товары, в выдаче товаров</div>
+          <div style="width: 150px;margin: auto;">
+            <v-progress-circular
+              :size="150"
+              color="#93e4d5"
+              indeterminate
+            ></v-progress-circular>
+          </div>
+        </v-card>
+      </v-dialog>
 
     </div>
 </template>
@@ -608,7 +624,7 @@ export default {
         },
         bulkAdd: false,
         groupDialog: false,
-
+      searchDialog: false,
       dialogDate: false,
 
       localeData: {
@@ -1077,10 +1093,10 @@ export default {
       if(loadingResultsInSearch2){
         return 0;
       }
-      this.bulk.type = 2;
-      this.groupDialog = true;
+
+      this.searchDialog = true;
       this.$store.dispatch('request/checkallquery', {userId: this.userId, items: this.tItems}).then((x) => {
-        this.groupDialog = false;
+        this.searchDialog = false;
         let isError = false;
         for (var i = x.data.data.length - 1; i >= 0; i--) {
           console.log(x.data.data);
