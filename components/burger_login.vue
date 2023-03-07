@@ -5,12 +5,12 @@
                 <span>&#215;</span>
             </div>
             <div class="nav_burger">
-                <a href="" class="">кейс</a>
-                <a href="" class="">как это работает</a>
-                <a href="" class="">цены</a>
-                <a href="" class="">контакты</a>
-                <a href="" class="">блог</a>
-                <a href="" class="">faq</a>
+              <a class="nav_el" target="_blank" href="https://rate-this.ru/#kejs">кейс</a>
+              <a class="nav_el" target="_blank" href="https://rate-this.ru/#kak-eto-rabotaet">как это работает</a>
+              <a class="nav_el" target="_blank" href="https://rate-this.ru/#ceny">цены</a>
+              <a class="nav_el" target="_blank" href="https://rate-this.ru/#kontakty">контакты</a>
+              <a class="nav_el" href="">блог</a>
+              <a class="nav_el" href="">faq</a>
             </div>
         </div>
       </div>

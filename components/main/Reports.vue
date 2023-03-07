@@ -19,7 +19,7 @@
 		</div>
 
 		<div class="mt-7">
-			<a href="#" class="content-link-all">К полному отчету</a>
+
 		</div>
 
 	</div>

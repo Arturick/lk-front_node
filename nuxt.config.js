@@ -68,7 +68,7 @@ export default {
    ** See https://axios.nuxtjs.org/options
    */
   axios: {
-    baseURL: process.env.API || "http://localhost:80",
+    baseURL: process.env.API || "http://localhost:80/api",
     headers: {
       common: {
         Token: process.env.TOKEN || "c4e250aed1813a0b4bbe5a01532649"
@@ -76,9 +76,6 @@ export default {
     }
   },
 
-  // Build Configuration: https://go.nuxtjs.dev/config-build
-  build: {
-  },
   auth: {
     localStorage: false,
     cookie: {

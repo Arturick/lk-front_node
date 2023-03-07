@@ -1142,6 +1142,7 @@ export default {
           this.tItems = [];
           this.items = [];
           this.step = 1;
+          this.$router.push('/');
         } else {
           this.$toast.error(x.data.msg);
         }

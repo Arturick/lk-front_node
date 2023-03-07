@@ -37,7 +37,7 @@
         </div>
         <div v-if="step==1" class="reg_btn" @click="sendCode">Далее</div>
           <div style="text-align: center">
-          <input type="text" v-if="step==2" @input="checkCode" class="bg-white p-4 text-black rounded text-lg w-full text-center md:text-left" placeholder="Введите код" v-mask="'####'" v-model="code"  inputmode="numeric" style="width: 90%; margin-top: 10px">
+          <input type="text" v-if="step==2" @input="checkCode" class="bg-white p-4 text-black rounded text-lg w-full text-center md:text-left" placeholder="Введите код" v-mask="'####'" v-model="code"  inputmode="numeric" style="width: 90%">
           </div>
             <div v-if="step==3" class="reg_btn" @click="authManager">Далее</div>
         </div>
@@ -66,16 +66,16 @@
           <NuxtLink  v-if="isReg == false && step < 3"  to="./register" class="auth_link" style="font-size: 28px;">Регистрация</NuxtLink>
         </div>
       <div class="reg_block">
-        <div class="slf" >
-          <input type="text" class="bg-white p-4 text-black rounded text-lg w-full text-center md:text-left" :class="[isErrorInput ? 'back_input' : '']" @input="isErrorInput=false" @click="isErrorInput=false" placeholder="Введите Логин" v-model="login" style="width: 100%;">
+        <div class="slf" style="margin: 0">
+          <input type="text" class="bg-white p-4 text-black rounded text-lg w-full text-center md:text-left" :class="[isErrorInput ? 'back_input' : '']" @input="isErrorInput=false" @click="isErrorInput=false" placeholder="Введите Логин" v-model="login" style="width: 100%; ">
         </div>
         <div class="slf">
           <input type="password"  class="bg-white p-4 text-black rounded text-lg w-full text-center md:text-left" :class="[isErrorInput ? 'back_input' : '']" @input="isErrorInput=false" @click="isErrorInput=false" placeholder="Введите Пароль" style="width: 100%;" v-model="password">
         </div>
         <button type="button" class="reg_btn" @click="loginUser" style="color: black">Войти</button>
       </div>
-        <div style="width: 65%;margin: 20px auto; font-size: 24px; color: #31B6EC">
-          <NuxtLink  v-if="isReg == false"  to="./refresh-password" class="auth_link" style=" font-size: 24px; color: #31B6EC">Забыл пароль</NuxtLink>
+        <div style="margin: 20px auto; font-size: 24px; color: #31B6EC">
+          <NuxtLink  v-if="isReg == false"  to="./refresh-password" class="auth_link" style="width: 65%; font-size: 24px; color: #31B6EC">Забыл пароль</NuxtLink>
         </div>
     </div>
       <img class="img_down" src="../../../assets/images/RATE THIS.svg" alt="">

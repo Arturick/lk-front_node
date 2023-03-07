@@ -58,11 +58,11 @@
                             </v-btn>
                           </template>
                           <v-list>
-                            <v-list-item>
-                                <NuxtLink to="/user" class="menu-profile__link">Настройки</NuxtLink>
+                            <v-list-item class="menu-profile__link">
+                                <NuxtLink to="/user">Настройки</NuxtLink>
                             </v-list-item>
-                            <v-list-item>
-                                <a href="#" class="menu-profile__link" @click.prevent="logout">Выйти</a>
+                            <v-list-item class="menu-profile__link">
+                                <a href="#"  @click.prevent="logout">Выйти</a>
                             </v-list-item>
                           </v-list>
                         </v-menu>

@@ -74,6 +74,36 @@ export default {
     })
   },
 
+  addManager({ commit }, state) {
+    return new Promise((resolve, reject) => {
+      this.$axios
+        .post('add-manager', state)
+        .then((x) => {
+          resolve(x)
+        })
+    })
+  },
+
+  getManager({ commit }, state) {
+    return new Promise((resolve, reject) => {
+      this.$axios
+        .post('get-manager', state)
+        .then((x) => {
+          resolve(x)
+        })
+    })
+  },
+
+  deleteManager({ commit }, state) {
+    return new Promise((resolve, reject) => {
+      this.$axios
+        .post('delete-manager', state)
+        .then((x) => {
+          resolve(x)
+        })
+    })
+  },
+
   get_statinfo({ commit }, state) {
     return new Promise((resolve, reject) => {
       this.$axios

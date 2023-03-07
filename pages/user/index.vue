@@ -35,7 +35,7 @@
 
           <div class="mt-12">
             <div class="content-title content-title_2">Авторизация</div>
-            <div>Данные требуются для формирования закрывающих документов.</div>
+            <div>Данные требуются для входа в ваш кабинет.</div>
           </div>
           <div class="mt-4">
             <div class="md:grid md:grid-cols-3 gap-10 flex flex-wrap">
@@ -90,7 +90,7 @@
                 </button>
             </div>
 
-            <template v-if="user.role == 4">
+            <template v-if="profile.role == 4">
                 <div class="mt-12">
                     <div class="flex justify-between flex-col md:flex-row gap-4">
                         <div>
@@ -294,9 +294,10 @@ export default {
   computed: {
     ...mapState('request', [
       'user',
-      'opt_roles'
     ]),
-
+    opt_roles(){
+      return ['Админ', 'Владелец', 'Менеджер', 'Пользователь']
+    }
   },
   watch: {
 
@@ -320,7 +321,7 @@ export default {
             return false
         }
 
-        this.$store.dispatch('request/auth_user_parent_save', {userId: this.userId, item: this.unew}).then((x) => {
+        this.$store.dispatch('request/addManager', {userId: this.userId, item: this.unew}).then((x) => {
           if ( !x.data.error ) {
             this.user_parent_get()
             this.userAdd = false
@@ -347,17 +348,25 @@ export default {
       })
     },
     user_parent_get(){
-        this.$store.dispatch('request/auth_user_parent_get', {}).then((x) => {
+        this.$store.dispatch('request/getManager', {userId: this.userId}).then((x) => {
           if ( !x.data.error ) {
-            this.tHeaders = x.data.headers
-            this.tItems = x.data.items
+            this.tHeaders = [
+              {'text' : 'ФИО', 'value' : 'fio'},
+            {'text' : 'Номер', 'value' : 'phone'},
+            {'text' : 'Телеграмм ID', 'value' : 'telegram'},
+            {'text' : 'Право доступа', 'value' : 'role'},
+            {'text' : '', 'value' : 'action'},
+
+          ];
+
+            this.tItems = x.data;
           } else {
               this.$toast.error(x.data.error)
           }
         })
     },
     user_parent_save(index){
-        this.$store.dispatch('request/auth_user_parent_save', {item: this.tItems[index]}).then((x) => {
+        this.$store.dispatch('request/addManager', {userId: this.userId, item: this.tItems[index]}).then((x) => {
           if ( !x.data.error ) {
             this.user_parent_get()
           } else {
@@ -366,7 +375,7 @@ export default {
         })
     },
     user_parent_del( index ){
-        this.$store.dispatch('request/auth_user_parent_del', {item: this.tItems[index]}).then((x) => {
+        this.$store.dispatch('request/deleteManager', {userId: this.userId, item: this.tItems[index].id}).then((x) => {
           if ( !x.data.error ) {
             this.user_parent_get()
           } else {

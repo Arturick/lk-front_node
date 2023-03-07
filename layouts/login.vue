@@ -14,12 +14,12 @@
                 <img src="../assets/images/h_more.svg" alt="">
               </div>
               <div class="nav">
-                <div class="">кейс</div>
-                <div class="">как это работает</div>
-                <div class="">цены</div>
-                <div class="">контакты</div>
-                <div class="">блог</div>
-                <div class="">faq</div>
+                <div class="nav_el"><a class="nav_el" target="_blank" href="https://rate-this.ru/#kejs">кейс</a></div>
+                <div class="nav_el"><a class="nav_el" target="_blank" href="https://rate-this.ru/#kak-eto-rabotaet">как это работает</a></div>
+                <div class="nav_el"><a class="nav_el" target="_blank" href="https://rate-this.ru/#ceny">цены</a></div>
+                <div class="nav_el"><a class="nav_el" target="_blank" href="https://rate-this.ru/#kontakty">контакты</a></div>
+                <div class="nav_el"><a class="nav_el" target="_blank" href="">блог</a></div>
+                <div class="nav_el"><a class="nav_el" target="_blank" href="">faq</a></div>
               </div>
               <div class="s_bl_h">
                 <img src="../assets/images/h_phone.svg" alt="">
@@ -60,6 +60,12 @@
   }
 </script>
 
-<style>
-
+<style scoped>
+  a{
+    color: white;
+  }
+  .nav_el{
+    color: white;
+    font-size: 20px;
+  }
 </style>
