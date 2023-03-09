@@ -58,6 +58,7 @@
                   :items="tItemsForMe"
                   class="postable"
                 >
+                  <template v-slot:item.date="{ item }">{{item.date?.split('T')[0]}}</template>
                   <template v-slot:item.image="{ item }">
                       <img :src="item.image" alt="" class="img-table">
                   </template>
@@ -68,7 +69,7 @@
                     <span >{{ item.count  }}</span>
                   </template>
                 <template v-slot:item.action="{ item }">
-                    <a :href="'/delivery/' + item.date" @click.prevent="showGroup( item.date )"><i class="icon icon_arrow_r"></i></a>
+                    <a :href="'/delivery/' + item?.date?.split('T')[0]" @click.prevent="showGroup(item.date?.split('T')[0])"><i class="icon icon_arrow_r"></i></a>
                 </template>
                 </v-data-table>
               </template>
