@@ -40,7 +40,7 @@
                   </template>
                   <template v-slot:item.cheque="{ item }">
                     <template v-if="item.cheque">
-                      <span><a :href="item.cheque">ЧЕК</a></span>
+                      <span><a :href="item.cheque" style="color:blue;" target="_blank">ЧЕК</a></span>
                     </template>
                   </template>
 
