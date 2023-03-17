@@ -1110,4 +1110,7 @@ export default {
   .v-input__append-inner{
     width: 100px;
   }
+  .content{
+    position: initial;
+  }
 </style>

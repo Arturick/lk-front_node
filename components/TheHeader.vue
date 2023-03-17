@@ -25,17 +25,17 @@
                                     <li class="menu__item">
                                       <NuxtLink to="/reviews" class="menu__link" exact-active-class="menu__link_active">Отзывы</NuxtLink>
                                     </li>
-                                    <li class="menu__item">
-                                      <NuxtLink to="/cheat" class="menu__link" exact-active-class="menu__link_active">Накрутки</NuxtLink>
+                                    <li class="menu__item" @click="inDev">
+                                      <NuxtLink to="/test" class="menu__link" exact-active-class="menu__link_active">Накрутки</NuxtLink>
                                     </li>
                                     <li class="menu__item">
-                                      <NuxtLink to="/positions" class="menu__link" exact-active-class="menu__link_active">Позиции товара</NuxtLink>
+                                      <NuxtLink to="/test" class="menu__link" exact-active-class="menu__link_active">Позиции товара</NuxtLink>
                                     </li>
                                   <li class="menu__item">
                                     <NuxtLink to="/reports" class="menu__link" exact-active-class="menu__link_active">Отчеты</NuxtLink>
                                   </li>
-                                    <li class="menu__item">
-                                      <NuxtLink to="/tariffs" class="menu__link" exact-active-class="menu__link_active">Тарифы</NuxtLink>
+                                    <li class="menu__item" @click="inDev">
+                                      <NuxtLink to="/test" class="menu__link" exact-active-class="menu__link_active">Тарифы</NuxtLink>
                                     </li>
 
                                 </ul>
@@ -200,9 +200,12 @@ export default {
           }
         })
     },
+    inDev () {
+      this.$toast.info('Данная функция находится в разработке и пока не находится в продакшене')
+    },
     logout() {
       this.$auth.setUserToken(null)
-      window.location.reload()
+      window.location = '/user/login/login';
     },
     checkUserInfo() {
         // if ( !this.user.role ) {
