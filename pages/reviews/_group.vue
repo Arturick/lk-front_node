@@ -17,7 +17,7 @@
 
         <div class="md:grid md:grid-cols-2">
           <div class="">
-              <div class="content-title">Публикуемые отзывы на 78858215 </div>
+              <div class="content-title">Публикуемые отзывы на {{article}}</div>
               <div class="mt-8">
                   <div>В данном разделе вы можете согласовать отзывы, заказать фото к отзывам или докупить отзывы. Вы можете бесплатно прикрепить свои фотографии</div>
                   <div>Все расчеты производятся согласно тарифам или списываются с вашего баланса.</div>
@@ -72,8 +72,8 @@
 
 
                       </div>
-                      <template v-if="item.status=='Согласовать|plan' ">
-                      <a href="#" @click.prevent="item.review_editable = !item.review_editable"><i class="icon icon_edit"></i></a>
+                      <template v-if="item.status=='Согласовать|plan'">
+                        <a href="#"  @click.prevent="item.review_editable = !item.review_editable"><i class="icon icon_edit"></i></a>
                       </template>
                     </div>
 
@@ -214,6 +214,7 @@ export default {
       tHeaders:[],
       art:null,
       userId: 0,
+      article: '',
       crumbs: [
           {"name": 'Отзывы', "link" : "/reviews", "type" : "link"},
           {"name": 'Артикул', "link" : "", "type" : "text"},
@@ -319,6 +320,7 @@ export default {
 
   },
   mounted() {
+    this.article = window.location.pathname.split('/')[window.location.pathname.split('/').length - 1];
     this.userId = +window.localStorage.getItem('id');
     this.getByGroup()
 
