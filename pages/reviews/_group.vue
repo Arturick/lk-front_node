@@ -263,16 +263,20 @@ export default {
     },
     save: function(index) {
 
-
-      this.$store.dispatch('request/reviews_save', {userId: this.userId, item: this.tItems[index]}).then((x) => {
+    for(let i in this.tItems){
+      if(this.tItems[i].need_save ){
+        this.$store.dispatch('request/reviews_save', {userId: this.userId, item: this.tItems[i]}).then((x) => {
           if ( !x.data.error ) {
-              this.tItems[index]['need_save'] = false
-              this.getByGroup()
+            this.tItems[i]['need_save'] = false
+            this.getByGroup()
           } else {
-              this.$toast.error(x.data.msg);
+            this.$toast.error(x.data.msg);
           }
           this.tLoading = false
-      })
+        })
+      }
+
+    }
 
     },
 

@@ -53,7 +53,6 @@
               <div v-else>
                 <a :href="'/buyout/plan/' + item.group" @click.prevent="showGroup( item.group )"><i class="icon icon_arrow_r"></i></a>
               </div>
-
             </template>
           </v-data-table>
           </template>

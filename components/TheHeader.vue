@@ -240,7 +240,6 @@ export default {
   mounted() {
     this.userId = +window.localStorage.getItem('id');
     this.getUser();
-    this.$store.dispatch('request/get_options').then((x) => {})
   }
 }
 </script>
