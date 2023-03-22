@@ -43,6 +43,9 @@
             <template v-slot:item.status="{ item }">
               <span :class="'status-' + item.status.split('|')[1]">{{item.status.split('|')[0]}}</span>
             </template>
+              <template v-slot:item.date="{ item }">
+                <span >{{item.date}}</span>
+              </template>
             <template v-slot:item.actions="{ item }">
               <div v-if="item.status == 'Черновик|plan'">
                 <a :href="'/buyout/plan/' + item.group + '?draft=true'" @click.prevent="showGroup( item.group, true )"><i class="icon icon_arrow_r"></i></a>

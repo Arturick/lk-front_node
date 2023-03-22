@@ -1113,4 +1113,7 @@ export default {
   .content{
     position: initial;
   }
+.v-data-table__wrapper{
+  overflow-y: auto;
+}
 </style>
