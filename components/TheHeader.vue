@@ -32,7 +32,7 @@
                                       <NuxtLink to="/test" class="menu__link" exact-active-class="menu__link_active">Позиции товара</NuxtLink>
                                     </li>
                                   <li class="menu__item">
-                                    <NuxtLink to="/reports" class="menu__link" exact-active-class="menu__link_active">Отчеты</NuxtLink>
+                                    <NuxtLink to="/test" class="menu__link" exact-active-class="menu__link_active">Отчеты</NuxtLink>
                                   </li>
                                     <li class="menu__item" @click="inDev">
                                       <NuxtLink to="/test" class="menu__link" exact-active-class="menu__link_active">Тарифы</NuxtLink>
