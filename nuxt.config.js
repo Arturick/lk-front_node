@@ -43,7 +43,7 @@ export default {
   buildModules: [
     // https://go.nuxtjs.dev/tailwindcss
     '@nuxtjs/vuetify',
-    '@nuxtjs/tailwindcss',
+    '@nuxtjs/tailwindcss'
   ],
   build: {
     vendor : [

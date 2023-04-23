@@ -130,6 +130,15 @@
                         class="postable"
                         :item-class= "rowClasses"
                       >
+
+                        <template v-slot:item.intervalBuy="{item, index}">
+                          <div v-if="item.status == 'Запланировано|plan'" class="input-block" style="width: 150px; " >
+                            <input type="number" @input="changeInterval(index)" style="z-index: 2; position:relative;"  class="input-block__input input-block__input_w_1 py-2 px-4"   v-model="item.intervalBuy">
+                          </div>
+                          <div v-else>
+                            {{item.intervalBuy}}
+                          </div>
+                        </template>
                         <template v-slot:item.image="{ item }">
                             <img :src="item.image" alt="" class="img-table">
                         </template>
@@ -731,6 +740,7 @@ export default {
 
         },
     },
+
     modalByApiShow: function(val) {
         if ( val ) {
             this.findWb()
@@ -1226,6 +1236,10 @@ export default {
     },
     rmClass(item){
     },
+    changeInterval(index){
+        console.log(this.tItems[index].intervalBuy);
+
+    }
 
   },
   mounted() {

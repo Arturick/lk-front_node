@@ -59,10 +59,10 @@
                           </template>
                           <v-list>
                             <v-list-item class="menu-profile__link">
-                                <NuxtLink to="/user">Настройки</NuxtLink>
+                                <NuxtLink to="/user" style="color: #1E1E1E">Настройки</NuxtLink>
                             </v-list-item>
-                            <v-list-item class="menu-profile__link">
-                                <a href="#"  @click.prevent="logout">Выйти</a>
+                            <v-list-item  @click.prevent="logout" class="menu-profile__link">
+                                <a href="#" style="color: #1E1E1E">Выйти</a>
                             </v-list-item>
                           </v-list>
                         </v-menu>
